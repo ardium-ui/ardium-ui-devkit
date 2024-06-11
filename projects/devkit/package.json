@@ -1,0 +1,19 @@
+{
+  "name": "@ardium-ui/devkit",
+  "version": "1.3.10",
+  "private": false,
+  "peerDependencies": {
+    "@angular/common": ">=18.0.0",
+    "@angular/core": ">=18.0.0",
+    "@angular/platform-browser": ">=18.0.0"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0",
+    "string-similarity": "^4.0.4",
+    "key-display-names": "^1.2.0",
+    "more-rounding": "^4.2.2"
+  },
+  "devDependencies": {
+    "@types/string-similarity": "^4.0.2"
+  }
+}
