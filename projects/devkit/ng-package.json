@@ -9,6 +9,7 @@
     "tslib",
     "more-rounding",
     "string-similarity",
+    "simple-bool",
     "key-display-names"
   ]
 }
