@@ -15,6 +15,8 @@ const filesizeMap = {
 })
 export class ArdiumFilesizePipe implements PipeTransform {
   transform(value: number, precision: number = 2): string {
-    return approximate(value, precision, undefined, undefined, filesizeMap) + 'B';
+    return (
+      approximate(value, precision, undefined, undefined, filesizeMap) + 'B'
+    );
   }
 }

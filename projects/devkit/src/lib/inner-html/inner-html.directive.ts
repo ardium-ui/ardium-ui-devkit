@@ -11,6 +11,8 @@ export class ArdiumInnerHTMLDirective {
   constructor(private element: ElementRef<HTMLElement>) {}
 
   ngOnChanges(changes: SimpleChanges) {
-    this.element.nativeElement.innerHTML = this.ardEscapeInnerHTML ? escapeHTML(this.ardInnerHTML) : this.ardInnerHTML;
+    this.element.nativeElement.innerHTML = this.ardEscapeInnerHTML
+      ? escapeHTML(this.ardInnerHTML)
+      : this.ardInnerHTML;
   }
 }

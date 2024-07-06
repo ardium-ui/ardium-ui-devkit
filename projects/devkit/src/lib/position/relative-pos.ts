@@ -11,13 +11,17 @@ export class EventRelativePos {
     public readonly top: number,
     public readonly right: number,
     public readonly bottom: number,
-    public readonly left: number
+    public readonly left: number,
   ) {
     this.overflowsTop = top < 0;
     this.overflowsRight = right < 0;
     this.overflowsBottom = bottom < 0;
     this.overflowsLeft = left < 0;
-    this.overflows = this.overflowsTop || this.overflowsRight || this.overflowsBottom || this.overflowsLeft;
+    this.overflows =
+      this.overflowsTop ||
+      this.overflowsRight ||
+      this.overflowsBottom ||
+      this.overflowsLeft;
   }
 
   toJSON(): string {
@@ -29,10 +33,22 @@ export class EventRelativePos {
     });
   }
 
-  static fromEvent(event: MouseEvent | TouchEvent | Touch, el: HTMLElement): EventRelativePos;
-  static fromEvent(event: MouseEvent | TouchEvent | Touch, el: ElementRef<HTMLElement>): EventRelativePos;
-  static fromEvent(event: MouseEvent | TouchEvent | Touch, el: HTMLElement | ElementRef<HTMLElement>): EventRelativePos;
-  static fromEvent(event: MouseEvent | TouchEvent | Touch, el: HTMLElement | ElementRef<HTMLElement>): EventRelativePos {
+  static fromEvent(
+    event: MouseEvent | TouchEvent | Touch,
+    el: HTMLElement,
+  ): EventRelativePos;
+  static fromEvent(
+    event: MouseEvent | TouchEvent | Touch,
+    el: ElementRef<HTMLElement>,
+  ): EventRelativePos;
+  static fromEvent(
+    event: MouseEvent | TouchEvent | Touch,
+    el: HTMLElement | ElementRef<HTMLElement>,
+  ): EventRelativePos;
+  static fromEvent(
+    event: MouseEvent | TouchEvent | Touch,
+    el: HTMLElement | ElementRef<HTMLElement>,
+  ): EventRelativePos {
     return getEventRelativePos(event, el);
   }
 }
@@ -41,17 +57,32 @@ function isTouchEvent(v: any): v is TouchEvent {
   return v?.touches;
 }
 
-export function getEventRelativePos(event: MouseEvent | TouchEvent | Touch, el: HTMLElement): EventRelativePos;
-export function getEventRelativePos(event: MouseEvent | TouchEvent | Touch, el: ElementRef<HTMLElement>): EventRelativePos;
-export function getEventRelativePos(event: MouseEvent | TouchEvent | Touch, el: HTMLElement | ElementRef<HTMLElement>): EventRelativePos;
-export function getEventRelativePos(event: MouseEvent | TouchEvent | Touch, el: HTMLElement | ElementRef<HTMLElement>): EventRelativePos {
+export function getEventRelativePos(
+  event: MouseEvent | TouchEvent | Touch,
+  el: HTMLElement,
+): EventRelativePos;
+export function getEventRelativePos(
+  event: MouseEvent | TouchEvent | Touch,
+  el: ElementRef<HTMLElement>,
+): EventRelativePos;
+export function getEventRelativePos(
+  event: MouseEvent | TouchEvent | Touch,
+  el: HTMLElement | ElementRef<HTMLElement>,
+): EventRelativePos;
+export function getEventRelativePos(
+  event: MouseEvent | TouchEvent | Touch,
+  el: HTMLElement | ElementRef<HTMLElement>,
+): EventRelativePos {
   //convert ElementRef
   if (el instanceof ElementRef) el = el.nativeElement;
 
   //convert TouchEvent
   if (isTouchEvent(event)) {
     const firstTouch = event.touches.item(0);
-    if (!firstTouch) throw new Error('Cannot read event position. The TouchEvent has no Touch instances.');
+    if (!firstTouch)
+      throw new Error(
+        'Cannot read event position. The TouchEvent has no Touch instances.',
+      );
     event = firstTouch;
   }
 
@@ -65,6 +96,6 @@ export function getEventRelativePos(event: MouseEvent | TouchEvent | Touch, el: 
     eventY - elRect.top, //top
     elRect.right - eventX, //right
     elRect.bottom - eventY, //bottom
-    eventX - elRect.left //left
+    eventX - elRect.left, //left
   );
 }

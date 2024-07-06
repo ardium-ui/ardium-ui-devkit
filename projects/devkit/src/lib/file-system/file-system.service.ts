@@ -1,5 +1,9 @@
 import { Injectable, Renderer2 } from '@angular/core';
-import { FileSystemSaveOptions, FileSystemMethod, FileSystemRequestOptions } from './file-system.types';
+import {
+  FileSystemSaveOptions,
+  FileSystemMethod,
+  FileSystemRequestOptions,
+} from './file-system.types';
 import { isArray } from 'simple-bool';
 
 const DEFAULT_SAVE_OPTIONS = {
@@ -18,7 +22,9 @@ const DEFAULT_REQUEST_OPTIONS = {
 export class FileSystemService {
   constructor(private renderer2: Renderer2) {}
 
-  isFileSystemAPISupported(method: 'showSaveFilePicker' | 'showOpenFilePicker'): boolean {
+  isFileSystemAPISupported(
+    method: 'showSaveFilePicker' | 'showOpenFilePicker',
+  ): boolean {
     try {
       // isn't in an iframe &&
       return window.self === window.top && method in window;
@@ -28,7 +34,10 @@ export class FileSystemService {
   }
 
   //! saving files
-  async saveAs(data: string | Blob, options: FileSystemSaveOptions = {}): Promise<boolean> {
+  async saveAs(
+    data: string | Blob,
+    options: FileSystemSaveOptions = {},
+  ): Promise<boolean> {
     options = {
       ...DEFAULT_SAVE_OPTIONS,
       ...options,
@@ -40,7 +49,10 @@ export class FileSystemService {
       });
     }
     // use the File System Access API if supported & preferred
-    if (this.isFileSystemAPISupported('showSaveFilePicker') && options.method == FileSystemMethod.PreferFileSystem) {
+    if (
+      this.isFileSystemAPISupported('showSaveFilePicker') &&
+      options.method == FileSystemMethod.PreferFileSystem
+    ) {
       // coerce the options.accept into a valid options.types object
       if (options.accept) {
         if (typeof options.accept == 'string') {
@@ -86,23 +98,28 @@ export class FileSystemService {
     a.click();
 
     //remove the element from the DOM
-    return await new Promise<boolean>(resolve =>
+    return await new Promise<boolean>((resolve) =>
       setTimeout(() => {
         URL.revokeObjectURL(blobURL);
         this.renderer2.removeChild(document.body, a);
         resolve(true);
-      }, 1000)
+      }, 1000),
     );
   }
 
   //! opening files
-  async requestFileUpload(options: FileSystemRequestOptions = {}): Promise<File | File[] | null> {
+  async requestFileUpload(
+    options: FileSystemRequestOptions = {},
+  ): Promise<File | File[] | null> {
     options = {
       ...DEFAULT_REQUEST_OPTIONS,
       ...options,
     };
     // use the File System Access API if supported & preferred
-    if (this.isFileSystemAPISupported('showOpenFilePicker') && options.method == 'preferFileSystem') {
+    if (
+      this.isFileSystemAPISupported('showOpenFilePicker') &&
+      options.method == 'preferFileSystem'
+    ) {
       try {
         console.log('%cusing file system api', 'color:red');
         // coerce the options.accept into a valid options.types object
@@ -130,7 +147,7 @@ export class FileSystemService {
             const file = await handle.getFile();
             file.handle = handle;
             return file as File;
-          })
+          }),
         )) as File[];
         if (!options.multiple) {
           return fileArray[0];
@@ -163,9 +180,13 @@ export class FileSystemService {
     this.renderer2.appendChild(document.body, input);
     input.click();
 
-    const fileArray = await new Promise<File[] | null>(resolve => {
+    const fileArray = await new Promise<File[] | null>((resolve) => {
       input.onchange = () => {
-        resolve(input.files && input.files.length > 0 ? Array.from(input.files) : null);
+        resolve(
+          input.files && input.files.length > 0
+            ? Array.from(input.files)
+            : null,
+        );
         this.renderer2.removeChild(document.body, input);
       };
     });
@@ -176,12 +197,24 @@ export class FileSystemService {
   }
 
   //! reading file content
-  async readFile(file: File, readAs?: 'text', encoding?: string): Promise<string | null>;
+  async readFile(
+    file: File,
+    readAs?: 'text',
+    encoding?: string,
+  ): Promise<string | null>;
   async readFile(file: File, readAs?: 'binary'): Promise<ArrayBuffer | null>;
-  async readFile(file: File, readAs?: 'text' | 'binary', encoding?: string): Promise<string | ArrayBuffer | null>;
-  async readFile(file: File, readAs: 'text' | 'binary' = 'text', encoding: string = 'UTF-8'): Promise<string | ArrayBuffer | null> {
+  async readFile(
+    file: File,
+    readAs?: 'text' | 'binary',
+    encoding?: string,
+  ): Promise<string | ArrayBuffer | null>;
+  async readFile(
+    file: File,
+    readAs: 'text' | 'binary' = 'text',
+    encoding: string = 'UTF-8',
+  ): Promise<string | ArrayBuffer | null> {
     if (readAs == 'text') {
-      return await new Promise<string | null>(resolve => {
+      return await new Promise<string | null>((resolve) => {
         const reader = new FileReader();
         reader.readAsText(file, encoding);
         reader.onload = function (e) {
@@ -189,7 +222,7 @@ export class FileSystemService {
         };
       });
     }
-    return await new Promise<ArrayBuffer | null>(resolve => {
+    return await new Promise<ArrayBuffer | null>((resolve) => {
       const reader = new FileReader();
       reader.readAsArrayBuffer(file);
       reader.onload = function (e) {

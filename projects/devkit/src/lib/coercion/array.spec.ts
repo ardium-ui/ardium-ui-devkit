@@ -5,7 +5,17 @@ describe('coerceArrayProperty', () => {
     expect(coerceArrayProperty('x,y,,z,1')).toEqual(['x', 'y', 'z', '1']);
   });
   it('should map values to string in an array', () => {
-    expect(coerceArrayProperty(['x', 1, true, null, undefined, ['arr', 'ay'], { data: false }])).toEqual([
+    expect(
+      coerceArrayProperty([
+        'x',
+        1,
+        true,
+        null,
+        undefined,
+        ['arr', 'ay'],
+        { data: false },
+      ]),
+    ).toEqual([
       'x',
       '1',
       'true',
@@ -16,7 +26,12 @@ describe('coerceArrayProperty', () => {
     ]);
   });
   it('should work with a custom separator', () => {
-    expect(coerceArrayProperty('1::2::3::4', '::')).toEqual(['1', '2', '3', '4']);
+    expect(coerceArrayProperty('1::2::3::4', '::')).toEqual([
+      '1',
+      '2',
+      '3',
+      '4',
+    ]);
   });
   it('should trim values and remove empty values', () => {
     expect(coerceArrayProperty(',  x,  ,, ', ',')).toEqual(['x']);

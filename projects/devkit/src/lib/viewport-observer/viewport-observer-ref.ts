@@ -1,5 +1,13 @@
 import { computed, signal } from '@angular/core';
-import { BehaviorSubject, Observable, Subject, Subscription, filter, map, pairwise } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  Subject,
+  Subscription,
+  filter,
+  map,
+  pairwise,
+} from 'rxjs';
 import { throttleSaveLast } from './throttleSaveLast';
 
 export const ViewportRelation = {
@@ -8,13 +16,15 @@ export const ViewportRelation = {
   Below: 'below',
   Undefined: 'undefined',
 } as const;
-export type ViewportRelation = (typeof ViewportRelation)[keyof typeof ViewportRelation];
+export type ViewportRelation =
+  (typeof ViewportRelation)[keyof typeof ViewportRelation];
 
 /**
  * Copied from [Microsoft Learn](https://learn.microsoft.com/en-us/javascript/api/@azure/keyvault-certificates/requireatleastone).
  */
 type RequireAtLeastOne<T> = {
-  [K in keyof T]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<keyof T, K>>>;
+  [K in keyof T]-?: Required<Pick<T, K>> &
+    Partial<Pick<T, Exclude<keyof T, K>>>;
 }[keyof T];
 
 export type ArdViewportObserverConfig = {
@@ -26,7 +36,7 @@ export class ArdViewportObserverRef {
   constructor(
     public readonly element: HTMLElement,
     private readonly scroll$: Observable<void>,
-    config?: ArdViewportObserverConfig
+    config?: ArdViewportObserverConfig,
   ) {
     setTimeout(() => {
       this._checkViewportRelation();
@@ -34,36 +44,55 @@ export class ArdViewportObserverRef {
 
     this._throttleTime = config?.throttleTime ?? 100;
     this._margins = {
-      top: (typeof config?.margin === 'number' ? config?.margin : config?.margin?.top) ?? 0,
-      bottom: (typeof config?.margin === 'number' ? config?.margin : config?.margin?.bottom) ?? 0,
+      top:
+        (typeof config?.margin === 'number'
+          ? config?.margin
+          : config?.margin?.top) ?? 0,
+      bottom:
+        (typeof config?.margin === 'number'
+          ? config?.margin
+          : config?.margin?.bottom) ?? 0,
     };
 
-    this._scrollSubscription = this.scroll$.pipe(throttleSaveLast(this._throttleTime)).subscribe(() => this._checkViewportRelation());
+    this._scrollSubscription = this.scroll$
+      .pipe(throttleSaveLast(this._throttleTime))
+      .subscribe(() => this._checkViewportRelation());
   }
 
   private readonly _throttleTime!: number;
   private readonly _margins!: { top: number; bottom: number };
 
-  private readonly _viewportRelationSubject = new BehaviorSubject<ViewportRelation>(ViewportRelation.Undefined);
-  public readonly viewportRelation = this._viewportRelationSubject.asObservable();
-  public readonly isInViewport = this.viewportRelation.pipe(map(v => v === ViewportRelation.Inside));
+  private readonly _viewportRelationSubject =
+    new BehaviorSubject<ViewportRelation>(ViewportRelation.Undefined);
+  public readonly viewportRelation =
+    this._viewportRelationSubject.asObservable();
+  public readonly isInViewport = this.viewportRelation.pipe(
+    map((v) => v === ViewportRelation.Inside),
+  );
 
   private readonly _leaveViewportSubject = new Subject<void>();
   public readonly leaveViewport = this._viewportRelationSubject.pipe(
     pairwise(),
     filter(([oldRelation, newRelation]) => {
-      return newRelation !== ViewportRelation.Inside && (oldRelation === ViewportRelation.Inside || oldRelation === ViewportRelation.Undefined);
+      return (
+        newRelation !== ViewportRelation.Inside &&
+        (oldRelation === ViewportRelation.Inside ||
+          oldRelation === ViewportRelation.Undefined)
+      );
     }),
-    map(() => undefined)
+    map(() => undefined),
   );
 
   private readonly _enterViewportSubject = new Subject<void>();
   public readonly enterViewport = this._viewportRelationSubject.pipe(
     pairwise(),
     filter(([oldRelation, newRelation]) => {
-      return newRelation === ViewportRelation.Inside && oldRelation !== ViewportRelation.Inside;
+      return (
+        newRelation === ViewportRelation.Inside &&
+        oldRelation !== ViewportRelation.Inside
+      );
     }),
-    map(() => undefined)
+    map(() => undefined),
   );
 
   private readonly _scrollSubscription!: Subscription;

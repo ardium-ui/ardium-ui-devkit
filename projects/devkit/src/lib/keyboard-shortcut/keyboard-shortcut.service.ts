@@ -2,7 +2,11 @@ import { Injectable, OnDestroy, Renderer2 } from '@angular/core';
 import { ɵDomRendererFactory2 } from '@angular/platform-browser';
 import { keyToString } from 'key-display-names';
 import { BehaviorSubject, filter, Observable, Subject } from 'rxjs';
-import { KeyboardKey, KeyboardKeyState, KeyboardShortcut } from './keyboard-shortcut.types';
+import {
+  KeyboardKey,
+  KeyboardKeyState,
+  KeyboardShortcut,
+} from './keyboard-shortcut.types';
 
 @Injectable({
   providedIn: 'root',
@@ -15,9 +19,21 @@ export class KeyboardShortcutService implements OnDestroy {
   constructor(rendererFactory: ɵDomRendererFactory2) {
     this.renderer = rendererFactory.createRenderer(null, null);
     //listen to events
-    this.removeListenFuncKeydown = this.renderer.listen('document', 'keydown', e => this.onKeydown(e));
-    this.removeListenFuncKeyup = this.renderer.listen('document', 'keyup', e => this.onKeyup(e));
-    this.removeListenFuncWindowblur = this.renderer.listen('window', 'blur', () => this._resetAllKeys());
+    this.removeListenFuncKeydown = this.renderer.listen(
+      'document',
+      'keydown',
+      (e) => this.onKeydown(e),
+    );
+    this.removeListenFuncKeyup = this.renderer.listen(
+      'document',
+      'keyup',
+      (e) => this.onKeyup(e),
+    );
+    this.removeListenFuncWindowblur = this.renderer.listen(
+      'window',
+      'blur',
+      () => this._resetAllKeys(),
+    );
   }
 
   ngOnDestroy(): void {
@@ -79,7 +95,8 @@ export class KeyboardShortcutService implements OnDestroy {
   private _mapKeyCode(code: string): string {
     code = code.toLowerCase();
     if (code.match(/arrow/)) return code;
-    if (!code.match(/bracket/) && code.match(/left|right/)) return code.replace(/left|right/, '');
+    if (!code.match(/bracket/) && code.match(/left|right/))
+      return code.replace(/left|right/, '');
     if (code.match(/digit\d|key[a-z]/)) return code.substring(code.length - 1);
     return code;
   }
@@ -87,8 +104,10 @@ export class KeyboardShortcutService implements OnDestroy {
     code = code.toLowerCase();
     if (code.match(/^(left|right|up|down)$/)) return `arrow${code}`;
     if (code.match(/^arrow(left|right|up|down)$/)) return code;
-    if (!code.match(/^bracket/) && code.match(/.+(left|right)$/)) return code.replace(/(left|right)/, '');
-    if (code.match(/^(digit\d|key[a-z])$/)) return code.substring(code.length - 1);
+    if (!code.match(/^bracket/) && code.match(/.+(left|right)$/))
+      return code.replace(/(left|right)/, '');
+    if (code.match(/^(digit\d|key[a-z])$/))
+      return code.substring(code.length - 1);
     if (code == 'ctrl') return 'control';
     if (code.match(/^win(dows)?$/)) return 'meta';
     return code;
@@ -121,18 +140,27 @@ export class KeyboardShortcutService implements OnDestroy {
 
   listenToShortcut(toMatch: string[]): Observable<KeyboardShortcut> {
     let toMatchStr = toMatch
-      .map(code => this._demapKeyCode(code))
+      .map((code) => this._demapKeyCode(code))
       .sort()
       .toString();
-    return this.anyShortcut.pipe(filter(shortcut => shortcut.keys.sort().toString() == toMatchStr));
+    return this.anyShortcut.pipe(
+      filter((shortcut) => shortcut.keys.sort().toString() == toMatchStr),
+    );
   }
   listenToKey(code: string): Observable<KeyboardKey> {
     let keyStr = this._demapKeyCode(code);
-    return this.keypress.pipe(filter(key => key.key == keyStr));
+    return this.keypress.pipe(filter((key) => key.key == keyStr));
   }
-  listenToKeyState(code: string, anyState: boolean = false): Observable<KeyboardKeyState> {
+  listenToKeyState(
+    code: string,
+    anyState: boolean = false,
+  ): Observable<KeyboardKeyState> {
     let keyStr = this._demapKeyCode(code);
-    return this.keyState.pipe(filter(key => key.key == keyStr && (anyState || (!anyState && key.isHeld))));
+    return this.keyState.pipe(
+      filter(
+        (key) => key.key == keyStr && (anyState || (!anyState && key.isHeld)),
+      ),
+    );
   }
 
   onKeydown(event: KeyboardEvent): void {

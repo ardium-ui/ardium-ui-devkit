@@ -2,7 +2,8 @@ export const FileSystemMethod = {
   PreferFileSystem: 'preferFileSystem',
   CrossBrowser: 'crossBrowser',
 } as const;
-export type FileSystemMethod = (typeof FileSystemMethod)[keyof typeof FileSystemMethod];
+export type FileSystemMethod =
+  (typeof FileSystemMethod)[keyof typeof FileSystemMethod];
 
 export const FileSystemStartDirectory = {
   Desktop: 'desktop',
@@ -12,7 +13,8 @@ export const FileSystemStartDirectory = {
   Pictures: 'pictures',
   Videos: 'videos',
 } as const;
-export type FileSystemStartDirectory = (typeof FileSystemStartDirectory)[keyof typeof FileSystemStartDirectory];
+export type FileSystemStartDirectory =
+  (typeof FileSystemStartDirectory)[keyof typeof FileSystemStartDirectory];
 
 type _FileSystemSaveOptionsBase = {
   fileName?: string;

@@ -1,4 +1,10 @@
-import { Directive, EventEmitter, HostListener, Input, Output } from '@angular/core';
+import {
+  Directive,
+  EventEmitter,
+  HostListener,
+  Input,
+  Output,
+} from '@angular/core';
 import { coerceBooleanProperty } from '../coercion/boolean';
 
 /**
@@ -74,7 +80,10 @@ export class HoldDirective {
   public onKeyDown(event: KeyboardEvent): void {
     if (this.allowEnterKey && event.code == 'Enter') event.preventDefault();
     if (this.isKeyDown) return;
-    if ((this.allowSpaceKey && event.code == 'Space') || (this.allowEnterKey && event.code == 'Enter')) {
+    if (
+      (this.allowSpaceKey && event.code == 'Space') ||
+      (this.allowEnterKey && event.code == 'Enter')
+    ) {
       this.onMouseDown();
       this.isKeyDown = true;
     }
@@ -82,7 +91,10 @@ export class HoldDirective {
   @HostListener('keyup', ['$event'])
   public onKeyUp(event: KeyboardEvent): void {
     this.isKeyDown = false;
-    if ((this.allowSpaceKey && event.code == 'Space') || (this.allowEnterKey && event.code == 'Enter')) {
+    if (
+      (this.allowSpaceKey && event.code == 'Space') ||
+      (this.allowEnterKey && event.code == 'Enter')
+    ) {
       this.onMouseUp();
     }
   }
