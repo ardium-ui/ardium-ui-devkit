@@ -11,9 +11,7 @@
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
     "paths": {
-      "devkit": [
-        "./dist/devkit"
-      ],
+      "@ardium-ui/devkit": ["./dist/devkit", "./projects/devkit/src/public-api"]
     },
     "esModuleInterop": true,
     "sourceMap": true,
@@ -24,10 +22,7 @@
     "target": "ES2022",
     "module": "ES2022",
     "useDefineForClassFields": false,
-    "lib": [
-      "ES2022",
-      "dom"
-    ]
+    "lib": ["ES2022", "dom"]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
