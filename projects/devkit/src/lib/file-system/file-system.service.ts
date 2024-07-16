@@ -16,10 +16,27 @@ const DEFAULT_REQUEST_OPTIONS: FileSystemRequestOptions = {
   multiple: false,
 };
 
+/**
+ * Service for handling file system operations, including saving, uploading, and reading files.
+ *
+ * This service leverages the File System Access API when available and falls back to traditional
+ * methods when necessary. It provides methods to check for API support, save files, request file uploads,
+ * and read file contents.
+ *
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API File System Access API}
+ */
 @Injectable({
   providedIn: 'root',
 })
 export class FileSystemService {
+  /**
+   * Checks if the File System Access API is supported for the specified method.
+   *
+   * @param method - The file system method to check ('showSaveFilePicker' or 'showOpenFilePicker').
+   * @returns True if the specified method is supported, otherwise false.
+   *
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API File System Access API}
+   */
   isFileSystemAPISupported(
     method: 'showSaveFilePicker' | 'showOpenFilePicker',
   ): boolean {
@@ -32,6 +49,15 @@ export class FileSystemService {
   }
 
   //! saving files
+  /**
+   * Saves data as a file using the File System Access API or a fallback method.
+   *
+   * @param data - The data to be saved, either as a string or a Blob.
+   * @param options - Options for saving the file, such as file name and save method.
+   * @returns A promise that resolves to true if the file was saved successfully, otherwise false.
+   *
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API File System Access API}
+   */
   async saveAs(
     data: string | Blob,
     options: FileSystemSaveOptions = {},
@@ -48,19 +74,10 @@ export class FileSystemService {
     }
     // use the File System Access API if supported & preferred
     if (
-      this.isFileSystemAPISupported('showSaveFilePicker') &&
-      options.method == FileSystemMethod.PreferFileSystem
+      options.method == FileSystemMethod.PreferFileSystem &&
+      this.isFileSystemAPISupported('showSaveFilePicker')
     ) {
-      // coerce the options.accept into a valid options.types object
-      if (options.accept) {
-        if (typeof options.accept == 'string') {
-          options.accept = options.accept.split(',');
-        }
-        if (!options.types) options.types = [];
-
-        const accept = { 'application/octet-stream': options.accept };
-        options.types.push({ accept: accept });
-      }
+      if (!options.types) options.types = [];
 
       // use the File System Access API
       try {
@@ -106,6 +123,14 @@ export class FileSystemService {
   }
 
   //! opening files
+  /**
+   * Requests a file upload using the File System Access API or a fallback method.
+   *
+   * @param options - Options for requesting the file upload, such as accepted file types and method.
+   * @returns A promise that resolves to the selected file or files, or null if the operation was canceled.
+   *
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API File System Access API}
+   */
   async requestFileUpload(
     options: FileSystemRequestOptions = {},
   ): Promise<File | File[] | null> {
@@ -115,8 +140,8 @@ export class FileSystemService {
     };
     // use the File System Access API if supported & preferred
     if (
-      this.isFileSystemAPISupported('showOpenFilePicker') &&
-      options.method == 'preferFileSystem'
+      options.method == 'preferFileSystem' &&
+      this.isFileSystemAPISupported('showOpenFilePicker')
     ) {
       try {
         console.log('%cusing file system api', 'color:red');
@@ -195,17 +220,43 @@ export class FileSystemService {
   }
 
   //! reading file content
+  /**
+   * Reads the content of a file as a string with optional encoding.
+   *
+   * @param file - The file to read.
+   * @param readAs - The method to read the file (in this case - "text").
+   * @param encoding - The encoding to use when reading the file as text. Defaults to UTF-8.
+   * @returns A promise that resolves to the file content as a string or null.
+   */
   async readFile(
     file: File,
     readAs?: 'text',
     encoding?: string,
   ): Promise<string | null>;
+
+  /**
+   * Reads the content of a file as an ArrayBuffer.
+   *
+   * @param file - The file to read.
+   * @param readAs - The method to read the file (in this case - "binary").
+   * @returns A promise that resolves to the file content as an ArrayBuffer or null.
+   */
   async readFile(file: File, readAs?: 'binary'): Promise<ArrayBuffer | null>;
+
+  /**
+   * Reads the content of a file.
+   *
+   * @param file - The file to read.
+   * @param readAs - The method to read the file ("text" or "binary").
+   * @param encoding - The encoding to use when reading the file as text (default is 'UTF-8').
+   * @returns A promise that resolves to the file content as a string, ArrayBuffer, or null.
+   */
   async readFile(
     file: File,
     readAs?: 'text' | 'binary',
     encoding?: string,
   ): Promise<string | ArrayBuffer | null>;
+
   async readFile(
     file: File,
     readAs: 'text' | 'binary' = 'text',
