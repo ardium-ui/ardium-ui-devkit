@@ -1,16 +1,16 @@
-import { Injectable, Renderer2 } from '@angular/core';
+import { Injectable } from '@angular/core';
+import { isArray } from 'simple-bool';
 import {
-  FileSystemSaveOptions,
   FileSystemMethod,
   FileSystemRequestOptions,
+  FileSystemSaveOptions,
 } from './file-system.types';
-import { isArray } from 'simple-bool';
 
-const DEFAULT_SAVE_OPTIONS = {
+const DEFAULT_SAVE_OPTIONS: FileSystemSaveOptions = {
   fileName: 'download',
   method: FileSystemMethod.PreferFileSystem,
 };
-const DEFAULT_REQUEST_OPTIONS = {
+const DEFAULT_REQUEST_OPTIONS: FileSystemRequestOptions = {
   accept: '*.*',
   method: FileSystemMethod.PreferFileSystem,
   multiple: false,
@@ -20,8 +20,6 @@ const DEFAULT_REQUEST_OPTIONS = {
   providedIn: 'root',
 })
 export class FileSystemService {
-  constructor(private renderer2: Renderer2) {}
-
   isFileSystemAPISupported(
     method: 'showSaveFilePicker' | 'showOpenFilePicker',
   ): boolean {
@@ -94,14 +92,14 @@ export class FileSystemService {
     a.href = blobURL;
     a.download = options.fileName!;
     a.style.display = 'none';
-    this.renderer2.appendChild(document.body, a);
+    document.body.appendChild(a);
     a.click();
 
     //remove the element from the DOM
     return await new Promise<boolean>((resolve) =>
       setTimeout(() => {
         URL.revokeObjectURL(blobURL);
-        this.renderer2.removeChild(document.body, a);
+        document.body.removeChild(a);
         resolve(true);
       }, 1000),
     );
@@ -177,7 +175,7 @@ export class FileSystemService {
     input.accept = options.accept;
     input.multiple = options.multiple ?? false;
     input.style.display = 'none';
-    this.renderer2.appendChild(document.body, input);
+    document.body.appendChild(input);
     input.click();
 
     const fileArray = await new Promise<File[] | null>((resolve) => {
@@ -187,7 +185,7 @@ export class FileSystemService {
             ? Array.from(input.files)
             : null,
         );
-        this.renderer2.removeChild(document.body, input);
+        document.body.removeChild(input);
       };
     });
     if (options.multiple || !fileArray) {
