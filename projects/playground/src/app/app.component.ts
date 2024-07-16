@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ArdiumInfiniteScrollModule } from '@ardium-ui/devkit';
+import { ArdiumInfiniteScrollModule } from '../../../devkit/src/public-api';
 
 @Component({
   selector: 'app-root',

@@ -7,7 +7,7 @@ import {
   model,
   output,
 } from '@angular/core';
-import { coerceNumberProperty } from '@ardium-ui/devkit';
+import { coerceNumberProperty } from './../coercion/number';
 
 @Directive({
   selector: '[ardInfScroll]',
