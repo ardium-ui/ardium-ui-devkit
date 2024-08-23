@@ -5,10 +5,9 @@
     "entryFile": "src/public-api.ts"
   },
   "allowedNonPeerDependencies": [
-    "@types/string-similarity",
     "tslib",
     "more-rounding",
-    "string-similarity",
+    "dice-coefficient",
     "simple-bool",
     "key-display-names"
   ]

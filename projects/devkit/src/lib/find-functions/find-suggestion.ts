@@ -1,4 +1,4 @@
-import { compareTwoStrings, findBestMatch } from 'string-similarity';
+import { diceCoefficient } from 'dice-coefficient';
 
 export function findBestSuggestions<T extends string>(
   toMatch: string,
@@ -47,7 +47,7 @@ export function findBestSuggestions<T>(
           return { rating: 1_000 - v.length, index };
 
         //calculate conditional similarity
-        const similarity = compareTwoStrings(toMatch, v);
+        const similarity = diceCoefficient(toMatch, v);
         const foundTerm = v.match(new RegExp(toMatch, 'ig'))?.[0];
         const foundIndex = foundTerm ? v.indexOf(foundTerm) : -1;
         const canBeFound = foundIndex != -1;
@@ -73,8 +73,18 @@ export function findBestAutocomplate(
   toMatch: string,
   autocompletes: string[],
 ): string {
-  const autocompletesStartingWith = autocompletes.filter((v) =>
+  const targetArray = autocompletes.filter((v) =>
     new RegExp(`^${toMatch}`, 'i').test(v),
   );
-  return findBestMatch(toMatch, autocompletesStartingWith).bestMatch.target;
+  
+  let bestMatch: string = targetArray.shift()!
+  let bestScore: number = 0;
+  for (const str of targetArray) {
+    const score = diceCoefficient(toMatch, str);
+    if (score > bestScore) {
+      bestMatch = str;
+      bestScore = score;
+    }
+  }
+  return bestMatch;
 }
