@@ -1,23 +1,24 @@
-import { Component, inject } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { FileSystemService } from '../../../devkit/src/public-api';
+import { ArdiumInfiniteScrollModule } from '../../../devkit/src/public-api';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, ArdiumInfiniteScrollModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
-  readonly fileSystemService = inject(FileSystemService);
+  readonly isPart2Hidden = signal<boolean>(true);
 
-  save() {
-    this.fileSystemService.saveAs('test', {
-      fileName: 'test.txt',
-      types: [
-        { description: 'Plik tesktowy', accept: { 'text/plain': ['.txt'] } },
-      ],
-    });
+  readonly isInfScrollActive = signal<boolean>(true);
+
+  onThresholdReach() {
+    if (!this.isPart2Hidden()) return;
+    setTimeout(() => {
+      this.isPart2Hidden.set(false);
+      this.isInfScrollActive.set(true);
+    }, 0);
   }
 }
