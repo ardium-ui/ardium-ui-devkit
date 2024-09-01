@@ -5,7 +5,7 @@ import { escapeHTML } from './escape-html';
   name: 'escapeHTML',
 })
 export class ArdiumEscapeHTMLPipe implements PipeTransform {
-  transform(value: string, ...args: any[]): string {
+  transform(value: string): string {
     return escapeHTML(value);
   }
 }
