@@ -37,4 +37,9 @@ describe('ArdiumFileextPipe', () => {
     const result = pipe.transform(file, true);
     expect(result).toBe('.pdf');
   });
+
+  it('should handle name that ends in a dot', () => {
+    const result = pipe.transform('example.');
+    expect(result).toBe(null);
+  });
 });

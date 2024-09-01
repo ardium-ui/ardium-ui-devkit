@@ -8,8 +8,8 @@ export class ArdiumFileextPipe implements PipeTransform {
     if (typeof value != 'string') {
       value = value.name;
     }
-    const parts = value.split('.');
+    const ext = value.match(/^.+\.([^.]+)$/)?.[1] ?? null;
     const dot = withDot ? '.' : '';
-    return parts.length > 1 ? dot + parts.at(-1) : null;
+    return ext && dot + ext;
   }
 }
