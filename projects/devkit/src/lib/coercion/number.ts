@@ -11,7 +11,7 @@ Coerces a data-bound value (typically a string) to a number.
  * @param value the value to be coerced.
  * @returns the value coerced into a number, or undefined if cannot coerce.
  */
-export function coerceNumberProperty(value: any): number;
+export function coerceNumberProperty(value: any): number | undefined;
 /**
  * Coerces a data-bound value (typically a string) to a number.
  * @param value the value to be coerced.
