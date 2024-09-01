@@ -41,7 +41,7 @@ export class FileSystemService {
     method: 'showSaveFilePicker' | 'showOpenFilePicker',
   ): boolean {
     try {
-      // isn't in an iframe &&
+      // isn't in an iframe && browser version is high enough
       return window.self === window.top && method in window;
     } catch (err) {
       return false;
