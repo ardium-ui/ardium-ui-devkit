@@ -32,6 +32,9 @@ export class EventRelativePos {
       left: this.left,
     });
   }
+  toString(): string {
+    return this.toJSON();
+  }
 
   static fromEvent(
     event: MouseEvent | TouchEvent | Touch,
@@ -53,7 +56,7 @@ export class EventRelativePos {
   }
 }
 
-function isTouchEvent(v: any): v is TouchEvent {
+function _isTouchEvent(v: any): v is TouchEvent {
   return v?.touches;
 }
 
@@ -77,7 +80,7 @@ export function getEventRelativePos(
   if (el instanceof ElementRef) el = el.nativeElement;
 
   //convert TouchEvent
-  if (isTouchEvent(event)) {
+  if (_isTouchEvent(event)) {
     const firstTouch = event.touches.item(0);
     if (!firstTouch)
       throw new Error(
