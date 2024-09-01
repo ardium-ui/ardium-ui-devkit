@@ -1,50 +1,56 @@
 import {
+  computed,
   Directive,
-  EventEmitter,
+  effect,
   HostListener,
-  Input,
-  Output,
+  input,
+  output,
 } from '@angular/core';
 import { coerceBooleanProperty } from '../coercion/boolean';
+import { coerceNumberProperty } from '../coercion/number';
 
 /**
   Detects when the user clicks-and-holds a given element.
 */
 @Directive({ selector: '[ardHold]' })
 export class HoldDirective {
-  @Output('ardHold')
-  public holdEvent = new EventEmitter<undefined>();
+  public readonly ardHold = output<void>();
 
-  @Input() set disabled(v: any) {
-    this._clear();
-  }
-  @Input() set readonly(v: any) {
-    this._clear();
-  }
+  readonly disabled = input<boolean, any>(false, {
+    transform: (v) => coerceBooleanProperty(v),
+  });
+  readonly readonly = input<boolean, any>(false, {
+    transform: (v) => coerceBooleanProperty(v),
+  });
 
-  @Input('ardHoldDelay') holdDelay: number = 500;
-  @Input('ardHoldRepeat') holdRepeat: number = 1000 / 15;
-
-  private _allowSpaceKey: boolean = false;
-  @Input('ardHoldSpaceKey')
-  get allowSpaceKey(): boolean {
-    return this._allowSpaceKey;
-  }
-  set allowSpaceKey(v: any) {
-    this._allowSpaceKey = coerceBooleanProperty(v);
+  constructor() {
+    effect(() => {
+      if (this.disabled() || this.readonly()) {
+        this._clear();
+      }
+    });
   }
 
-  private _allowEnterKey?: boolean = undefined;
-  @Input('ardHoldEnterKey')
-  get allowEnterKey(): boolean {
-    return this._allowEnterKey ?? this.allowSpaceKey;
-  }
-  set allowEnterKey(v: any) {
-    this._allowEnterKey = coerceBooleanProperty(v);
-  }
+  readonly ardHoldDelay = input<number, any>(500, {
+    transform: (v) => coerceNumberProperty(v, 500),
+  });
+  readonly ardHoldRepeat = input<number, any>(1000 / 15, {
+    transform: (v) => coerceNumberProperty(v, 1000 / 15),
+  });
 
-  interval: any = null;
-  timeout: any = null;
+  readonly ardAllowSpaceKey = input<boolean, any>(false, {
+    transform: (v) => coerceBooleanProperty(v),
+  });
+  readonly ardAllowEnterKey = input<boolean, any>(false, {
+    transform: (v) => coerceBooleanProperty(v),
+  });
+
+  private readonly _shouldExecuteOnEnter = computed(
+    () => this.ardAllowEnterKey() || this.ardAllowSpaceKey(),
+  );
+
+  private interval: any = null;
+  private timeout: any = null;
 
   @HostListener('mousedown')
   @HostListener('touchstart')
@@ -52,9 +58,9 @@ export class HoldDirective {
     this.timeout = setTimeout(() => {
       this.timeout = null;
       this.interval = setInterval(() => {
-        this.holdEvent.next(undefined);
-      }, this.holdRepeat);
-    }, this.holdDelay);
+        this.ardHold.emit();
+      }, this.ardHoldRepeat());
+    }, this.ardHoldDelay());
   }
 
   @HostListener('mouseup')
@@ -78,11 +84,13 @@ export class HoldDirective {
 
   @HostListener('keydown', ['$event'])
   public onKeyDown(event: KeyboardEvent): void {
-    if (this.allowEnterKey && event.code == 'Enter') event.preventDefault();
+    if (this._shouldExecuteOnEnter() && event.code == 'Enter') {
+      event.preventDefault();
+    }
     if (this.isKeyDown) return;
     if (
-      (this.allowSpaceKey && event.code == 'Space') ||
-      (this.allowEnterKey && event.code == 'Enter')
+      (this.ardAllowSpaceKey() && event.code == 'Space') ||
+      (this._shouldExecuteOnEnter() && event.code == 'Enter')
     ) {
       this.onMouseDown();
       this.isKeyDown = true;
@@ -92,8 +100,8 @@ export class HoldDirective {
   public onKeyUp(event: KeyboardEvent): void {
     this.isKeyDown = false;
     if (
-      (this.allowSpaceKey && event.code == 'Space') ||
-      (this.allowEnterKey && event.code == 'Enter')
+      (this.ardAllowSpaceKey() && event.code == 'Space') ||
+      (this._shouldExecuteOnEnter() && event.code == 'Enter')
     ) {
       this.onMouseUp();
     }
