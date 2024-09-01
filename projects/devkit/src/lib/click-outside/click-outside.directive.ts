@@ -1,9 +1,9 @@
 import {
   Directive,
   ElementRef,
-  Output,
-  EventEmitter,
   HostListener,
+  inject,
+  output,
 } from '@angular/core';
 
 /**
@@ -14,10 +14,9 @@ import {
 */
 @Directive({ selector: '[ardClickOutside]' })
 export class ClickOutsideDirective {
-  constructor(private _elementRef: ElementRef) {}
+  private readonly _elementRef = inject(ElementRef);
 
-  @Output('ardClickOutside')
-  public clickOutside = new EventEmitter<MouseEvent>();
+  public readonly ardClickOutside = output<MouseEvent>();
 
   @HostListener('document:mousedown', ['$event', '$event.target'])
   @HostListener('document:touchstart', ['$event', '$event.target'])
@@ -26,7 +25,7 @@ export class ClickOutsideDirective {
 
     const hostContainsTarget = this._elementRef.nativeElement.contains(target);
     if (!hostContainsTarget) {
-      this.clickOutside.emit(event);
+      this.ardClickOutside.emit(event);
     }
   }
 }
