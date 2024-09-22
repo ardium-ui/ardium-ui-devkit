@@ -5,8 +5,8 @@ import { ArdiumInfiniteScrollModule } from '../../../../../devkit/src/public-api
   selector: 'infinite-scroll-page',
   standalone: true,
   imports: [ArdiumInfiniteScrollModule],
-  templateUrl: './infinite-scroll.component.html',
-  styleUrl: './infinite-scroll.component.scss',
+  templateUrl: './infinite-scroll.page.html',
+  styleUrl: './infinite-scroll.page.scss',
 })
 export class InfiniteScrollPage {
   private readonly currentPage = signal<number>(1);
@@ -16,7 +16,7 @@ export class InfiniteScrollPage {
 
   fsdndjgdn = effect(() => {
     console.log(this.currentPage(), this.items());
-  })
+  });
 
   readonly isInfScrollActive = signal<boolean>(true);
 
