@@ -1,17 +1,1 @@
-<main
-  ardInfScroll
-  ardInfScrollTarget="html"
-  (ardInfScrollReachThreshold)="onThresholdReach()"
-  [(ardInfScrollActive)]="isInfScrollActive"
->
-  <section class="section1">1</section>
-  <section class="section2">2</section>
-  <section class="section3">3</section>
-  <section class="section4">4</section>
-  <section class="section5">5</section>
-  <section [class.hidden]="isPart2Hidden()" class="section6">6</section>
-  <section [class.hidden]="isPart2Hidden()" class="section7">7</section>
-  <section [class.hidden]="isPart2Hidden()" class="section8">8</section>
-  <section [class.hidden]="isPart2Hidden()" class="section9">9</section>
-  <section [class.hidden]="isPart2Hidden()" class="section10">10</section>
-</main>
+<router-outlet />

@@ -1,0 +1,10 @@
+<main
+  ardInfScroll
+  ardInfScrollTarget="html"
+  (ardInfScrollReachThreshold)="onThresholdReach()"
+  [(ardInfScrollActive)]="isInfScrollActive"
+>
+  @for (item of items(); track $index) {
+    <div>{{ item }}</div>
+  }
+</main>
