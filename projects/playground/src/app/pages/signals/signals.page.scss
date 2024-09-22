@@ -1,0 +1,14 @@
+div {
+  font-size: 20px;
+  margin: 1rem auto;
+  width: max-content;
+  display: flex;
+
+  label {
+    width: 200px;
+  }
+  input {
+    font-size: 18px;
+    padding: 0.1rem 0.5rem;
+  }
+}
