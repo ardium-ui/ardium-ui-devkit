@@ -76,8 +76,8 @@ export function findBestAutocomplate(
   const targetArray = autocompletes.filter((v) =>
     new RegExp(`^${toMatch}`, 'i').test(v),
   );
-  
-  let bestMatch: string = targetArray.shift()!
+
+  let bestMatch: string = targetArray.shift()!;
   let bestScore: number = 0;
   for (const str of targetArray) {
     const score = diceCoefficient(toMatch, str);

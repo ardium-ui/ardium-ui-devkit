@@ -1,4 +1,11 @@
-import { effect, inject, Injector, runInInjectionContext, signal, WritableSignal } from '@angular/core';
+import {
+  effect,
+  inject,
+  Injector,
+  runInInjectionContext,
+  signal,
+  WritableSignal,
+} from '@angular/core';
 
 export interface PersistentSignal extends WritableSignal<string> {
   readonly method: PersistentStorageMethod;
@@ -12,7 +19,7 @@ export const PersistentStorageMethod = {
 export type PersistentStorageMethod =
   (typeof PersistentStorageMethod)[keyof typeof PersistentStorageMethod];
 
-  /**
+/**
  * Creates a `WritableSignal` that persists its value using the specified storage method.
  *
  * The `persistentSignal` function returns a `WritableSignal<string>` whose value is synchronized with
