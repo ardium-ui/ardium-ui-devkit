@@ -47,3 +47,5 @@ export * from './lib/viewport-observer/viewport-observer-ref';
 export * from './lib/viewport-observer/viewport-observer.service';
 
 export * from './lib/infinite-scroll';
+
+export * from './lib/signals';
