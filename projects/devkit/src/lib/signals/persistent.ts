@@ -1,12 +1,6 @@
-import { signal, Signal } from '@angular/core';
+import { effect, inject, Injector, runInInjectionContext, signal, WritableSignal } from '@angular/core';
 
-export interface PersistentSignal {
-  (): string;
-  call(): string;
-  set: (value: string) => void;
-  update: (updaterFn: (oldValue: string) => string) => void;
-  asReadonly: () => Signal<string>;
-  toString: () => string;
+export interface PersistentSignal extends WritableSignal<string> {
   readonly method: PersistentStorageMethod;
 }
 
@@ -18,102 +12,106 @@ export const PersistentStorageMethod = {
 export type PersistentStorageMethod =
   (typeof PersistentStorageMethod)[keyof typeof PersistentStorageMethod];
 
+  /**
+ * Creates a `WritableSignal` that persists its value using the specified storage method.
+ *
+ * The `persistentSignal` function returns a `WritableSignal<string>` whose value is synchronized with
+ * one of the persistent storage mechanisms: `localStorage`, `sessionStorage`, or cookies. This allows
+ * the signal's value to be retained across page reloads or sessions, depending on the chosen method.
+ *
+ * @param initialValue - The initial value of the signal if no stored value is found.
+ * @param options - Configuration options for persisting the signal's value.
+ * @returns A `WritableSignal<string>` that persists its value using the specified storage method.
+ */
 export function persistentSignal(
-  name: string,
-  method: PersistentStorageMethod,
-): PersistentSignal;
-export function persistentSignal(
-  name: string,
-  method: 'cookies',
-  options?: { expires?: Date | string; maxAge?: number; path?: string },
-): PersistentSignal;
-export function persistentSignal(
-  name: string,
-  method: PersistentStorageMethod,
-  cookieOptions?: { expires?: Date | string; maxAge?: number; path?: string },
+  initialValue: string,
+  options: {
+    name: string;
+    method: PersistentStorageMethod;
+    expires?: Date | string;
+    maxAge?: number;
+    path?: string;
+  },
 ): PersistentSignal {
-  return new _PersistentSignal(name, method, cookieOptions) as unknown as PersistentSignal;
+  const internalSignal = signal<string>(initialValue) as PersistentSignal;
+
+  Object.assign(internalSignal, { method: options.method });
+
+  // Load value from storage
+  const storedValue = loadFromStorage(options);
+  if (storedValue !== null) {
+    internalSignal.set(storedValue);
+  } else {
+    updateStorage(options, internalSignal());
+  }
+
+  const injector = inject(Injector);
+
+  runInInjectionContext(injector, () => {
+    effect(() => {
+      const value = internalSignal();
+      updateStorage(options, value);
+    });
+  });
+
+  return internalSignal;
 }
 
-class _PersistentSignal implements Omit<PersistentSignal, '()'> {
-  private readonly _signal = signal<string>('');
+function loadFromStorage(options: {
+  name: string;
+  method: PersistentStorageMethod;
+}): string | null {
+  let storedValue: string | null = null;
 
-  constructor(
-    private readonly name: string,
-    public readonly method: PersistentStorageMethod,
-    private readonly cookieOptions?: {
-      expires?: Date | string;
-      maxAge?: number;
-      path?: string;
-    },
-  ) {
-    this._loadFromStorage();
+  if (options.method === PersistentStorageMethod.LocalStorage) {
+    storedValue = localStorage.getItem(options.name);
+  } else if (options.method === PersistentStorageMethod.SessionStorage) {
+    storedValue = sessionStorage.getItem(options.name);
+  } else if (options.method === PersistentStorageMethod.Cookies) {
+    const match = document.cookie.match(
+      '(^|;)\\s*' + options.name + '\\s*=\\s*([^;]+)',
+    );
+    storedValue = match ? decodeURIComponent(match[2]) : null;
   }
 
-  private _loadFromStorage() {
-    let storedValue: string | null = null;
+  return storedValue;
+}
 
-    if (this.method === PersistentStorageMethod.LocalStorage) {
-      storedValue = localStorage.getItem(this.name);
-    } else if (this.method === PersistentStorageMethod.SessionStorage) {
-      storedValue = sessionStorage.getItem(this.name);
-    } else if (this.method === PersistentStorageMethod.Cookies) {
-      const match = document.cookie.match(
-        '(^|;)\\s*' + this.name + '\\s*=\\s*([^;]+)',
-      );
-      storedValue = match ? decodeURIComponent(match[2]) : null;
+function updateStorage(
+  options: {
+    name: string;
+    method: PersistentStorageMethod;
+    expires?: Date | string;
+    maxAge?: number;
+    path?: string;
+  },
+  value: string,
+): void {
+  if (options.method === PersistentStorageMethod.LocalStorage) {
+    localStorage.setItem(options.name, value);
+  } else if (options.method === PersistentStorageMethod.SessionStorage) {
+    sessionStorage.setItem(options.name, value);
+  } else if (options.method === PersistentStorageMethod.Cookies) {
+    let cookieString = `${options.name}=${encodeURIComponent(value)}`;
+
+    if (options.expires) {
+      const expires =
+        options.expires instanceof Date
+          ? options.expires.toUTCString()
+          : options.expires;
+      cookieString += `; expires=${expires}`;
     }
 
-    if (storedValue !== null) {
-      this._signal.set(storedValue);
+    if (options.maxAge) {
+      cookieString += `; max-age=${options.maxAge}`;
     }
-  }
 
-  private _updateStorage() {
-    const value = this._signal();
-
-    if (this.method === PersistentStorageMethod.LocalStorage) {
-      localStorage.setItem(this.name, value);
-    } else if (this.method === PersistentStorageMethod.SessionStorage) {
-      sessionStorage.setItem(this.name, value);
-    } else if (this.method === PersistentStorageMethod.Cookies) {
-      let cookieString = `${this.name}=${encodeURIComponent(value)}`;
-
-      if (this.cookieOptions?.expires) {
-        const expires =
-          this.cookieOptions.expires instanceof Date
-            ? this.cookieOptions.expires.toUTCString()
-            : this.cookieOptions.expires;
-        cookieString += `; expires=${expires}`;
-      }
-
-      if (this.cookieOptions?.maxAge) {
-        cookieString += `; max-age=${this.cookieOptions.maxAge}`;
-      }
-
-      if (this.cookieOptions?.path) {
-        cookieString += `; path=${this.cookieOptions.path}`;
-      } else {
-        cookieString += '; path=/';
-      }
-
-      document.cookie = cookieString;
+    if (options.path) {
+      cookieString += `; path=${options.path}`;
+    } else {
+      cookieString += '; path=/';
     }
-  }
 
-  call = this._signal.call as () => string;
-  set(value: string) {
-    this._signal.set(value);
-    this._updateStorage();
-  }
-  update(updaterFn: (oldValue: string) => string) {
-    this._signal.update(updaterFn);
-    this._updateStorage();
-  }
-  asReadonly() {
-    return this._signal.asReadonly();
-  }
-  toString() {
-    return this._signal.toString();
+    document.cookie = cookieString;
   }
 }
