@@ -1,4 +1,4 @@
-import { Component, computed, effect, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { ArdiumInfiniteScrollModule } from '../../../../../devkit/src/public-api';
 
 @Component({
@@ -13,10 +13,6 @@ export class InfiniteScrollPage {
   readonly items = computed<number[]>(() =>
     new Array(this.currentPage() * 5).fill(0).map((_, i) => i),
   );
-
-  fsdndjgdn = effect(() => {
-    console.log(this.currentPage(), this.items());
-  });
 
   readonly isInfScrollActive = signal<boolean>(true);
 
