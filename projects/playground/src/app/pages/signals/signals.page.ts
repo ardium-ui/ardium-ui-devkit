@@ -47,10 +47,10 @@ export class SignalsPage {
   constructor() {
     effect(() => {
       console.log('simpleThrottled:', this.simpleThrottled());
-    })
+    });
     effect(() => {
       console.log('simpleDebounced:', this.simpleDebounced());
-    })
+    });
   }
 
   // Throttled signal example
@@ -58,5 +58,4 @@ export class SignalsPage {
 
   // Debounced signal example
   readonly simpleDebounced = debouncedSignal('initial', 1000);
-
 }
