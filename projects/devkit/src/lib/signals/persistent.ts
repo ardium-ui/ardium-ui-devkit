@@ -4,7 +4,7 @@ import {
   Injector,
   runInInjectionContext,
   signal,
-  WritableSignal,
+  WritableSignal
 } from '@angular/core';
 
 export interface PersistentSignal extends WritableSignal<string> {
