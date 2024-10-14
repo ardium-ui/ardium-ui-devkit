@@ -1,12 +1,25 @@
-<div>
-  <label for="cookie">Cookies</label>
-  <input type="text" id="cookie" [(ngModel)]="favoriteAnimalCookie" />
-</div>
-<div>
-  <label for="session">Session storage</label>
-  <input type="text" id="session" [(ngModel)]="favoriteAnimalSession" />
-</div>
-<div>
-  <label for="local">Local storage</label>
-  <input type="text" id="local" [(ngModel)]="favoriteAnimalLocal" />
-</div>
+<main>
+  <h2>Persistent Signals</h2>
+  <div>
+    <label for="cookie">Cookies</label>
+    <input type="text" id="cookie" [(ngModel)]="favoriteAnimalCookie" />
+  </div>
+  <div>
+    <label for="session">Session storage</label>
+    <input type="text" id="session" [(ngModel)]="favoriteAnimalSession" />
+  </div>
+  <div>
+    <label for="local">Local storage</label>
+    <input type="text" id="local" [(ngModel)]="favoriteAnimalLocal" />
+  </div>
+
+  <h2>Query Param Signals</h2>
+  <div>
+    <label for="simple-query-param">Simple Query Param (String)</label>
+    <input type="text" id="simple-query-param" [(ngModel)]="simpleQueryParam" />
+  </div>
+  <div>
+    <label for="number-query-param">Query Param (Number)</label>
+    <input type="number" id="number-query-param" [(ngModel)]="numberQueryParam" />
+  </div>
+</main>

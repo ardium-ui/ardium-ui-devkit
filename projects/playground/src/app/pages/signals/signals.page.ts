@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import {
   persistentSignal,
   PersistentStorageMethod,
+  queryParamSignal,
 } from '../../../../../devkit/src/public-api';
 
 @Component({
@@ -13,6 +14,7 @@ import {
   styleUrl: './signals.page.scss',
 })
 export class SignalsPage {
+  // Persistent signals examples
   readonly favoriteAnimalCookie = persistentSignal('initial', {
     name: 'favorite-animal',
     method: PersistentStorageMethod.Cookies,
@@ -24,5 +26,13 @@ export class SignalsPage {
   readonly favoriteAnimalLocal = persistentSignal('initial', {
     name: 'favorite-animal',
     method: PersistentStorageMethod.LocalStorage,
+  });
+
+  // Query signals examples
+  readonly simpleQueryParam = queryParamSignal('default', 'simple-param');
+  readonly numberQueryParam = queryParamSignal<number>(0, {
+    paramName: 'number-param',
+    serialize: (value) => value?.toString() ?? null,
+    deserialize: (value) => parseInt(value ?? '0'),
   });
 }
