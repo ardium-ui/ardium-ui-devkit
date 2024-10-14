@@ -27,6 +27,12 @@ export class SignalsPage {
     name: 'favorite-animal',
     method: PersistentStorageMethod.LocalStorage,
   });
+  readonly animalCount = persistentSignal(3, {
+    name: 'animal-count',
+    method: PersistentStorageMethod.LocalStorage,
+    serialize: (value) => value.toString(),
+    deserialize: (value) => parseInt(value),
+  });
 
   // Query signals examples
   readonly simpleQueryParam = queryParamSignal('default', 'simple-param');
