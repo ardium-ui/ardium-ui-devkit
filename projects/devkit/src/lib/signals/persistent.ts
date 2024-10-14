@@ -4,10 +4,10 @@ import {
   Injector,
   runInInjectionContext,
   signal,
-  WritableSignal
+  WritableSignal,
 } from '@angular/core';
 
-export interface PersistentSignal extends WritableSignal<string> {
+export interface PersistentSignal<T> extends WritableSignal<T> {
   readonly method: PersistentStorageMethod;
 }
 
@@ -20,31 +20,63 @@ export type PersistentStorageMethod =
   (typeof PersistentStorageMethod)[keyof typeof PersistentStorageMethod];
 
 /**
+ * Basic options for persisting the signal value.
+ */
+export interface PersistentSignalOptions {
+  name: string;
+  method: PersistentStorageMethod;
+  expires?: Date | string;
+  maxAge?: number;
+  path?: string;
+}
+
+/**
+ * Options for persisting the signal value with custom serialization and deserialization.
+ */
+export interface PersistentSignalOptionsWithSerialization<T>
+  extends PersistentSignalOptions {
+  serialize: (value: T) => string;
+  deserialize: (value: string) => T;
+}
+
+/**
  * Creates a `WritableSignal` that persists its value using the specified storage method.
- *
- * The `persistentSignal` function returns a `WritableSignal<string>` whose value is synchronized with
- * one of the persistent storage mechanisms: `localStorage`, `sessionStorage`, or cookies. This allows
- * the signal's value to be retained across page reloads or sessions, depending on the chosen method.
  *
  * @param initialValue - The initial value of the signal if no stored value is found.
  * @param options - Configuration options for persisting the signal's value.
- * @returns A `WritableSignal<string>` that persists its value using the specified storage method.
+ * @returns A `WritableSignal<T>` that persists its value using the specified storage method.
  */
-export function persistentSignal(
-  initialValue: string,
-  options: {
-    name: string;
-    method: PersistentStorageMethod;
-    expires?: Date | string;
-    maxAge?: number;
-    path?: string;
-  },
-): PersistentSignal {
-  const internalSignal = signal<string>(initialValue) as PersistentSignal;
+export function persistentSignal<T extends string>(
+  initialValue: T,
+  options: PersistentSignalOptions,
+): PersistentSignal<T>;
 
+/**
+ * Creates a `WritableSignal` that persists its value using the specified storage method,
+ * with custom serialization and deserialization.
+ *
+ * @param initialValue - The initial value of the signal if no stored value is found.
+ * @param options - An object containing the storage method and custom serialization/deserialization functions.
+ * @param options.name - The key used to store the signal value.
+ * @param options.method - The persistent storage method (localStorage, sessionStorage, or cookies).
+ * @param options.serialize - A function to serialize the value into a string for storage.
+ * @param options.deserialize - A function to deserialize the stored string value back into the original type.
+ * @returns A `WritableSignal<T>` that persists its value using the specified storage method.
+ */
+export function persistentSignal<T>(
+  initialValue: T,
+  options: PersistentSignalOptionsWithSerialization<T>,
+): PersistentSignal<T>;
+
+export function persistentSignal<T>(
+  initialValue: T,
+  options:
+    | PersistentSignalOptions
+    | PersistentSignalOptionsWithSerialization<T>,
+): PersistentSignal<T> {
+  const internalSignal = signal<T>(initialValue) as PersistentSignal<T>;
   Object.assign(internalSignal, { method: options.method });
 
-  // Load value from storage
   const storedValue = loadFromStorage(options);
   if (storedValue !== null) {
     internalSignal.set(storedValue);
@@ -64,10 +96,11 @@ export function persistentSignal(
   return internalSignal;
 }
 
-function loadFromStorage(options: {
-  name: string;
-  method: PersistentStorageMethod;
-}): string | null {
+function loadFromStorage<T>(
+  options:
+    | PersistentSignalOptions
+    | PersistentSignalOptionsWithSerialization<T>,
+): T | null {
   let storedValue: string | null = null;
 
   if (options.method === PersistentStorageMethod.LocalStorage) {
@@ -81,25 +114,29 @@ function loadFromStorage(options: {
     storedValue = match ? decodeURIComponent(match[2]) : null;
   }
 
-  return storedValue;
+  if (storedValue && 'deserialize' in options) {
+    return options.deserialize(storedValue);
+  }
+  return storedValue as T | null;
 }
 
-function updateStorage(
-  options: {
-    name: string;
-    method: PersistentStorageMethod;
-    expires?: Date | string;
-    maxAge?: number;
-    path?: string;
-  },
-  value: string,
+function updateStorage<T>(
+  options:
+    | PersistentSignalOptions
+    | PersistentSignalOptionsWithSerialization<T>,
+  value: T,
 ): void {
+  let valueToStore = value as unknown as string;
+  if ('serialize' in options) {
+    valueToStore = options.serialize(value);
+  }
+
   if (options.method === PersistentStorageMethod.LocalStorage) {
-    localStorage.setItem(options.name, value);
+    localStorage.setItem(options.name, valueToStore);
   } else if (options.method === PersistentStorageMethod.SessionStorage) {
-    sessionStorage.setItem(options.name, value);
+    sessionStorage.setItem(options.name, valueToStore);
   } else if (options.method === PersistentStorageMethod.Cookies) {
-    let cookieString = `${options.name}=${encodeURIComponent(value)}`;
+    let cookieString = `${options.name}=${encodeURIComponent(valueToStore)}`;
 
     if (options.expires) {
       const expires =
