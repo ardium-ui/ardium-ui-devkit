@@ -1,9 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, effect } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { debouncedSignal } from '../../../../../devkit/src/lib/signals/debounced';
 import {
   persistentSignal,
   PersistentStorageMethod,
   queryParamSignal,
+  throttledSignal,
 } from '../../../../../devkit/src/public-api';
 
 @Component({
@@ -41,4 +43,20 @@ export class SignalsPage {
     serialize: (value) => value?.toString() ?? null,
     deserialize: (value) => parseInt(value ?? '0'),
   });
+
+  constructor() {
+    effect(() => {
+      console.log('simpleThrottled:', this.simpleThrottled());
+    })
+    effect(() => {
+      console.log('simpleDebounced:', this.simpleDebounced());
+    })
+  }
+
+  // Throttled signal example
+  readonly simpleThrottled = throttledSignal('initial', 1000);
+
+  // Debounced signal example
+  readonly simpleDebounced = debouncedSignal('initial', 1000);
+
 }
