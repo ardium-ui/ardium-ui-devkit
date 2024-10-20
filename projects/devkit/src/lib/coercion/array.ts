@@ -1,7 +1,7 @@
 /**
  * Type describing the allowed values for a number input
  */
-export type ArrayInput = string | any[] | null | undefined;
+export type ArrayLike = string | any[] | null | undefined;
 
 /**
  * Coerces a value to an array of trimmed non-empty strings.

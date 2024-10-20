@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { ClickOutsideDirective } from './click-outside.directive';
 
 @NgModule({
@@ -7,4 +7,4 @@ import { ClickOutsideDirective } from './click-outside.directive';
   imports: [CommonModule],
   exports: [ClickOutsideDirective],
 })
-export class ArdiumClickOutsideEventModule {}
+export class ArdiumClickOutsideModule {}

@@ -1,7 +1,7 @@
 /**
  * Type describing the allowed values for a number input
  */
-export type NumberInput = string | number | null | undefined;
+export type NumberLike = string | number | null | undefined;
 
 /**
 Coerces a data-bound value (typically a string) to a number.
