@@ -14,7 +14,7 @@ import {
 */
 @Directive({ selector: '[ardClickOutside]' })
 export class ArdiumClickOutsideDirective {
-  private readonly _elementRef = inject(ElementRef);
+  private readonly _elementRef: ElementRef<HTMLElement> = inject(ElementRef);
 
   public readonly ardClickOutside = output<MouseEvent>();
 
