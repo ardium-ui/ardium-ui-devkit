@@ -1,6 +1,6 @@
 import { ElementRef } from '@angular/core';
 
-export class EventRelativePos {
+export class EventRelativePos<T extends HTMLElement> {
   readonly overflowsTop!: boolean;
   readonly overflowsRight!: boolean;
   readonly overflowsBottom!: boolean;
@@ -8,6 +8,7 @@ export class EventRelativePos {
   readonly overflows!: boolean;
 
   constructor(
+    public readonly target: T,
     public readonly top: number,
     public readonly right: number,
     public readonly bottom: number,
@@ -24,58 +25,37 @@ export class EventRelativePos {
       this.overflowsLeft;
   }
 
-  toJSON(): string {
-    return JSON.stringify({
+  valueOf() {
+    return {
       top: this.top,
       right: this.right,
       bottom: this.bottom,
       left: this.left,
-    });
+    };
+  }
+  toJSON(): string {
+    return JSON.stringify(this.valueOf());
   }
   toString(): string {
     return this.toJSON();
   }
 
-  static fromEvent(
+  static fromEvent<T extends HTMLElement>(
     event: MouseEvent | TouchEvent | Touch,
-    el: HTMLElement,
-  ): EventRelativePos;
-  static fromEvent(
-    event: MouseEvent | TouchEvent | Touch,
-    el: ElementRef<HTMLElement>,
-  ): EventRelativePos;
-  static fromEvent(
-    event: MouseEvent | TouchEvent | Touch,
-    el: HTMLElement | ElementRef<HTMLElement>,
-  ): EventRelativePos;
-  static fromEvent(
-    event: MouseEvent | TouchEvent | Touch,
-    el: HTMLElement | ElementRef<HTMLElement>,
-  ): EventRelativePos {
+    el: T | ElementRef<T>,
+  ): EventRelativePos<T> {
     return getEventRelativePos(event, el);
   }
 }
 
 function _isTouchEvent(v: any): v is TouchEvent {
-  return v?.touches;
+  return typeof v === 'object' && 'touches' in v;
 }
 
-export function getEventRelativePos(
+export function getEventRelativePos<T extends HTMLElement>(
   event: MouseEvent | TouchEvent | Touch,
-  el: HTMLElement,
-): EventRelativePos;
-export function getEventRelativePos(
-  event: MouseEvent | TouchEvent | Touch,
-  el: ElementRef<HTMLElement>,
-): EventRelativePos;
-export function getEventRelativePos(
-  event: MouseEvent | TouchEvent | Touch,
-  el: HTMLElement | ElementRef<HTMLElement>,
-): EventRelativePos;
-export function getEventRelativePos(
-  event: MouseEvent | TouchEvent | Touch,
-  el: HTMLElement | ElementRef<HTMLElement>,
-): EventRelativePos {
+  el: T | ElementRef<T>,
+): EventRelativePos<T> {
   //convert ElementRef
   if (el instanceof ElementRef) el = el.nativeElement;
 
@@ -84,7 +64,7 @@ export function getEventRelativePos(
     const firstTouch = event.touches.item(0);
     if (!firstTouch)
       throw new Error(
-        'Cannot read event position. The TouchEvent has no Touch instances.',
+        'DKT-FT9000: Cannot read event position. The TouchEvent has no Touch instances.',
       );
     event = firstTouch;
   }
@@ -95,7 +75,8 @@ export function getEventRelativePos(
   const eventX = event.clientX;
   const eventY = event.clientY;
 
-  return new EventRelativePos(
+  return new EventRelativePos<T>(
+    el,
     eventY - elRect.top, //top
     elRect.right - eventX, //right
     elRect.bottom - eventY, //bottom

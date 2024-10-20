@@ -1,4 +1,4 @@
-import { ArdiumFilenamePipe } from './filename.pipe';
+import { ArdiumFilenamePipe } from '../filename/filename.pipe';
 
 describe('ArdiumFilenamePipe', () => {
   let pipe: ArdiumFilenamePipe;

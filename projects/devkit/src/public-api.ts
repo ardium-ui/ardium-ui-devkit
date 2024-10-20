@@ -12,17 +12,10 @@ export * from './lib/escape-html/escape-html.pipe';
 export * from './lib/file-system/file-system.service';
 export * from './lib/file-system/file-system.types';
 
-export * from './lib/fileext/fileext.module';
-export * from './lib/fileext/fileext.pipe';
-
-export * from './lib/filename/filename.module';
-export * from './lib/filename/filename.pipe';
-
-export * from './lib/filesize/filesize.module';
-export * from './lib/filesize/filesize.pipe';
-
-export * from './lib/inner-html/inner-html.directive';
-export * from './lib/inner-html/inner-html.module';
+export * from './lib/file-pipes/file-pipes.module';
+export * from './lib/file-pipes/fileext.pipe';
+export * from './lib/file-pipes/filename.pipe';
+export * from './lib/file-pipes/filesize.pipe';
 
 export * from './lib/hold/hold.directive';
 export * from './lib/hold/hold.module';
@@ -34,8 +27,8 @@ export * from './lib/coercion/number';
 
 export * from './lib/find-functions/find-suggestion';
 
-export * from './lib/keyboard-shortcut/keyboard-shortcut.service';
-export * from './lib/keyboard-shortcut/keyboard-shortcut.types';
+export * from './lib/keyboard/keyboard.service';
+export * from './lib/keyboard/keyboard.types';
 
 export * from './lib/viewport-observer/viewport-observer-ref';
 export * from './lib/viewport-observer/viewport-observer.service';

@@ -1,10 +1,10 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HoldDirective } from './hold.directive';
+import { NgModule } from '@angular/core';
+import { ArdiumHoldDirective } from './hold.directive';
 
 @NgModule({
-  declarations: [HoldDirective],
+  declarations: [ArdiumHoldDirective],
   imports: [CommonModule],
-  exports: [HoldDirective],
+  exports: [ArdiumHoldDirective],
 })
-export class ArdiumHoldEventModule {}
+export class ArdiumHoldModule {}

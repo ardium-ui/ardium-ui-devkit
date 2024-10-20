@@ -1,10 +1,10 @@
-import { ArdiumFileextPipe } from './fileext.pipe';
+import { ArdiumFileExtensionPipe } from './fileext.pipe';
 
 describe('ArdiumFileextPipe', () => {
-  let pipe: ArdiumFileextPipe;
+  let pipe: ArdiumFileExtensionPipe;
 
   beforeEach(() => {
-    pipe = new ArdiumFileextPipe();
+    pipe = new ArdiumFileExtensionPipe();
   });
 
   it('should create an instance', () => {

@@ -6,12 +6,12 @@ import {
   KeyboardKey,
   KeyboardKeyState,
   KeyboardShortcut,
-} from './keyboard-shortcut.types';
+} from './keyboard.types';
 
 @Injectable({
   providedIn: 'root',
 })
-export class KeyboardShortcutService implements OnDestroy {
+export class KeyboardService implements OnDestroy {
   private renderer!: Renderer2;
   private removeListenFuncKeydown!: Function;
   private removeListenFuncKeyup!: Function;

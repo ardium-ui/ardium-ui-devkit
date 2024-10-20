@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { ClickOutsideDirective } from './click-outside.directive';
+import { ArdiumClickOutsideDirective } from './click-outside.directive';
 
 @NgModule({
-  declarations: [ClickOutsideDirective],
+  declarations: [ArdiumClickOutsideDirective],
   imports: [CommonModule],
-  exports: [ClickOutsideDirective],
+  exports: [ArdiumClickOutsideDirective],
 })
 export class ArdiumClickOutsideModule {}

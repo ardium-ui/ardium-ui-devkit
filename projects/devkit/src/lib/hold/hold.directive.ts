@@ -13,7 +13,7 @@ import { coerceNumberProperty } from '../coercion/number';
   Detects when the user clicks-and-holds a given element.
 */
 @Directive({ selector: '[ardHold]' })
-export class HoldDirective {
+export class ArdiumHoldDirective {
   public readonly ardHold = output<void>();
 
   readonly disabled = input<boolean, any>(false, {

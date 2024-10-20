@@ -1,10 +1,10 @@
-import { ArdiumFilesizePipe } from './filesize.pipe';
+import { ArdiumFileSizePipe } from './filesize.pipe';
 
 describe('ArdiumFilesizePipe', () => {
-  let pipe: ArdiumFilesizePipe;
+  let pipe: ArdiumFileSizePipe;
 
   beforeEach(() => {
-    pipe = new ArdiumFilesizePipe();
+    pipe = new ArdiumFileSizePipe();
   });
 
   it('should create an instance', () => {

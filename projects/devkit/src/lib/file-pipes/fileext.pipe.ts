@@ -3,7 +3,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 @Pipe({
   name: 'fileext',
 })
-export class ArdiumFileextPipe implements PipeTransform {
+export class ArdiumFileExtensionPipe implements PipeTransform {
   transform(value: string | File, withDot: boolean = false): string | null {
     if (typeof value != 'string') {
       value = value.name;
