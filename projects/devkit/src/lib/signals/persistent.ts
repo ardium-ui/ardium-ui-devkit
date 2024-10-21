@@ -9,6 +9,8 @@ import {
 
 export interface PersistentSignal<T> extends WritableSignal<T> {
   readonly method: PersistentStorageMethod;
+  readonly key: string;
+  clear(): void;
 }
 
 export const PersistentStorageMethod = {
@@ -35,8 +37,8 @@ export interface PersistentSignalOptions {
  */
 export interface PersistentSignalOptionsWithSerialization<T>
   extends PersistentSignalOptions {
-  serialize: (value: T) => string;
-  deserialize: (value: string) => T;
+  serialize: (value: T | null) => string;
+  deserialize: (value: string) => T | null;
 }
 
 /**
@@ -49,7 +51,7 @@ export interface PersistentSignalOptionsWithSerialization<T>
 export function persistentSignal<T extends string>(
   initialValue: T,
   options: PersistentSignalOptions,
-): PersistentSignal<T>;
+): PersistentSignal<T | null>;
 
 /**
  * Creates a `WritableSignal` that persists its value using the specified storage method,
@@ -66,16 +68,22 @@ export function persistentSignal<T extends string>(
 export function persistentSignal<T>(
   initialValue: T,
   options: PersistentSignalOptionsWithSerialization<T>,
-): PersistentSignal<T>;
+): PersistentSignal<T | null>;
 
 export function persistentSignal<T>(
   initialValue: T,
   options:
     | PersistentSignalOptions
     | PersistentSignalOptionsWithSerialization<T>,
-): PersistentSignal<T> {
-  const internalSignal = signal<T>(initialValue) as PersistentSignal<T>;
-  Object.assign(internalSignal, { method: options.method });
+): PersistentSignal<T | null> {
+  const internalSignal = signal<T | null>(
+    initialValue,
+  ) as PersistentSignal<T | null>;
+  Object.assign(internalSignal, {
+    method: options.method,
+    key: options.name,
+    clear: () => internalSignal.set(null),
+  });
 
   const storedValue = loadFromStorage(options);
   if (storedValue !== null) {
@@ -126,19 +134,23 @@ function updateStorage<T>(
     | PersistentSignalOptionsWithSerialization<T>,
   value: T,
 ): void {
-  let valueToStore = value as unknown as string;
+  let valueToStore = value as unknown as string | null;
   if ('serialize' in options) {
     valueToStore = options.serialize(value);
   }
 
   if (options.method === PersistentStorageMethod.LocalStorage) {
-    localStorage.setItem(options.name, valueToStore);
+    if (valueToStore === null) localStorage.removeItem(options.name);
+    else localStorage.setItem(options.name, valueToStore);
   } else if (options.method === PersistentStorageMethod.SessionStorage) {
-    sessionStorage.setItem(options.name, valueToStore);
+    if (valueToStore === null) sessionStorage.removeItem(options.name);
+    else sessionStorage.setItem(options.name, valueToStore);
   } else if (options.method === PersistentStorageMethod.Cookies) {
-    let cookieString = `${options.name}=${encodeURIComponent(valueToStore)}`;
+    let cookieString = `${options.name}=${valueToStore !== null ? encodeURIComponent(valueToStore) : ''}`;
 
-    if (options.expires) {
+    if (valueToStore !== null) {
+      cookieString += `; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
+    } else if (options.expires) {
       const expires =
         options.expires instanceof Date
           ? options.expires.toUTCString()
@@ -150,11 +162,7 @@ function updateStorage<T>(
       cookieString += `; max-age=${options.maxAge}`;
     }
 
-    if (options.path) {
-      cookieString += `; path=${options.path}`;
-    } else {
-      cookieString += '; path=/';
-    }
+    cookieString += `; path=${options.path ?? '/'}`;
 
     document.cookie = cookieString;
   }
