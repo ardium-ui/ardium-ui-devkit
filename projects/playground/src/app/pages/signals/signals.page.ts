@@ -32,7 +32,7 @@ export class SignalsPage {
   readonly animalCount = persistentSignal(3, {
     name: 'animal-count',
     method: PersistentStorageMethod.LocalStorage,
-    serialize: (value) => value.toString(),
+    serialize: (value) => (value === null ? null : value.toString()),
     deserialize: (value) => parseInt(value),
   });
 

@@ -37,7 +37,7 @@ export interface PersistentSignalOptions {
  */
 export interface PersistentSignalOptionsWithSerialization<T>
   extends PersistentSignalOptions {
-  serialize: (value: T | null) => string;
+  serialize: (value: T | null) => string | null;
   deserialize: (value: string) => T | null;
 }
 
