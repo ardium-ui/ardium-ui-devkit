@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 
 export interface QueryParamSignal<T> extends WritableSignal<T | null> {
   readonly paramName: string;
+  clear(): void;
 }
 
 interface QueryParamOptions {
@@ -93,7 +94,10 @@ export function queryParamSignal<T>(
   }
 
   const internalSignal = signal<T | null>(initialValue) as QueryParamSignal<T>;
-  Object.assign(internalSignal, { paramName: options.paramName });
+  Object.assign(internalSignal, {
+    paramName: options.paramName,
+    clear: () => internalSignal.set(null),
+  });
 
   const router = inject(Router);
   const storedValue = loadFromQueryParam(options);
