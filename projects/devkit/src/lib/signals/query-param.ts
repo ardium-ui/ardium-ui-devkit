@@ -13,46 +13,17 @@ export interface QueryParamSignal<T> extends WritableSignal<T | null> {
   clear(): void;
 }
 
-interface QueryParamOptions {
+interface QueryParamSignalOptions<T> {
   paramName: string;
-}
-
-interface QueryParamOptionsWithSerialization<T> {
-  paramName: string;
-  serialize: (value: T | null) => string | null;
-  deserialize: (value: string | null) => T | null;
+  serialize?: (value: T | null) => string | null;
+  deserialize?: (value: string) => T | null;
 }
 
 function isSerializableSignal<T>(
-  options: QueryParamOptions | QueryParamOptionsWithSerialization<T>,
-): options is QueryParamOptionsWithSerialization<T> {
+  options: QueryParamSignalOptions<T>,
+): options is Required<QueryParamSignalOptions<T>> {
   return 'serialize' in options && 'deserialize' in options;
 }
-
-/**
- * Creates a `WritableSignal` that persists its value in a URL query parameter.
- *
- * @param initialValue - The initial value of the signal if no value is found in the query param.
- * @param paramName - The name of the query parameter used to store the signal value.
- * @returns A `WritableSignal<T | null>` that persists its value using the specified query parameter.
- */
-export function queryParamSignal<T extends string>(
-  initialValue: T | null,
-  paramName: string,
-): QueryParamSignal<T>;
-
-/**
- * Creates a `WritableSignal` that persists its value in a URL query parameter.
- *
- * @param initialValue - The initial value of the signal if no value is found in the query param.
- * @param options - An object containing the query parameter name, without serialization or deserialization.
- * @param options.paramName - The name of the query parameter used to store the signal value.
- * @returns A `WritableSignal<T | null>` that persists its value using the specified query parameter.
- */
-export function queryParamSignal<T extends string>(
-  initialValue: T | null,
-  options: QueryParamOptions,
-): QueryParamSignal<T>;
 
 /**
  * Creates a `WritableSignal` that persists its value in a URL query parameter with both serialization and deserialization.
@@ -66,17 +37,9 @@ export function queryParamSignal<T extends string>(
  */
 export function queryParamSignal<T>(
   initialValue: T | null,
-  options: QueryParamOptionsWithSerialization<T>,
-): QueryParamSignal<T>;
-
-export function queryParamSignal<T>(
-  initialValue: T | null,
-  optionsOrParam:
-    | string
-    | QueryParamOptions
-    | QueryParamOptionsWithSerialization<T>,
+  optionsOrParam: string | QueryParamSignalOptions<T>,
 ): QueryParamSignal<T> {
-  let options: QueryParamOptionsWithSerialization<T> | QueryParamOptions;
+  let options: QueryParamSignalOptions<T>;
 
   if (typeof optionsOrParam === 'string') {
     options = { paramName: optionsOrParam };
@@ -101,7 +64,11 @@ export function queryParamSignal<T>(
 
   const router = inject(Router);
   const storedValue = loadFromQueryParam(options);
-  internalSignal.set(storedValue);
+  if (storedValue !== null) {
+    internalSignal.set(storedValue);
+  } else {
+    updateQueryParam(router, options, internalSignal());
+  }
 
   setTimeout(() => {
     updateQueryParam(router, options, internalSignal());
@@ -118,9 +85,7 @@ export function queryParamSignal<T>(
   return internalSignal;
 }
 
-function loadFromQueryParam<T>(
-  options: QueryParamOptions | QueryParamOptionsWithSerialization<T>,
-): T | null {
+function loadFromQueryParam<T>(options: QueryParamSignalOptions<T>): T | null {
   const urlParams = new URLSearchParams(window.location.search);
   const storedValue = urlParams.get(options.paramName);
 
@@ -129,7 +94,7 @@ function loadFromQueryParam<T>(
 
 function updateQueryParam<T>(
   router: Router,
-  options: QueryParamOptions | QueryParamOptionsWithSerialization<T>,
+  options: QueryParamSignalOptions<T>,
   value: T | null,
 ): void {
   const serializedValue = serializeValue(value, options);
@@ -147,7 +112,7 @@ function updateQueryParam<T>(
 
 function serializeValue<T>(
   value: T | null,
-  options: QueryParamOptions | QueryParamOptionsWithSerialization<T>,
+  options: QueryParamSignalOptions<T>,
 ): string | null {
   if (isSerializableSignal(options)) {
     return options.serialize(value);
@@ -157,9 +122,9 @@ function serializeValue<T>(
 
 function deserializeValue<T>(
   value: string | null,
-  options: QueryParamOptions | QueryParamOptionsWithSerialization<T>,
+  options: QueryParamSignalOptions<T>,
 ): T | null {
-  if (isSerializableSignal(options)) {
+  if (value !== null && isSerializableSignal(options)) {
     return options.deserialize(value);
   }
   return value as unknown as T | null;
