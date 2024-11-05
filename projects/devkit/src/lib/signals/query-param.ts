@@ -114,6 +114,7 @@ function updateQueryParam<T>(
   router.navigate([], {
     queryParams,
     queryParamsHandling: 'merge',
+    replaceUrl: true,
   });
 }
 
