@@ -17,10 +17,13 @@ const FILE_SIZE_UNITS = [
 })
 export class ArdiumFileSizePipe implements PipeTransform {
   transform(
-    value: number,
+    value: number | File,
     precision: number = 2,
-    useSpace: boolean = false,
+    useSpace: boolean = true,
   ): string {
+    if (typeof value != 'number') {
+      value = value.size;
+    }
     if (value === 0) return '0 B';
 
     const index = FILE_SIZE_UNITS.findIndex((unit) => value < unit.size);
