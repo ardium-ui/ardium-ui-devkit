@@ -4,7 +4,8 @@ import { Pipe, PipeTransform } from '@angular/core';
   name: 'filename',
 })
 export class ArdiumFileNamePipe implements PipeTransform {
-  transform(value: string | File): string {
+  transform(value: string | File | null | undefined): string {
+    if (!value) return '';
     if (typeof value != 'string') {
       value = value.name;
     }
