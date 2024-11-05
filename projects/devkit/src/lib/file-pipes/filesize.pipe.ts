@@ -34,7 +34,10 @@ export class ArdiumFileSizePipe implements PipeTransform {
         ? FILE_SIZE_UNITS[FILE_SIZE_UNITS.length - 1]
         : FILE_SIZE_UNITS[index - 1];
 
-    const convertedValue = (value / fileSizeUnit.size).toFixed(precision);
+    const convertedValue =
+      fileSizeUnit.unit === 'B'
+        ? value
+        : (value / fileSizeUnit.size).toFixed(precision);
     const space = useSpace ? ' ' : '';
 
     return `${convertedValue}${space}${fileSizeUnit.unit}`;
