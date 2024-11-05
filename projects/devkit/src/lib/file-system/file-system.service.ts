@@ -263,7 +263,7 @@ export class FileSystemService {
     encoding: string = 'UTF-8',
   ): Promise<string | ArrayBuffer | null> {
     if (readAs == 'text') {
-      return await new Promise<string | null>((resolve) => {
+      return new Promise<string | null>((resolve) => {
         const reader = new FileReader();
         reader.readAsText(file, encoding);
         reader.onload = function (e) {
@@ -271,7 +271,7 @@ export class FileSystemService {
         };
       });
     }
-    return await new Promise<ArrayBuffer | null>((resolve) => {
+    return new Promise<ArrayBuffer | null>((resolve) => {
       const reader = new FileReader();
       reader.readAsArrayBuffer(file);
       reader.onload = function (e) {

@@ -7,6 +7,7 @@ import {
   WritableSignal,
 } from '@angular/core';
 import { Router } from '@angular/router';
+import { isAnyString, isNull } from 'simple-bool';
 
 export interface QueryParamSignal<T> extends WritableSignal<T | null> {
   readonly paramName: string;
@@ -22,7 +23,7 @@ interface QueryParamSignalOptions<T> {
 function isSerializableSignal<T>(
   options: QueryParamSignalOptions<T>,
 ): options is Required<QueryParamSignalOptions<T>> {
-  return 'serialize' in options && 'deserialize' in options;
+  return !!options.serialize && !!options.deserialize;
 }
 
 /**
@@ -47,12 +48,18 @@ export function queryParamSignal<T>(
     options = optionsOrParam;
   }
 
+  if (!!options.serialize !== !!options.serialize) {
+    throw new Error(
+      'DKT-FT3010: Both serialize and deserialize must either be both defined or both undefined.',
+    );
+  }
   if (
-    isSerializableSignal(options) &&
-    (!options.serialize || !options.deserialize)
+    !isSerializableSignal(options) &&
+    !isAnyString(initialValue) &&
+    !isNull(initialValue)
   ) {
     throw new Error(
-      'DKT-FT300: Both serialize and deserialize must either be both defined or both undefined.',
+      'DKT-FT3011: Non-string initial values are only allowed for serializable signals. Define serialization options.',
     );
   }
 

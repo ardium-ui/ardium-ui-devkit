@@ -6,6 +6,7 @@ import {
   signal,
   WritableSignal,
 } from '@angular/core';
+import { isAnyString, isNull } from 'simple-bool';
 
 export interface PersistentSignal<T> extends WritableSignal<T> {
   readonly method: PersistentStorageMethod;
@@ -37,7 +38,7 @@ export interface PersistentSignalOptions<T> {
 function isSerializableSignal<T>(
   options: PersistentSignalOptions<T>,
 ): options is Required<PersistentSignalOptions<T>> {
-  return 'serialize' in options && 'deserialize' in options;
+  return !!options.serialize && !!options.deserialize;
 }
 
 /**
@@ -56,6 +57,21 @@ export function persistentSignal<T>(
   initialValue: T,
   options: PersistentSignalOptions<T>,
 ): PersistentSignal<T | null> {
+  if (!!options.serialize !== !!options.serialize) {
+    throw new Error(
+      'DKT-FT3000: Both serialize and deserialize must either be both defined or both undefined.',
+    );
+  }
+  if (
+    !isSerializableSignal(options) &&
+    !isAnyString(initialValue) &&
+    !isNull(initialValue)
+  ) {
+    throw new Error(
+      'DKT-FT3001: Non-string initial values are only allowed for serializable signals. Define serialization options.',
+    );
+  }
+
   const internalSignal = signal<T | null>(
     initialValue,
   ) as PersistentSignal<T | null>;
@@ -100,7 +116,10 @@ function loadFromStorage<T>(options: PersistentSignalOptions<T>): T | null {
   return deserializeValue(storedValue, options);
 }
 
-function updateStorage<T>(options: PersistentSignalOptions<T>, value: T | null): void {
+function updateStorage<T>(
+  options: PersistentSignalOptions<T>,
+  value: T | null,
+): void {
   const serializedValue = serializeValue(value, options);
 
   if (options.method === PersistentStorageMethod.LocalStorage) {
