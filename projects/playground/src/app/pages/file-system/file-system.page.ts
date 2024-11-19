@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { FileSystemMethod, FileSystemService, FileSystemStartDirectory } from '../../../../../../dist/devkit';
+import { FileSystemMethod, FileSystemService, FileSystemStartDirectory } from '../../../../../devkit/src/public-api';
 
 @Component({
   selector: 'file-system-page',
