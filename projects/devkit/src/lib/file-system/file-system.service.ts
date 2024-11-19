@@ -11,7 +11,6 @@ const DEFAULT_SAVE_OPTIONS: FileSystemSaveOptions = {
   method: FileSystemMethod.PreferFileSystem,
 };
 const DEFAULT_REQUEST_OPTIONS: FileSystemRequestOptions = {
-  accept: '*.*',
   method: FileSystemMethod.PreferFileSystem,
   multiple: false,
 };
@@ -144,12 +143,19 @@ export class FileSystemService {
       this.isFileSystemAPISupported('showOpenFilePicker')
     ) {
       try {
-        console.log('%cusing file system api', 'color:red');
         // coerce the options.accept into a valid options.types object
-        if (options.accept && options.accept != '*') {
+        if (options.accept) {
           if (typeof options.accept == 'string') {
             options.accept = options.accept.split(',');
           }
+          for (const accept of options.accept) {
+            if (!accept.match(/^\.[a-z0-9]+$/)) {
+              throw new Error(
+                `DKT-FT0010: "accept" property in FileSystemService must be a list of valid file extensions. Value "${accept}" is not a valid extension.`,
+              );
+            }
+          }
+
           if (!options.types) options.types = [];
 
           const accept = {
