@@ -20,7 +20,9 @@ export type ViewportRelation =
   (typeof ViewportRelation)[keyof typeof ViewportRelation];
 
 /**
- * Copied from [Microsoft Learn](https://learn.microsoft.com/en-us/javascript/api/@azure/keyvault-certificates/requireatleastone).
+ * Requires that at least one property from the given object is defined.
+ * 
+ * @copyright Copied from [Microsoft Learn](https://learn.microsoft.com/en-us/javascript/api/@azure/keyvault-certificates/requireatleastone).
  */
 type RequireAtLeastOne<T> = {
   [K in keyof T]-?: Required<Pick<T, K>> &
