@@ -1,10 +1,13 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { inject, Pipe, PipeTransform } from '@angular/core';
+import { ARD_FILEEXT_PIPE_DEFAULTS } from './fileext.defaults';
 
 @Pipe({
   name: 'fileext',
 })
 export class ArdiumFileExtensionPipe implements PipeTransform {
-  transform(value: string | File | null | undefined, withDot: boolean = false): string | null {
+  private readonly _DEFAULTS = inject(ARD_FILEEXT_PIPE_DEFAULTS);
+
+  transform(value: string | File | null | undefined, withDot: boolean = this._DEFAULTS.widthDot): string | null {
     if (!value) return null;
     if (typeof value != 'string') {
       value = value.name;

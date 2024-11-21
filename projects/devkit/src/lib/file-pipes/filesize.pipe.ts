@@ -1,4 +1,5 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { inject, Pipe, PipeTransform } from '@angular/core';
+import { ARD_FILESIZE_PIPE_DEFAULTS } from './filesize.defaults';
 
 const FILE_SIZE_UNITS = [
   { unit: 'B', size: 1 }, // bytes
@@ -16,10 +17,12 @@ const FILE_SIZE_UNITS = [
   name: 'filesize',
 })
 export class ArdiumFileSizePipe implements PipeTransform {
+  private readonly _DEFAULTS = inject(ARD_FILESIZE_PIPE_DEFAULTS);
+
   transform(
     value: number | File | null | undefined,
-    precision: number = 2,
-    useSpace: boolean = true,
+    precision: number = this._DEFAULTS.precision,
+    useSpace: boolean = this._DEFAULTS.useSpace,
   ): string {
     if (!value) return '0 B';
     if (typeof value != 'number') {
