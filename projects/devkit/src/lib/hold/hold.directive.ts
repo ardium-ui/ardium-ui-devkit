@@ -1,52 +1,54 @@
 import {
-  computed,
   Directive,
   effect,
   HostListener,
+  inject,
   input,
   output,
 } from '@angular/core';
 import { coerceBooleanProperty } from '../coercion/boolean';
 import { coerceNumberProperty } from '../coercion/number';
+import { ARD_HOLD_DEFAULTS } from './hold.defaults';
 
 /**
-  Detects when the user clicks-and-holds a given element.
-*/
+ * Detects when the user clicks-and-holds a given element.
+ */
 @Directive({ selector: '[ardHold]' })
 export class ArdiumHoldDirective {
+  protected readonly _DEFAULTS = inject(ARD_HOLD_DEFAULTS);
+
   public readonly ardHold = output<void>();
 
   readonly disabled = input<boolean, any>(false, {
     transform: (v) => coerceBooleanProperty(v),
   });
-  readonly readonly = input<boolean, any>(false, {
-    transform: (v) => coerceBooleanProperty(v),
-  });
 
   constructor() {
     effect(() => {
-      if (this.disabled() || this.readonly()) {
+      if (this.disabled()) {
         this._clear();
       }
     });
   }
 
-  readonly ardHoldDelay = input<number, any>(500, {
-    transform: (v) => coerceNumberProperty(v, 500),
+  readonly ardHoldDelay = input<number, any>(this._DEFAULTS.delay, {
+    transform: (v) => coerceNumberProperty(v, this._DEFAULTS.delay),
   });
-  readonly ardHoldRepeat = input<number, any>(1000 / 15, {
-    transform: (v) => coerceNumberProperty(v, 1000 / 15),
-  });
-
-  readonly ardAllowSpaceKey = input<boolean, any>(false, {
-    transform: (v) => coerceBooleanProperty(v),
-  });
-  readonly ardAllowEnterKey = input<boolean, any>(false, {
-    transform: (v) => coerceBooleanProperty(v),
+  readonly ardHoldRepeat = input<number, any>(this._DEFAULTS.repeat, {
+    transform: (v) => coerceNumberProperty(v, this._DEFAULTS.repeat),
   });
 
-  private readonly _shouldExecuteOnEnter = computed(
-    () => this.ardAllowEnterKey() || this.ardAllowSpaceKey(),
+  readonly ardAllowSpaceKey = input<boolean, any>(
+    this._DEFAULTS.allowSpaceKey,
+    {
+      transform: (v) => coerceBooleanProperty(v),
+    },
+  );
+  readonly ardAllowEnterKey = input<boolean, any>(
+    this._DEFAULTS.allowEnterKey,
+    {
+      transform: (v) => coerceBooleanProperty(v),
+    },
   );
 
   private interval: any = null;
@@ -55,6 +57,7 @@ export class ArdiumHoldDirective {
   @HostListener('mousedown')
   @HostListener('touchstart')
   public onMouseDown(): void {
+    console.log(this.ardHoldDelay(), this.ardHoldRepeat());
     this.timeout = setTimeout(() => {
       this.timeout = null;
       this.interval = setInterval(() => {
@@ -84,13 +87,13 @@ export class ArdiumHoldDirective {
 
   @HostListener('keydown', ['$event'])
   public onKeyDown(event: KeyboardEvent): void {
-    if (this._shouldExecuteOnEnter() && event.code == 'Enter') {
+    if (this.ardAllowEnterKey() && event.code == 'Enter') {
       event.preventDefault();
     }
     if (this.isKeyDown) return;
     if (
       (this.ardAllowSpaceKey() && event.code == 'Space') ||
-      (this._shouldExecuteOnEnter() && event.code == 'Enter')
+      (this.ardAllowEnterKey() && event.code == 'Enter')
     ) {
       this.onMouseDown();
       this.isKeyDown = true;
@@ -98,12 +101,12 @@ export class ArdiumHoldDirective {
   }
   @HostListener('keyup', ['$event'])
   public onKeyUp(event: KeyboardEvent): void {
-    this.isKeyDown = false;
     if (
       (this.ardAllowSpaceKey() && event.code == 'Space') ||
-      (this._shouldExecuteOnEnter() && event.code == 'Enter')
+      (this.ardAllowEnterKey() && event.code == 'Enter')
     ) {
       this.onMouseUp();
+      this.isKeyDown = false;
     }
   }
 }
