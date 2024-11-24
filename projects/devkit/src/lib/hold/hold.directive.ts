@@ -66,8 +66,8 @@ export class ArdiumHoldDirective {
     }, this.ardHoldDelay());
   }
 
-  @HostListener('mouseup')
-  @HostListener('touchend')
+  @HostListener('document:mouseup')
+  @HostListener('document:touchend')
   public onMouseUp(): void {
     this._clear();
   }
