@@ -19,13 +19,13 @@ export class ArdiumHoldDirective {
 
   public readonly ardHold = output<void>();
 
-  readonly disabled = input<boolean, any>(false, {
+  readonly ardHoldDisabled = input<boolean, any>(false, {
     transform: (v) => coerceBooleanProperty(v),
   });
 
   constructor() {
     effect(() => {
-      if (this.disabled()) {
+      if (this.ardHoldDisabled()) {
         this._clear();
       }
     });
@@ -57,12 +57,15 @@ export class ArdiumHoldDirective {
   @HostListener('mousedown')
   @HostListener('touchstart')
   public onMouseDown(): void {
-    console.log(this.ardHoldDelay(), this.ardHoldRepeat());
+    if (this.ardHoldDisabled()) return;
+
     this.timeout = setTimeout(() => {
       this.timeout = null;
+
       this.interval = setInterval(() => {
         this.ardHold.emit();
       }, this.ardHoldRepeat());
+      
     }, this.ardHoldDelay());
   }
 
