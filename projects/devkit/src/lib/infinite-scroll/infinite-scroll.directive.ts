@@ -8,6 +8,7 @@ import {
   output,
 } from '@angular/core';
 import { coerceNumberProperty } from './../coercion/number';
+import { ARD_INFINITE_SCROLL_DEFAULTS } from './infinite-scroll.defaults';
 
 export const ArdInfScrollTarget = {
   Host: 'host',
@@ -21,6 +22,7 @@ export type ArdInfScrollTarget =
 })
 export class ArdiumInfiniteScrollDirective {
   private readonly elementRef: ElementRef<HTMLElement> = inject(ElementRef);
+  protected readonly _DEFAULTS = inject(ARD_INFINITE_SCROLL_DEFAULTS);
 
   readonly ardInfScrollReachThreshold = output<void>();
 
@@ -35,13 +37,13 @@ export class ArdiumInfiniteScrollDirective {
   }
 
   //! options
-  readonly ardInfScrollThreshold = input<number, any>(200, {
-    transform: (v) => coerceNumberProperty(v, 200),
+  readonly ardInfScrollThreshold = input<number, any>(this._DEFAULTS.threshold, {
+    transform: (v) => coerceNumberProperty(v, this._DEFAULTS.threshold),
   });
   readonly ardInfScrollActive = model<boolean>(true, {});
 
   readonly ardInfScrollTarget = input<ArdInfScrollTarget>(
-    ArdInfScrollTarget.HTML,
+    this._DEFAULTS.target,
   );
 
   //! event handlers

@@ -17,8 +17,7 @@ export * from './lib/file-pipes/fileext.pipe';
 export * from './lib/file-pipes/filename.pipe';
 export * from './lib/file-pipes/filesize.pipe';
 
-export * from './lib/hold/hold.directive';
-export * from './lib/hold/hold.module';
+export * from './lib/hold';
 
 export * from './lib/coercion/array';
 export * from './lib/coercion/boolean';
