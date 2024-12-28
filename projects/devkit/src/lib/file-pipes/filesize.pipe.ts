@@ -15,6 +15,7 @@ const FILE_SIZE_UNITS = [
 
 @Pipe({
   name: 'filesize',
+  standalone: false,
 })
 export class ArdiumFileSizePipe implements PipeTransform {
   private readonly _DEFAULTS = inject(ARD_FILESIZE_PIPE_DEFAULTS);

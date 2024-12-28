@@ -19,6 +19,7 @@ export type ArdInfScrollTarget =
 
 @Directive({
   selector: '[ardInfScroll]',
+  standalone: false,
 })
 export class ArdiumInfiniteScrollDirective {
   private readonly elementRef: ElementRef<HTMLElement> = inject(ElementRef);

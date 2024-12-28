@@ -13,7 +13,7 @@ import { ARD_HOLD_DEFAULTS } from './hold.defaults';
 /**
  * Detects when the user clicks-and-holds a given element.
  */
-@Directive({ selector: '[ardHold]' })
+@Directive({ selector: '[ardHold]', standalone: false })
 export class ArdiumHoldDirective {
   protected readonly _DEFAULTS = inject(ARD_HOLD_DEFAULTS);
 
@@ -65,7 +65,6 @@ export class ArdiumHoldDirective {
       this.interval = setInterval(() => {
         this.ardHold.emit();
       }, this.ardHoldRepeat());
-      
     }, this.ardHoldDelay());
   }
 

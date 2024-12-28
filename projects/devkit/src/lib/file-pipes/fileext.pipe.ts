@@ -3,11 +3,15 @@ import { ARD_FILEEXT_PIPE_DEFAULTS } from './fileext.defaults';
 
 @Pipe({
   name: 'fileext',
+  standalone: false,
 })
 export class ArdiumFileExtensionPipe implements PipeTransform {
   private readonly _DEFAULTS = inject(ARD_FILEEXT_PIPE_DEFAULTS);
 
-  transform(value: string | File | null | undefined, withDot: boolean = this._DEFAULTS.widthDot): string | null {
+  transform(
+    value: string | File | null | undefined,
+    withDot: boolean = this._DEFAULTS.widthDot,
+  ): string | null {
     if (!value) return null;
     if (typeof value != 'string') {
       value = value.name;

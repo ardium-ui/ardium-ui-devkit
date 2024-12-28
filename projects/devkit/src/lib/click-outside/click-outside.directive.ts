@@ -12,7 +12,7 @@ import {
   @license
   Shamelessly stolen from [Christian Liebel](https://github.com/chliebel/angular2-click-outside)
 */
-@Directive({ selector: '[ardClickOutside]' })
+@Directive({ selector: '[ardClickOutside]', standalone: false })
 export class ArdiumClickOutsideDirective {
   private readonly _elementRef: ElementRef<HTMLElement> = inject(ElementRef);
 
