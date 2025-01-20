@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { _AngularHttpClientOptions as AngularHttpClientOptions } from './_types';
+import { _AngularHttpClientOptions as AngularHttpClientOptions, HTTP_SERVICE_SYMBOL } from './_types';
 import { DEFAULT_HTTP_OPTIONS } from './http-service-defaults';
 
 /**
@@ -9,9 +9,7 @@ import { DEFAULT_HTTP_OPTIONS } from './http-service-defaults';
  * for every HTTP request. The default options (including the base `apiUrl`)
  * are provided via the {@link provideHttpService} function.
  */
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class HttpService {
   private readonly _http = inject(HttpClient);
 
@@ -105,7 +103,7 @@ export class HttpService {
   }
 
   private _getUrl(url: string): string {
-    if (this.apiUrl === 'ɘnullɘ/')
+    if (this.apiUrl === HTTP_SERVICE_SYMBOL)
       throw new Error(
         `DKT-FT0020: HttpService needs to be provided using 'provideHttpService' before it can be used.`,
       );

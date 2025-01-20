@@ -26,3 +26,5 @@ export type _AngularHttpClientOptions = {
       }
     | boolean;
 };
+
+export const HTTP_SERVICE_SYMBOL = Symbol("http-service") as unknown as string;
