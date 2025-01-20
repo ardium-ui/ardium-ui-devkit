@@ -1,4 +1,4 @@
-import { HttpContext, HttpHeaders, HttpParams } from "@angular/common/http";
+import { HttpContext, HttpHeaders, HttpParams } from '@angular/common/http';
 
 export type _AngularHttpClientOptions = {
   headers?:
@@ -27,4 +27,4 @@ export type _AngularHttpClientOptions = {
     | boolean;
 };
 
-export const HTTP_SERVICE_SYMBOL = Symbol("http-service") as unknown as string;
+export const HTTP_SERVICE_SYMBOL = Symbol('http-service') as unknown as string; // type-cast as string to seamlessly integrate into the "apiUrl" parameter
