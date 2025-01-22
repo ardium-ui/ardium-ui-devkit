@@ -17,7 +17,7 @@ export function createHttpService(apiUrl: string, defaultOptions: RequestOptions
      * @param options The HTTP options to send with the request.
      * @returns An Observable of the response type based on the options.
      */
-    request<TRes = any, O extends RequestOptions = {}>(
+    request<TRes = Object, O extends RequestOptions = {}>(
       methodOrReq: string | HttpRequest<any>,
       url?: string,
       options?: O,
@@ -43,7 +43,7 @@ export function createHttpService(apiUrl: string, defaultOptions: RequestOptions
      * @param options The HTTP options to send with the request.
      * @returns An Observable of the response type based on the options.
      */
-    delete<TBody = any, TRes = any, O extends RequestOptions = {}>(
+    delete<TBody = Object, TRes = Object, O extends RequestOptions = {}>(
       url: string,
       options?: O & { body?: TBody },
     ): Observable<RequestReturnType<O, TRes>> {
@@ -62,7 +62,7 @@ export function createHttpService(apiUrl: string, defaultOptions: RequestOptions
      * @param options The HTTP options to send with the request.
      * @returns An Observable of the response type based on the options.
      */
-    get<TRes = any, O extends RequestOptions = {}>(
+    get<TRes = Object, O extends RequestOptions = {}>(
       url: string,
       options?: O,
     ): Observable<RequestReturnType<O, TRes>> {
@@ -81,7 +81,7 @@ export function createHttpService(apiUrl: string, defaultOptions: RequestOptions
      * @param options The HTTP options to send with the request.
      * @returns An Observable of the response type based on the options.
      */
-    head<TRes = any, O extends RequestOptions = {}>(
+    head<TRes = Object, O extends RequestOptions = {}>(
       url: string,
       options?: O,
     ): Observable<RequestReturnType<O, TRes>> {
@@ -99,25 +99,15 @@ export function createHttpService(apiUrl: string, defaultOptions: RequestOptions
      * @param url The resource URL.
      * @param callbackParam The callback function name.
      *
-     * @return An `Observable` of the response object, with response body as an object.
-     */
-    jsonp(url: string, callbackParam: string): Observable<Object>;
-    /**
-     * Constructs a `JSONP` request for the given URL and name of the callback parameter.
-     *
-     * @param url The resource URL.
-     * @param callbackParam The callback function name.
-     *
      * You must install a suitable interceptor, such as one provided by `HttpClientJsonpModule`.
      * If no such interceptor is reached,
      * then the `JSONP` request can be rejected by the configured backend.
      *
      * @return An `Observable` of the response object, with response body in the requested type.
      */
-    jsonp<TRes>(url: string, callbackParam: string): Observable<TRes>;
-    jsonp(url: string, callbackParam: string): Observable<any> {
+    jsonp<TRes = Object>(url: string, callbackParam: string): Observable<TRes> {
       url = this._getUrl(url!);
-      return this._http.jsonp(url, callbackParam);
+      return this._http.jsonp(url, callbackParam) as Observable<TRes>;
     }
 
     //! ================================================= OPTIONS
@@ -128,7 +118,7 @@ export function createHttpService(apiUrl: string, defaultOptions: RequestOptions
      * @param options The HTTP options to send with the request.
      * @returns An Observable of the response type based on the options.
      */
-    options<TRes = any, O extends RequestOptions = {}>(
+    options<TRes = Object, O extends RequestOptions = {}>(
       url: string,
       options?: O,
     ): Observable<RequestReturnType<O, TRes>> {
@@ -148,7 +138,7 @@ export function createHttpService(apiUrl: string, defaultOptions: RequestOptions
      * @param options The HTTP options to send with the request.
      * @returns An Observable of the response type based on the options.
      */
-    patch<TBody = any, TRes = any, O extends RequestOptions = {}>(
+    patch<TBody = any, TRes = Object, O extends RequestOptions = {}>(
       url: string,
       body: TBody | null,
       options?: O,
@@ -169,7 +159,7 @@ export function createHttpService(apiUrl: string, defaultOptions: RequestOptions
      * @param options The HTTP options to send with the request.
      * @returns An Observable of the response type based on the options.
      */
-    post<TBody = any, TRes = any, O extends RequestOptions = {}>(
+    post<TBody = any, TRes = Object, O extends RequestOptions = {}>(
       url: string,
       body: TBody | null,
       options?: O,
@@ -190,7 +180,7 @@ export function createHttpService(apiUrl: string, defaultOptions: RequestOptions
      * @param options The HTTP options to send with the request.
      * @returns An Observable of the response type based on the options.
      */
-    put<TBody = any, TRes = any, O extends RequestOptions = {}>(
+    put<TBody = any, TRes = Object, O extends RequestOptions = {}>(
       url: string,
       body: TBody | null,
       options?: O,
