@@ -1,11 +1,8 @@
-import { HttpContext, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpContext, HttpEvent, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 
-export type _AngularHttpClientOptions = {
-  headers?:
-    | HttpHeaders
-    | {
-        [header: string]: string | string[];
-      };
+export interface RequestOptions {
+  body?: any;
+  headers?: HttpHeaders | { [header: string]: string | string[] };
   context?: HttpContext;
   observe?: 'body' | 'events' | 'response';
   params?:
@@ -18,13 +15,40 @@ export type _AngularHttpClientOptions = {
           | ReadonlyArray<string | number | boolean>;
       };
   reportProgress?: boolean;
-  responseType?: 'json' | 'text' | 'blob' | 'arraybuffer';
+  responseType?: 'arraybuffer' | 'blob' | 'json' | 'text';
   withCredentials?: boolean;
-  transferCache?:
-    | {
-        includeHeaders?: string[];
-      }
-    | boolean;
-};
+  transferCache?: { includeHeaders?: string[] } | boolean;
+}
 
-export const HTTP_SERVICE_SYMBOL = Symbol('http-service') as unknown as string; // type-cast as string to seamlessly integrate into the "apiUrl" parameter
+export type RequestReturnType<
+  O extends RequestOptions,
+  TRes = any,
+> = O['observe'] extends 'body'
+  ? O['responseType'] extends 'arraybuffer'
+    ? ArrayBuffer
+    : O['responseType'] extends 'blob'
+      ? Blob
+      : O['responseType'] extends 'text'
+        ? string
+        : TRes // Defaults to JSON
+  : O['observe'] extends 'response'
+    ? HttpResponse<
+        O['responseType'] extends 'arraybuffer'
+          ? ArrayBuffer
+          : O['responseType'] extends 'blob'
+            ? Blob
+            : O['responseType'] extends 'text'
+              ? string
+              : TRes
+      >
+    : O['observe'] extends 'events'
+      ? HttpEvent<
+          O['responseType'] extends 'arraybuffer'
+            ? ArrayBuffer
+            : O['responseType'] extends 'blob'
+              ? Blob
+              : O['responseType'] extends 'text'
+                ? string
+                : TRes
+        >
+      : never;

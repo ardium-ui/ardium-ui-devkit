@@ -1,0 +1,5 @@
+## v3.0.0
+
+### Breaking Changes
+* Removed `HttpService` - replaced with `createHttpService` factory function that now takes the apiUrl and default options, and returns a class to be used as a service. Library now doesn't add the @Injectable decorator to the service - it should be handled in the application for better control.
+* Removed `provideHttpService` function - not needed anymore, as factory function will now be used. The `HttpService` now no longer comes with the native `HttpClient` auto-provided.
