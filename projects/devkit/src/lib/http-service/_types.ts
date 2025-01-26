@@ -30,7 +30,7 @@ export type RequestReturnType<
       ? Blob
       : O['responseType'] extends 'text'
         ? string
-        : TRes // Defaults to JSON
+        : TRes
   : O['observe'] extends 'response'
     ? HttpResponse<
         O['responseType'] extends 'arraybuffer'

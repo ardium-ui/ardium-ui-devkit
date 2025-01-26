@@ -3,8 +3,10 @@ import { inject } from "@angular/core";
 import { Observable } from "rxjs";
 import { RequestOptions, RequestReturnType } from "./_types";
 
-export function createHttpService(apiUrl: string, defaultOptions: RequestOptions) {
-  return class {
+const FAULTY_URL_REGEX = /https?:\/\//;
+
+export function createHttpService(apiUrl: string, defaultOptions: RequestOptions = {}) {
+  class _HttpService {
     private readonly _http = inject(HttpClient);
 
     public readonly apiUrl = apiUrl;
@@ -193,10 +195,15 @@ export function createHttpService(apiUrl: string, defaultOptions: RequestOptions
     }
 
     private _getUrl(url: string): string {
-      return apiUrl + url.replace(/^\//, '');
+      const finalUrl = apiUrl + url.replace(/^\//, '');
+      if (FAULTY_URL_REGEX.test(url)) {
+        console.warn(`DKT-WA0020: The url "${url}" passed into custom HTTP Service seems to be faulty, as it would produce a request to "${finalUrl}". Custom HTTP Service instances prepend an API url, and thus only accept relative url paths.`)
+      }
+      return finalUrl;
     }
     private _getOpts<O extends RequestOptions>(options?: O): any {
       return { ...defaultOptions, ...(options ?? {}) };
     }
   };
+  return new _HttpService();
 }
