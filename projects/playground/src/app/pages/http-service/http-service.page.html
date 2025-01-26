@@ -1,0 +1,12 @@
+<main>
+  <label for="id">User id</label>
+  <input type="text" id="id" [(ngModel)]="id" />
+  <p>Result:</p>
+  @if (users.isLoading()) {
+  <pre>Loading...</pre>
+  } @else if (users.error()) {
+  <pre>{{ error() }}</pre>
+  } @else {
+  <pre>{{ users.value() | json }}</pre>
+  }
+</main>
