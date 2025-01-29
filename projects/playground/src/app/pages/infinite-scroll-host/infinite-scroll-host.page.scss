@@ -1,0 +1,23 @@
+main {
+  height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scroll-host {
+  height: 50vh;
+  width: 50vh;
+  overflow-y: auto;
+  border: 1px solid red;
+
+  div {
+    height: 20vh;
+    border-bottom: 1px solid black;
+    position: relative;
+    display: grid;
+    place-items: center;
+    font-size: 40px;
+    font-weight: bold;
+  }
+}
