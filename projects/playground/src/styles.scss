@@ -6,6 +6,11 @@
   box-sizing: border-box;
 }
 
+body {
+  padding: 0.5rem;
+  font-family: 'Roboto', sans-serif;
+}
+
 .hidden {
   display: none !important;
 }
