@@ -6,7 +6,9 @@ import { RequestOptions, RequestReturnType } from "./_types";
 const FAULTY_URL_REGEX = /https?:\/\//;
 
 export function createHttpService(apiUrl: string, defaultOptions: RequestOptions = {}) {
-  class _HttpService {
+  return class {
+    constructor() {}
+
     private readonly _http = inject(HttpClient);
 
     public readonly apiUrl = apiUrl;
@@ -205,5 +207,4 @@ export function createHttpService(apiUrl: string, defaultOptions: RequestOptions
       return { ...defaultOptions, ...(options ?? {}) };
     }
   };
-  return new _HttpService();
 }

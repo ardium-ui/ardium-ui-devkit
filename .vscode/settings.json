@@ -1,0 +1,19 @@
+{
+  "restoreTerminals.terminals": [
+    {
+      "splitTerminals": [
+        {
+          "name": "ng"
+        }
+      ]
+    },
+    {
+      "splitTerminals": [
+        {
+          "name": "ng serve",
+          "commands": ["pnpm start"]
+        }
+      ]
+    },
+  ]
+}
