@@ -19,6 +19,8 @@ export * from './lib/file-pipes/filesize.pipe';
 
 export * from './lib/hold';
 
+export * from './lib/http-service';
+
 export * from './lib/coercion/array';
 export * from './lib/coercion/boolean';
 export * from './lib/coercion/date';

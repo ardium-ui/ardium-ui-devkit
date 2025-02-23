@@ -38,13 +38,16 @@ export class ArdiumInfiniteScrollDirective {
   }
 
   //! options
-  readonly ardInfScrollThreshold = input<number, any>(this._DEFAULTS.threshold, {
-    transform: (v) => coerceNumberProperty(v, this._DEFAULTS.threshold),
-  });
+  readonly ardInfScrollThreshold = input<number, any>(
+    this._DEFAULTS.threshold ?? 200,
+    {
+      transform: (v) => coerceNumberProperty(v, this._DEFAULTS.threshold ?? 200),
+    },
+  );
   readonly ardInfScrollActive = model<boolean>(true, {});
 
   readonly ardInfScrollTarget = input<ArdInfScrollTarget>(
-    this._DEFAULTS.target,
+    this._DEFAULTS.target ?? ArdInfScrollTarget.HTML,
   );
 
   //! event handlers
@@ -70,6 +73,7 @@ export class ArdiumInfiniteScrollDirective {
   @HostListener('window:scroll')
   onWindowScroll() {
     if (!this.ardInfScrollActive()) return;
+    if (this.ardInfScrollTarget() !== ArdInfScrollTarget.HTML) return;
 
     const { top, height } = this._getElementRect();
     const viewportHeight = window.innerHeight;

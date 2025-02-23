@@ -1,7 +1,12 @@
-import { Injectable, OnDestroy, Renderer2 } from '@angular/core';
+import {
+  computed,
+  Injectable,
+  OnDestroy,
+  Renderer2,
+  signal,
+} from '@angular/core';
 import { ɵDomRendererFactory2 } from '@angular/platform-browser';
-import { keyToString } from 'key-display-names';
-import { BehaviorSubject, filter, Observable, Subject } from 'rxjs';
+import { filter, Observable, Subject } from 'rxjs';
 import {
   KeyboardKey,
   KeyboardKeyState,
@@ -22,12 +27,12 @@ export class KeyboardService implements OnDestroy {
     this.removeListenFuncKeydown = this.renderer.listen(
       'document',
       'keydown',
-      (e) => this.onKeydown(e),
+      (e) => this._onKeydown(e),
     );
     this.removeListenFuncKeyup = this.renderer.listen(
       'document',
       'keyup',
-      (e) => this.onKeyup(e),
+      (e) => this._onKeyup(e),
     );
     this.removeListenFuncWindowblur = this.renderer.listen(
       'window',
@@ -44,170 +49,156 @@ export class KeyboardService implements OnDestroy {
   }
 
   private _resetAllKeys(): void {
-    this.setShiftHeld(false);
-    this.setCtrlHeld(false);
-    this.setAltHeld(false);
-    this.setMetaHeld(false);
+    this._shiftHeld.set(false);
+    this._ctrlHeld.set(false);
+    this._altHeld.set(false);
+    this._metaHeld.set(false);
   }
 
-  private _shiftHeld: boolean = false;
-  private _shiftHeldSubject = new BehaviorSubject(false);
-  public shiftHeld = this._shiftHeldSubject.asObservable();
-  setShiftHeld(v: boolean) {
-    this._shiftHeld = v;
-    this._shiftHeldSubject.next(v);
-  }
-  private _ctrlHeld: boolean = false;
-  private _ctrlHeldSubject = new BehaviorSubject(false);
-  public ctrlHeld = this._ctrlHeldSubject.asObservable();
-  setCtrlHeld(v: boolean) {
-    this._ctrlHeld = v;
-    this._ctrlHeldSubject.next(v);
-  }
-  private _altHeld: boolean = false;
-  private _altHeldSubject = new BehaviorSubject(false);
-  public altHeld = this._altHeldSubject.asObservable();
-  setAltHeld(v: boolean) {
-    this._altHeld = v;
-    this._altHeldSubject.next(v);
-  }
-  private _metaHeld: boolean = false; // "⊞ Win" on Windows, "⌘ Command" on Mac
-  private _metaHeldSubject = new BehaviorSubject(false);
-  public metaHeld = this._metaHeldSubject.asObservable();
-  setMetaHeld(v: boolean) {
-    this._metaHeld = v;
-    this._metaHeldSubject.next(v);
-  }
+  private readonly _shiftHeld = signal<boolean>(false);
+  public readonly shiftHeld = this._shiftHeld.asReadonly();
 
-  isAnyModifierKeyHeld(): boolean {
-    return this._shiftHeld || this._ctrlHeld || this._altHeld || this._metaHeld;
-  }
+  private readonly _ctrlHeld = signal<boolean>(false);
+  public readonly ctrlHeld = this._ctrlHeld.asReadonly();
 
-  private _shortcutSubject = new Subject<KeyboardShortcut>();
-  public anyShortcut = this._shortcutSubject.asObservable();
+  private readonly _altHeld = signal<boolean>(false);
+  public readonly altHeld = this._altHeld.asReadonly();
 
-  private _keySubject = new Subject<KeyboardKey>();
-  public keypress = this._keySubject.asObservable();
+  private readonly _metaHeld = signal<boolean>(false); // "⊞ Win" on Windows, "⌘ Command" on Mac
+  public readonly metaHeld = this._metaHeld.asReadonly();
 
-  private _keyStateSubject = new Subject<KeyboardKeyState>();
-  public keyState = this._keyStateSubject.asObservable();
+  private readonly _capsLockOn = signal<boolean | undefined>(undefined);
+  public readonly capsLockOn = this._capsLockOn.asReadonly();
 
-  private _mapKeyCode(code: string): string {
-    code = code.toLowerCase();
-    if (code.match(/arrow/)) return code;
-    if (!code.match(/bracket/) && code.match(/left|right/))
-      return code.replace(/left|right/, '');
-    if (code.match(/digit\d|key[a-z]/)) return code.substring(code.length - 1);
-    return code;
-  }
+  private readonly _numLockOn = signal<boolean | undefined>(undefined);
+  public readonly numLockOn = this._numLockOn.asReadonly();
+
+  private readonly _scrollLockOn = signal<boolean | undefined>(undefined);
+  public readonly scrollLockOn = this._scrollLockOn.asReadonly();
+
+  public readonly isAnyModifierKeyHeld = computed(
+    () =>
+      this._shiftHeld() ||
+      this._ctrlHeld() ||
+      this._altHeld() ||
+      this._metaHeld(),
+  );
+
+  private readonly _shortcutSubject$ = new Subject<KeyboardShortcut>();
+  public readonly anyShortcut$ = this._shortcutSubject$.asObservable();
+
+  private readonly _keySubject$ = new Subject<KeyboardKey>();
+  public readonly keypress$ = this._keySubject$.asObservable();
+
+  private readonly _keyStateSubject$ = new Subject<KeyboardKeyState>();
+  public readonly keyState$ = this._keyStateSubject$.asObservable();
+
   private _demapKeyCode(code: string): string {
     code = code.toLowerCase();
-    if (code.match(/^(left|right|up|down)$/)) return `arrow${code}`;
-    if (code.match(/^arrow(left|right|up|down)$/)) return code;
-    if (!code.match(/^bracket/) && code.match(/.+(left|right)$/))
-      return code.replace(/(left|right)/, '');
-    if (code.match(/^(digit\d|key[a-z])$/))
-      return code.substring(code.length - 1);
+    if (code.match(/^(left|right|up|down)$/))
+      return `Arrow${code.charAt(0).toUpperCase()}${code.substring(1)}`;
+    if (code.match(/^[a-z]$/)) return `Key${code.toUpperCase()}`;
+    if (code.match(/^\d$/)) return `Digit${code}`;
     if (code == 'ctrl') return 'control';
     if (code.match(/^win(dows)?$/)) return 'meta';
     return code;
   }
   private _emitShortcut(event: KeyboardEvent): void {
-    let keys = [];
-    if (this._shiftHeld) keys.push('shift');
-    if (this._ctrlHeld) keys.push('control');
-    if (this._altHeld) keys.push('alt');
-    if (this._metaHeld) keys.push('meta');
-    keys.push(this._mapKeyCode(event.code));
+    const keys = [];
+    if (this._ctrlHeld()) keys.push('Control');
+    if (this._altHeld()) keys.push('Alt');
+    if (this._shiftHeld()) keys.push('Shift');
+    if (this._metaHeld()) keys.push('Meta');
+    keys.push(event.code);
 
-    this._shortcutSubject.next({
+    this._shortcutSubject$.next({
       keys,
       event,
     });
   }
   private _emitKeydown(event: KeyboardEvent): void {
-    let key = this._mapKeyCode(event.code);
-    this._keySubject.next({ key, event });
+    const key = event.code;
+    this._keySubject$.next({ key, event });
   }
   private _emitKeyStateDown(event: KeyboardEvent): void {
-    let key = this._mapKeyCode(event.code);
-    this._keyStateSubject.next({ key, event, isHeld: true });
+    const key = event.code;
+    this._keyStateSubject$.next({ key, event, isHeld: true });
   }
   private _emitKeyStateUp(event: KeyboardEvent): void {
-    let key = this._mapKeyCode(event.code);
-    this._keyStateSubject.next({ key, event, isHeld: false });
+    const key = event.code;
+    this._keyStateSubject$.next({ key, event, isHeld: false });
   }
 
   listenToShortcut(toMatch: string[]): Observable<KeyboardShortcut> {
-    let toMatchStr = toMatch
+    const toMatchStr = toMatch
       .map((code) => this._demapKeyCode(code))
       .sort()
-      .toString();
-    return this.anyShortcut.pipe(
-      filter((shortcut) => shortcut.keys.sort().toString() == toMatchStr),
-    );
-  }
-  listenToKey(code: string): Observable<KeyboardKey> {
-    let keyStr = this._demapKeyCode(code);
-    return this.keypress.pipe(filter((key) => key.key == keyStr));
-  }
-  listenToKeyState(
-    code: string,
-    anyState: boolean = false,
-  ): Observable<KeyboardKeyState> {
-    let keyStr = this._demapKeyCode(code);
-    return this.keyState.pipe(
+      .toString()
+      .toLowerCase();
+    return this.anyShortcut$.pipe(
       filter(
-        (key) => key.key == keyStr && (anyState || (!anyState && key.isHeld)),
+        (shortcut) =>
+          shortcut.keys.sort().toString().toLowerCase() == toMatchStr,
       ),
     );
   }
+  listenToKey(code: string): Observable<KeyboardKey> {
+    const keyStr = this._demapKeyCode(code);
+    return this.keypress$.pipe(filter((key) => key.key == keyStr));
+  }
+  listenToKeyState(code: string): Observable<KeyboardKeyState> {
+    const keyStr = this._demapKeyCode(code);
+    return this.keyState$.pipe(filter((key) => key.key == keyStr));
+  }
 
-  onKeydown(event: KeyboardEvent): void {
+  private _onKeydown(event: KeyboardEvent): void {
     let wasModifierKey = false;
     switch (event.key) {
       case 'Shift':
-        this.setShiftHeld(true);
+        this._shiftHeld.set(true);
         wasModifierKey = true;
         break;
       case 'Control':
-        this.setCtrlHeld(true);
+        this._ctrlHeld.set(true);
         wasModifierKey = true;
         break;
       case 'Alt':
-        this.setAltHeld(true);
+        this._altHeld.set(true);
         wasModifierKey = true;
         break;
       case 'Meta':
-        this.setMetaHeld(true);
+        this._metaHeld.set(true);
         wasModifierKey = true;
         break;
     }
+    this._updateLockKeyStates(event);
+
     this._emitKeyStateDown(event);
     if (!wasModifierKey && this.isAnyModifierKeyHeld()) {
       this._emitShortcut(event);
     } else this._emitKeydown(event);
   }
+  private _updateLockKeyStates(event: KeyboardEvent): void {
+    this._capsLockOn.set(event.getModifierState?.('CapsLock'));
+    this._numLockOn.set(event.getModifierState?.('NumLock'));
+    this._scrollLockOn.set(event.getModifierState?.('ScrollLock'));
+  }
 
-  onKeyup(event: KeyboardEvent): void {
+  private _onKeyup(event: KeyboardEvent): void {
     switch (event.key) {
       case 'Shift':
-        this.setShiftHeld(false);
+        this._shiftHeld.set(false);
         break;
       case 'Control':
-        this.setCtrlHeld(false);
+        this._ctrlHeld.set(false);
         break;
       case 'Alt':
-        this.setAltHeld(false);
+        this._altHeld.set(false);
         break;
       case 'Meta':
-        this.setMetaHeld(false);
+        this._metaHeld.set(false);
         break;
     }
     this._emitKeyStateUp(event);
-  }
-
-  mapKeyForDisplay(key: string, useShort: boolean = true): string {
-    return keyToString(key, useShort);
   }
 }
