@@ -20,6 +20,8 @@ Please specify a valid bump type.
   process.exit(1);
 }
 
+const rootDir = path.join(__dirname, '..');
+
 try {
   // 1. Bump the version in projects/devkit.
   execSync(`cd projects/devkit && npm version ${bumpType}`, {
@@ -28,7 +30,7 @@ try {
 
   // 2. Read the new version from projects/devkit/package.json.
   const devkitPackagePath = path.join(
-    __dirname,
+    rootDir,
     "projects",
     "devkit",
     "package.json",
@@ -48,10 +50,13 @@ try {
   execSync("git push --tags", { stdio: "inherit" });
 
   // 5. Build and publish.
-  execSync(
+  console.log(
     "rmdir /s /Q dist & ng build --project=devkit && cd dist/devkit && npm publish --access public && cd ../../",
-    { stdio: "inherit" },
   );
+  // execSync(
+  //   "rmdir /s /Q dist & ng build --project=devkit && cd dist/devkit && npm publish --access public && cd ../../",
+  //   { stdio: "inherit" },
+  // );
 
   console.log(`Successfully released version v${version}!`);
 } catch (error) {
