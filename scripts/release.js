@@ -5,6 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const ansis = require("ansis");
 
+// Check if valid bump type is specified
 const bumpType = process.argv[2];
 
 if (!bumpType) {
@@ -22,6 +23,7 @@ Please specify a valid bump type.
 
 let startTime = new Date();
 
+// Check if all changes are committed
 try {
   execSync("git diff-index --quiet HEAD --");
   console.log(
