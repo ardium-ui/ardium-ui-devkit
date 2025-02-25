@@ -1,0 +1,46 @@
+<p>Press W A S D keys</p>
+<p>Press Ctrl+F, Alt+Y, Ctrl+Alt+G, Meta+C</p>
+<p>Press and release Z key</p>
+<hr>
+<p>Modifier key states:</p>
+<table class="modifier-table">
+  <thead>
+    <tr>
+      <th scope="col">Key</th>
+      <th scope="col">Left</th>
+      <th scope="col">Right</th>
+      <th scope="col">Any</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Ctrl</th>
+      <td>{{ keyboardService.isLeftCtrlHeld() }}</td>
+      <td>{{ keyboardService.isRightCtrlHeld() }}</td>
+      <td>{{ keyboardService.isCtrlHeld() }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Alt</th>
+      <td>{{ keyboardService.isAltHeld() }}</td>
+      <td>{{ keyboardService.isAltGraphHeld() }}</td>
+      <td>{{ keyboardService.isAltHeld() }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Shift</th>
+      <td>{{ keyboardService.isLeftShiftHeld() }}</td>
+      <td>{{ keyboardService.isRightShiftHeld() }}</td>
+      <td>{{ keyboardService.isShiftHeld() }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Meta</th>
+      <td>{{ keyboardService.isLeftMetaHeld() }}</td>
+      <td>{{ keyboardService.isRightMetaHeld() }}</td>
+      <td>{{ keyboardService.isMetaHeld() }}</td>
+    </tr>
+  </tbody>
+</table>
+<ul>
+  <li><strong>CapsLock:</strong> {{ keyboardService.capsLockState() ?? 'undefined' }}</li>
+  <li><strong>NumLock:</strong> {{ keyboardService.numLockState() ?? 'undefined' }}</li>
+  <li><strong>ScrollLock:</strong> {{ keyboardService.scrollLockState() ?? 'undefined' }}</li>
+</ul>

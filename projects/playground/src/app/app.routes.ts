@@ -5,6 +5,7 @@ import { HomePage } from './pages/home/home.page';
 import { HttpServicePage } from './pages/http-service/http-service.page';
 import { InfiniteScrollHostPage } from './pages/infinite-scroll-host/infinite-scroll-host.page';
 import { InfiniteScrollPage } from './pages/infinite-scroll/infinite-scroll.page';
+import { KeyboardPage } from './pages/keyboard/keyboard.page';
 import { SignalsPage } from './pages/signals/signals.page';
 
 export const routes: Routes = [
@@ -15,4 +16,5 @@ export const routes: Routes = [
   { path: 'file-system', component: FileSystemPage },
   { path: 'hold', component: HoldPage },
   { path: 'http-service', component: HttpServicePage },
+  { path: 'keyboard', component: KeyboardPage },
 ];
