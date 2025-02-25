@@ -51,7 +51,7 @@ try {
 
   // 5. Build and publish.
   console.log(
-    "rmdir /s /Q dist & ng build --project=devkit && cd dist/devkit && npm publish --access public && cd ../../",
+    "cd ../ && rmdir /s /Q dist & ng build --project=devkit && cd dist/devkit && npm publish --access public && cd ../../",
   );
   // execSync(
   //   "rmdir /s /Q dist & ng build --project=devkit && cd dist/devkit && npm publish --access public && cd ../../",

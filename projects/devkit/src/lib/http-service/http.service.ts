@@ -1,15 +1,35 @@
-import { HttpClient, HttpRequest } from "@angular/common/http";
-import { inject } from "@angular/core";
-import { Observable } from "rxjs";
-import { RequestOptions, RequestReturnType } from "./_types";
+import { HttpClient, HttpRequest } from '@angular/common/http';
+import { inject } from '@angular/core';
+import { Observable } from 'rxjs';
+import { RequestOptions, RequestReturnType } from './_types';
 
 const FAULTY_URL_REGEX = /https?:\/\//;
 
-export function createHttpService(apiUrl: string, defaultOptions: RequestOptions = {}) {
-  return class {
-    constructor() {}
+function getUrl(apiUrl: string, url: string): string {
+  const finalUrl = apiUrl + url.replace(/^\//, '');
+  if (FAULTY_URL_REGEX.test(url)) {
+    console.warn(
+      `DKT-WA0020: The url "${url}" passed into custom HTTP Service seems to be faulty, as it would produce a request to "${finalUrl}". Custom HTTP Service instances prepend an API url, and thus only accept relative url paths.`,
+    );
+  }
+  return finalUrl;
+}
+function getOpts<O extends RequestOptions>(
+  defaultOptions: RequestOptions,
+  options?: O,
+): any {
+  return { ...defaultOptions, ...(options ?? {}) };
+}
 
-    private readonly _http = inject(HttpClient);
+export function createHttpService(
+  apiUrl: string,
+  defaultOptions: RequestOptions = {},
+) {
+  let http!: HttpClient;
+  return class {
+    constructor() {
+      http = inject(HttpClient);
+    }
 
     public readonly apiUrl = apiUrl;
 
@@ -27,15 +47,13 @@ export function createHttpService(apiUrl: string, defaultOptions: RequestOptions
       options?: O,
     ): Observable<RequestReturnType<O, TRes>> {
       if (typeof methodOrReq === 'string') {
-        const finalUrl = this._getUrl(url!);
-        const finalOptions = this._getOpts(options);
-        return this._http.request(
-          methodOrReq,
-          finalUrl,
-          finalOptions,
-        ) as Observable<RequestReturnType<O, TRes>>;
+        const finalUrl = getUrl(apiUrl, url!);
+        const finalOptions = getOpts(defaultOptions, options);
+        return http.request(methodOrReq, finalUrl, finalOptions) as Observable<
+          RequestReturnType<O, TRes>
+        >;
       }
-      return this._http.request(methodOrReq) as Observable<
+      return http.request(methodOrReq) as Observable<
         RequestReturnType<O, TRes>
       >;
     }
@@ -51,9 +69,9 @@ export function createHttpService(apiUrl: string, defaultOptions: RequestOptions
       url: string,
       options?: O & { body?: TBody },
     ): Observable<RequestReturnType<O, TRes>> {
-      const finalUrl = this._getUrl(url);
-      const finalOptions = this._getOpts(options);
-      return this._http.delete(finalUrl, finalOptions) as Observable<
+      const finalUrl = getUrl(apiUrl, url);
+      const finalOptions = getOpts(defaultOptions, options);
+      return http.delete(finalUrl, finalOptions) as Observable<
         RequestReturnType<O, TRes>
       >;
     }
@@ -70,9 +88,9 @@ export function createHttpService(apiUrl: string, defaultOptions: RequestOptions
       url: string,
       options?: O,
     ): Observable<RequestReturnType<O, TRes>> {
-      const finalUrl = this._getUrl(url);
-      const finalOptions = this._getOpts(options);
-      return this._http.get(finalUrl, finalOptions) as Observable<
+      const finalUrl = getUrl(apiUrl, url);
+      const finalOptions = getOpts(defaultOptions, options);
+      return http.get(finalUrl, finalOptions) as Observable<
         RequestReturnType<O, TRes>
       >;
     }
@@ -89,9 +107,9 @@ export function createHttpService(apiUrl: string, defaultOptions: RequestOptions
       url: string,
       options?: O,
     ): Observable<RequestReturnType<O, TRes>> {
-      const finalUrl = this._getUrl(url);
-      const finalOptions = this._getOpts(options);
-      return this._http.head(finalUrl, finalOptions) as Observable<
+      const finalUrl = getUrl(apiUrl, url);
+      const finalOptions = getOpts(defaultOptions, options);
+      return http.head(finalUrl, finalOptions) as Observable<
         RequestReturnType<O, TRes>
       >;
     }
@@ -110,8 +128,8 @@ export function createHttpService(apiUrl: string, defaultOptions: RequestOptions
      * @return An `Observable` of the response object, with response body in the requested type.
      */
     jsonp<TRes = Object>(url: string, callbackParam: string): Observable<TRes> {
-      url = this._getUrl(url!);
-      return this._http.jsonp(url, callbackParam) as Observable<TRes>;
+      url = getUrl(apiUrl, url!);
+      return http.jsonp(url, callbackParam) as Observable<TRes>;
     }
 
     //! ================================================= OPTIONS
@@ -126,9 +144,9 @@ export function createHttpService(apiUrl: string, defaultOptions: RequestOptions
       url: string,
       options?: O,
     ): Observable<RequestReturnType<O, TRes>> {
-      const finalUrl = this._getUrl(url);
-      const finalOptions = this._getOpts(options);
-      return this._http.options(finalUrl, finalOptions) as Observable<
+      const finalUrl = getUrl(apiUrl, url);
+      const finalOptions = getOpts(defaultOptions, options);
+      return http.options(finalUrl, finalOptions) as Observable<
         RequestReturnType<O, TRes>
       >;
     }
@@ -147,9 +165,9 @@ export function createHttpService(apiUrl: string, defaultOptions: RequestOptions
       body: TBody | null,
       options?: O,
     ): Observable<RequestReturnType<O, TRes>> {
-      const finalUrl = this._getUrl(url);
-      const finalOptions = this._getOpts(options);
-      return this._http.patch(finalUrl, body, finalOptions) as Observable<
+      const finalUrl = getUrl(apiUrl, url);
+      const finalOptions = getOpts(defaultOptions, options);
+      return http.patch(finalUrl, body, finalOptions) as Observable<
         RequestReturnType<O, TRes>
       >;
     }
@@ -168,9 +186,9 @@ export function createHttpService(apiUrl: string, defaultOptions: RequestOptions
       body: TBody | null,
       options?: O,
     ): Observable<RequestReturnType<O, TRes>> {
-      const finalUrl = this._getUrl(url);
-      const finalOptions = this._getOpts(options);
-      return this._http.post(finalUrl, body, finalOptions) as Observable<
+      const finalUrl = getUrl(apiUrl, url);
+      const finalOptions = getOpts(defaultOptions, options);
+      return http.post(finalUrl, body, finalOptions) as Observable<
         RequestReturnType<O, TRes>
       >;
     }
@@ -189,22 +207,11 @@ export function createHttpService(apiUrl: string, defaultOptions: RequestOptions
       body: TBody | null,
       options?: O,
     ): Observable<RequestReturnType<O, TRes>> {
-      const finalUrl = this._getUrl(url);
-      const finalOptions = this._getOpts(options);
-      return this._http.put(finalUrl, body, finalOptions) as Observable<
+      const finalUrl = getUrl(apiUrl, url);
+      const finalOptions = getOpts(defaultOptions, options);
+      return http.put(finalUrl, body, finalOptions) as Observable<
         RequestReturnType<O, TRes>
       >;
-    }
-
-    private _getUrl(url: string): string {
-      const finalUrl = apiUrl + url.replace(/^\//, '');
-      if (FAULTY_URL_REGEX.test(url)) {
-        console.warn(`DKT-WA0020: The url "${url}" passed into custom HTTP Service seems to be faulty, as it would produce a request to "${finalUrl}". Custom HTTP Service instances prepend an API url, and thus only accept relative url paths.`)
-      }
-      return finalUrl;
-    }
-    private _getOpts<O extends RequestOptions>(options?: O): any {
-      return { ...defaultOptions, ...(options ?? {}) };
     }
   };
 }

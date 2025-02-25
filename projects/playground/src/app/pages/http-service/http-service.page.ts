@@ -2,7 +2,7 @@ import { JsonPipe } from '@angular/common';
 import { Component, computed, inject, Injectable, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { createHttpService } from '../../../../../devkit/src/lib/http-service/http.service';
+import { createHttpService } from '../../../../../devkit/src/public-api';
 
 @Injectable({ providedIn: 'root' })
 export class MyHttpService extends createHttpService(
