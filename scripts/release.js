@@ -99,8 +99,8 @@ try {
 
   // Build and publish
   execSync(
-    "ng build --project=devkit && cd dist/devkit && npm publish --access public && cd ../../",
-    { stdio: "ignore" },
+    "cd ../ && ng build --project=devkit && cd dist/devkit && npm publish --access public",
+    { stdio: "inherit" },
   );
 
   console.log(
