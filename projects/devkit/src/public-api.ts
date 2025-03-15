@@ -2,44 +2,31 @@
  * Public API Surface of devkit
  */
 
-export * from './lib/click-outside/click-outside.directive';
-export * from './lib/click-outside/click-outside.module';
+//! feature group 0 - services
+export * from './lib/file-system'; // 001
+export * from './lib/http-service'; // 002
+export * from './lib/keyboard'; // 003
+export * from './lib/viewport-observer'; // 000
 
-export * from './lib/escape-html/escape-html';
-export * from './lib/escape-html/escape-html.module';
-export * from './lib/escape-html/escape-html.pipe';
-
-export * from './lib/file-system/file-system.service';
-export * from './lib/file-system/file-system.types';
-
-export * from './lib/file-pipes/file-pipes.module';
-export * from './lib/file-pipes/fileext.pipe';
-export * from './lib/file-pipes/filename.pipe';
-export * from './lib/file-pipes/filesize.pipe';
-
+//! feature group 1 - directives
+export * from './lib/click-outside';
+export * from './lib/escape-html';
 export * from './lib/hold';
+export * from './lib/infinite-scroll'; // 100
 
-export * from './lib/http-service';
+//! feature group 2 - pipes
+export * from './lib/file-pipes';
 
-export * from './lib/coercion/array';
-export * from './lib/coercion/boolean';
-export * from './lib/coercion/date';
-export * from './lib/coercion/number';
+//! feature group 3 - signals
+export * from './lib/signals/debounced';
+export * from './lib/signals/persistent'; // 300
+export * from './lib/signals/query-param'; // 301
+export * from './lib/signals/throttled';
+export * from './lib/signals/typed-resource';
 
-export * from './lib/find-functions/find-suggestion';
+//! feature group 9 - other
+export * from './lib/coercion';
+export * from './lib/dom-boxes';
+export * from './lib/find-functions';
+export * from './lib/relative-pos'; // 900
 
-export * from './lib/keyboard/keyboard.service';
-export * from './lib/keyboard/keyboard.types';
-
-export * from './lib/viewport-observer/viewport-observer-ref';
-export * from './lib/viewport-observer/viewport-observer.service';
-
-export * from './lib/position/dom-boxes';
-export * from './lib/position/relative-pos';
-
-export * from './lib/viewport-observer/viewport-observer-ref';
-export * from './lib/viewport-observer/viewport-observer.service';
-
-export * from './lib/infinite-scroll';
-
-export * from './lib/signals';

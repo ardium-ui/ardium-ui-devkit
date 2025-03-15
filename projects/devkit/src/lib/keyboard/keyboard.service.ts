@@ -1,26 +1,26 @@
 import {
-  computed,
-  Injectable,
-  OnDestroy,
-  Renderer2,
-  signal,
-  WritableSignal,
+    computed,
+    Injectable,
+    OnDestroy,
+    Renderer2,
+    signal,
+    WritableSignal,
 } from '@angular/core';
 import { ɵDomRendererFactory2 } from '@angular/platform-browser';
 import { filter, map, Observable, Subject } from 'rxjs';
 import {
-  KeyboardKey,
-  KeyboardKeyState,
-  KeyboardShortcut,
+    KeyboardKey,
+    KeyboardKeyState,
+    KeyboardShortcut,
 } from './keyboard.types';
 import {
-  _ExpectedModifierKeySide,
-  _KeyboardShortcutInternal,
-} from './keyboard.types-internal';
+    _ExpectedModifierKeySide,
+    _KeyboardShortcutInternal,
+} from './types-internal';
 import {
-  isModifierKeyInWrongState,
-  trySettingModifierKey,
-} from './keyboard.utils';
+    isModifierKeyInWrongState,
+    trySettingModifierKey,
+} from './utils';
 
 @Injectable({
   providedIn: 'root',

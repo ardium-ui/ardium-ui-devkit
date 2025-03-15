@@ -1,7 +1,7 @@
 import {
   _ExpectedModifierKeySide,
   _LeftRight
-} from './keyboard.types-internal';
+} from './types-internal';
 
 export function trySettingModifierKey(
   modifierKeyName: string,

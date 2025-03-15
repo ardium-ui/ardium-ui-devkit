@@ -4,12 +4,15 @@ import {
   ArdViewportObserverConfig,
   ArdViewportObserverRef,
 } from './viewport-observer-ref';
+import { ARD_VIEWPORT_OBSERVER_DEFAULTS } from './viewport-observer.defaults';
 
 @Injectable({ providedIn: 'root' })
 export class ArdiumViewportObserverService implements OnDestroy {
   constructor() {
     this.setScrollHost(document);
   }
+
+  protected readonly _DEFAULTS = inject(ARD_VIEWPORT_OBSERVER_DEFAULTS);
 
   private readonly renderer = inject(Renderer2);
 
@@ -22,15 +25,19 @@ export class ArdiumViewportObserverService implements OnDestroy {
 
   public setScrollHost(element: HTMLElement | Document): void {
     this.ngOnDestroy();
-    this._scrollCleanupFn = this.renderer.listen(element, 'scroll', () => {
-      this._scrollSubject.next();
-    });
+    this._scrollCleanupFn = this.renderer.listen(
+      element,
+      'scroll',
+      this._scrollSubject.next,
+    );
   }
 
   public observeElement(
     element: HTMLElement,
     config?: ArdViewportObserverConfig,
   ): ArdViewportObserverRef {
+    config = { ...this._DEFAULTS, ...config };
+
     const vo = new ArdViewportObserverRef(element, this.scroll$, config);
     this._registeredObservers.push(vo);
     return vo;
@@ -38,7 +45,7 @@ export class ArdiumViewportObserverService implements OnDestroy {
 
   public observeById(
     id: string,
-    config?: ArdViewportObserverConfig,
+    config: ArdViewportObserverConfig = this._DEFAULTS,
   ): ArdViewportObserverRef {
     const element = document.getElementById(id);
 
@@ -64,7 +71,7 @@ export class ArdiumViewportObserverService implements OnDestroy {
     return this.observeElement(element, config);
   }
 
-  public triggerRecheck(): void {
+  public recheckAll(): void {
     this._scrollSubject.next();
   }
 
