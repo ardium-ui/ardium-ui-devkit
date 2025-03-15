@@ -1,5 +1,37 @@
+## v7.0.0
+
+### Breaking Changes
+
+- Major changes in `ArdViewportObserverRef`:
+  - `viewportRelation` - changed type from `Observable<ViewportRelation>` to `Signal<ViewportRelation>`.
+  - `isInViewport` - changed type from `Observable<boolean>` to `Signal<boolean | undefined>` - now when the viewport relation is `ViewportRelation.Undefined`, this returns `undefined`.
+  - `enterViewport` and `leaveViewport` - removed.
+- Major changes in `ArdiumViewportObserverService`:
+  - `triggerRecheck()` - renamed to `recheckAll()`
+
+### Additions
+
+- `ArdiumViewportObserverService` now supports providing default config - added `ARD_VIEWPORT_OBSERVER_DEFAULTS` injection token and `provideViewportObserverDefaults` function for providing the default values (as well as the `ArdViewportObserverDefaults` type)
+- Added `ViewportMargins` interface that represents the top & bottom margin values
+- Added `ArdViewportObserverRef.recheck` that rechecks the viewport position of this specific element (before it was only possible by rechecking all registered observers)
+
+### Internal Changes
+
+- Refactored the entire `ArdViewportObserverRef` class
+- Refactored much of the `ArdiumViewportObserverService`
+- Every feature now has its exports handled by its own `index.ts` that tells what should be exported. The public api file now only exports from these `index.ts` files.
+
+## v6.0.0
+
+## v5.0.0
+
+## v3.1.1
+
+## v3.1.0
+
 ## v3.0.0
 
 ### Breaking Changes
-* Removed `HttpService` - replaced with `createHttpService` factory function that now takes the apiUrl and default options, and returns a class to be used as a service. Library now doesn't add the @Injectable decorator to the service - it should be handled in the application for better control.
-* Removed `provideHttpService` function - not needed anymore, as factory function will now be used. The `HttpService` now no longer comes with the native `HttpClient` auto-provided.
+
+- Removed `HttpService` - replaced with `createHttpService` factory function that now takes the apiUrl and default options, and returns a class to be used as a service. Library now doesn't add the @Injectable decorator to the service - it should be handled in the application for better control.
+- Removed `provideHttpService` function - not needed anymore, as factory function will now be used. The `HttpService` now no longer comes with the native `HttpClient` auto-provided.

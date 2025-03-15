@@ -34,18 +34,18 @@ export class ArdiumViewportObserverService implements OnDestroy {
 
   public observeElement(
     element: HTMLElement,
-    config?: ArdViewportObserverConfig,
+    config?: Partial<ArdViewportObserverConfig>,
   ): ArdViewportObserverRef {
-    config = { ...this._DEFAULTS, ...config };
+    const finalConfig = { ...this._DEFAULTS, ...(config ?? {}) };
 
-    const vo = new ArdViewportObserverRef(element, this.scroll$, config);
+    const vo = new ArdViewportObserverRef(element, this.scroll$, finalConfig);
     this._registeredObservers.push(vo);
     return vo;
   }
 
   public observeById(
     id: string,
-    config: ArdViewportObserverConfig = this._DEFAULTS,
+    config?: Partial<ArdViewportObserverConfig>,
   ): ArdViewportObserverRef {
     const element = document.getElementById(id);
 
@@ -59,7 +59,7 @@ export class ArdiumViewportObserverService implements OnDestroy {
 
   public observeByQuery(
     query: string,
-    config?: ArdViewportObserverConfig,
+    config?: Partial<ArdViewportObserverConfig>,
   ): ArdViewportObserverRef {
     const element = document.querySelector<HTMLElement>(query);
 

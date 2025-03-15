@@ -33,22 +33,22 @@ class ViewportMarginsImpl implements ViewportMargins {
 }
 
 export interface ArdViewportObserverConfig {
-  margin?: number | RequireAtLeastOne<{ top: number; bottom: number }>;
-  throttleTime?: number;
-};
+  margin: number | RequireAtLeastOne<{ top: number; bottom: number }>;
+  throttleTime: number;
+}
 
 export class ArdViewportObserverRef {
   constructor(
     public readonly element: HTMLElement,
     private readonly scroll$: Observable<void>,
-    config?: ArdViewportObserverConfig,
+    config: ArdViewportObserverConfig,
   ) {
     setTimeout(() => {
       this._updateViewportRelation();
     }, 0);
 
-    this._throttleTime = config?.throttleTime ?? 100;
-    this._margins = new ViewportMarginsImpl(config?.margin);
+    this._throttleTime = config.throttleTime;
+    this._margins = new ViewportMarginsImpl(config.margin);
 
     this._scrollSubscription = this.scroll$
       .pipe(throttleSaveLast(this._throttleTime))
