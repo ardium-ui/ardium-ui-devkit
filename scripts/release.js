@@ -98,10 +98,10 @@ try {
   }
 
   // Build and publish
-  execSync(
-    "cd ../ && ng build --project=devkit && cd dist/devkit && npm publish --access public",
-    { stdio: "inherit" },
-  );
+  execSync("ng build --project=devkit", { stdio: "inherit" });
+  execSync("cd dist/devkit && npm publish --access public", {
+    stdio: "inherit",
+  });
 
   console.log(
     `${ansis.greenBright.bold("✓")} Successfully released version ${ansis.blueBright.underline(newVersion)}!`,
