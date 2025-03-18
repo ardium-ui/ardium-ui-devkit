@@ -1,4 +1,11 @@
-import { Injectable, OnDestroy, Renderer2, inject } from '@angular/core';
+import {
+  ElementRef,
+  Injectable,
+  OnDestroy,
+  Renderer2,
+  RendererFactory2,
+  inject,
+} from '@angular/core';
 import { Subject } from 'rxjs';
 import {
   ArdViewportObserverConfig,
@@ -8,37 +15,48 @@ import { ARD_VIEWPORT_OBSERVER_DEFAULTS } from './viewport-observer.defaults';
 
 @Injectable({ providedIn: 'root' })
 export class ArdiumViewportObserverService implements OnDestroy {
-  constructor() {
+  private _lastWindowHeight = window.innerHeight;
+  constructor(rendererFactory: RendererFactory2) {
+    this.renderer = rendererFactory.createRenderer(null, null);
+
     this.setScrollHost(document);
+
+    this._resizeCleanupFn = this.renderer.listen(window, 'resize', () => {
+      window.innerHeight !== this._lastWindowHeight &&
+        this._scrollOrResizeSubject.next();
+    });
   }
 
   protected readonly _DEFAULTS = inject(ARD_VIEWPORT_OBSERVER_DEFAULTS);
 
-  private readonly renderer = inject(Renderer2);
+  private readonly renderer!: Renderer2;
 
-  private readonly _scrollSubject = new Subject<void>();
-  private readonly scroll$ = this._scrollSubject.asObservable();
+  private readonly _scrollOrResizeSubject = new Subject<void>();
+  private readonly scrollOrResize$ = this._scrollOrResizeSubject.asObservable();
 
   private readonly _registeredObservers: ArdViewportObserverRef[] = [];
 
   private _scrollCleanupFn!: () => void;
+  private _resizeCleanupFn!: () => void;
 
   public setScrollHost(element: HTMLElement | Document): void {
-    this.ngOnDestroy();
-    this._scrollCleanupFn = this.renderer.listen(
-      element,
-      'scroll',
-      this._scrollSubject.next,
+    this._cleanupObservers();
+    this._scrollCleanupFn = this.renderer.listen(element, 'scroll', () =>
+      this._scrollOrResizeSubject.next(),
     );
   }
 
   public observeElement(
-    element: HTMLElement,
+    element: HTMLElement | ElementRef<HTMLElement>,
     config?: Partial<ArdViewportObserverConfig>,
   ): ArdViewportObserverRef {
     const finalConfig = { ...this._DEFAULTS, ...(config ?? {}) };
 
-    const vo = new ArdViewportObserverRef(element, this.scroll$, finalConfig);
+    const vo = new ArdViewportObserverRef(
+      element,
+      this.scrollOrResize$,
+      finalConfig,
+    );
     this._registeredObservers.push(vo);
     return vo;
   }
@@ -72,11 +90,15 @@ export class ArdiumViewportObserverService implements OnDestroy {
   }
 
   public recheckAll(): void {
-    this._scrollSubject.next();
+    this._scrollOrResizeSubject.next();
   }
 
-  ngOnDestroy(): void {
+  private _cleanupObservers(): void {
     this._scrollCleanupFn?.();
     this._registeredObservers.forEach((obs) => obs.destroy());
+  }
+  ngOnDestroy(): void {
+    this._cleanupObservers();
+    this._resizeCleanupFn?.();
   }
 }

@@ -1,3 +1,23 @@
+## v7.2.0
+
+### Additions
+- Added two new values to `ViewportRelation`: PartiallyAbove and PartiallyBelow
+- `ArdiumViewportObserverService`:
+  - `observeElement` now supports passing in `ElementRef`s
+  - Positions are now also updated on window resize, not only on element scroll
+- `ArdViewportObserverRef`:
+  - added `positon` signal: returns the current position of the element in reference to the top of the viewport
+
+### Changes
+- `ArdViewportObserverRef`:
+  - now supports the additional `ViewportRelation` values.
+  - `isInViewport` returns true if the element is *at least partially* inside the viewport.
+
+## v7.1.0
+
+### Additions
+- `ArdViewportObserverRef`: added `margins` property, which contains signals returning the currently set top & bottom margin values.
+
 ## v7.0.0
 
 ### Breaking Changes

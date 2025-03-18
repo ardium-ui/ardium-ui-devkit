@@ -1,4 +1,10 @@
-import { computed, Signal, signal } from '@angular/core';
+import {
+  computed,
+  ElementRef,
+  Signal,
+  signal,
+  WritableSignal,
+} from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { isNumber } from 'simple-bool';
 import { RequireAtLeastOne, throttleSaveLast } from './utils';
@@ -12,7 +18,12 @@ enum ViewportRelation {
   Undefined = 'undefined',
 }
 
-class ViewportMargins {
+interface TopBottom<T> {
+  top: T;
+  bottom: T;
+}
+
+class ViewportMargins implements TopBottom<WritableSignal<number>> {
   readonly top = signal<number>(0);
   readonly bottom = signal<number>(0);
 
@@ -33,34 +44,45 @@ export interface ArdViewportObserverConfig {
 }
 
 export class ArdViewportObserverRef {
+  public readonly element!: HTMLElement;
   constructor(
-    public readonly element: HTMLElement,
-    private readonly scroll$: Observable<void>,
+    element: HTMLElement | ElementRef<HTMLElement>,
+    private readonly update$: Observable<void>,
     config: ArdViewportObserverConfig,
   ) {
+    this.element =
+      element instanceof ElementRef ? element.nativeElement : element;
+
     setTimeout(() => {
       this._updateViewportRelation();
     }, 0);
 
     this._throttleTime = config.throttleTime;
     this._margins = new ViewportMargins(config.margin);
+    this.margins = {
+      top: this._margins.top.asReadonly(),
+      bottom: this._margins.bottom.asReadonly(),
+    };
 
-    this._scrollSubscription = this.scroll$
+    this._scrollSubscription = this.update$
       .pipe(throttleSaveLast(this._throttleTime))
       .subscribe(() => this._updateViewportRelation());
   }
   private readonly _throttleTime!: number;
-  private readonly _margins!: ViewportMargins;
-  public readonly margins = {
-    top: this._margins.top.asReadonly(),
-    bottom: this._margins.bottom.asReadonly(),
-  } as { readonly top: Signal<number>; readonly bottom: Signal<number> };
+  private readonly _margins!: TopBottom<WritableSignal<number>>;
+  public readonly margins!: {
+    readonly top: Signal<number>;
+    readonly bottom: Signal<number>;
+  };
   private readonly _scrollSubscription!: Subscription;
 
-  private readonly _viewportRelation = signal<ViewportRelation>(
-    ViewportRelation.Undefined,
+  private readonly _position = signal<Readonly<TopBottom<number>> | undefined>(
+    undefined,
   );
-  public readonly viewportRelation = this._viewportRelation.asReadonly();
+  public readonly position = this._position.asReadonly();
+  public readonly viewportRelation = computed<ViewportRelation | undefined>(
+    () => this._getNewRelation(this._position()),
+  );
   public readonly isInViewport = computed(() =>
     this.viewportRelation() === ViewportRelation.Undefined
       ? undefined
@@ -71,10 +93,10 @@ export class ArdViewportObserverRef {
 
   private _updateViewportRelation() {
     const rect = this.element.getBoundingClientRect();
-    const newRelation = this._getNewRelation(rect);
-    this._viewportRelation.set(newRelation);
+    this._position.set({ top: rect.top, bottom: rect.bottom });
   }
-  private _getNewRelation(rect: DOMRect) {
+  private _getNewRelation(rect: TopBottom<number> | undefined) {
+    if (!rect) return undefined;
     if (rect.bottom <= this._margins.top()) {
       return ViewportRelation.Above;
     }
