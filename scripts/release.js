@@ -59,12 +59,14 @@ function readVersion() {
 try {
   // Bump the package version
   const oldVersion = readVersion();
+  let finalVersion = oldVersion;
 
   if (!isNoVersionBump) {
     execSync(`cd projects/devkit && npm version ${bumpType}`, {
       stdio: "ignore",
     });
     const newVersion = readVersion();
+    finalVersion = newVersion;
 
     console.log(
       `${ansis.greenBright.bold("✓")} Changed version from ${ansis.redBright.underline(oldVersion)} -> ${ansis.blueBright.underline(newVersion)} (${new Date().valueOf() - startTime.valueOf()} ms)`,
@@ -80,11 +82,11 @@ try {
       `${ansis.greenBright.bold("✓")} Committed and pushed changes (${new Date().valueOf() - startTime.valueOf()} ms)`,
     );
     startTime = new Date();
-    
+
     // Create a new tag and push it
     execSync(`git tag v${newVersion}`, { stdio: "ignore" });
     execSync("git push --tags", { stdio: "ignore" });
-    
+
     console.log(
       `${ansis.greenBright.bold("✓")} Created a version tag (${new Date().valueOf() - startTime.valueOf()} ms)`,
     );
@@ -115,7 +117,7 @@ try {
   });
 
   console.log(
-    `${ansis.greenBright.bold("✓")} Successfully released version ${ansis.blueBright.underline(newVersion)}!`,
+    `${ansis.greenBright.bold("✓")} Successfully released version ${ansis.blueBright.underline(finalVersion)}!`,
   );
 } catch (error) {
   console.error("Error executing release steps:", error);
