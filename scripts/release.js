@@ -8,18 +8,23 @@ const ansis = require("ansis");
 // Check if valid bump type is specified
 const bumpType = process.argv[2];
 
-if (!bumpType) {
+const allowedBumpTypes = ["patch", "minor", "major", "no-version"];
+
+if (!bumpType || !allowedBumpTypes.includes(bumpType)) {
   console.error(`${ansis.redBright.bold("✕")}
 Error: Missing version bump type. 
 Usage:
   pnpm release patch
   pnpm release minor
   pnpm release major
+  pnpm release no-version
 
 Please specify a valid bump type.
 `);
   process.exit(1);
 }
+
+const isNoVersionBump = bumpType === "no-version";
 
 let startTime = new Date();
 
@@ -55,33 +60,39 @@ try {
   // Bump the package version
   const oldVersion = readVersion();
 
-  execSync(`cd projects/devkit && npm version ${bumpType}`, {
-    stdio: "ignore",
-  });
-  const newVersion = readVersion();
+  if (!isNoVersionBump) {
+    execSync(`cd projects/devkit && npm version ${bumpType}`, {
+      stdio: "ignore",
+    });
+    const newVersion = readVersion();
 
-  console.log(
-    `${ansis.greenBright.bold("✓")} Changed version from ${ansis.redBright.underline(oldVersion)} -> ${ansis.blueBright.underline(newVersion)} (${new Date().valueOf() - startTime.valueOf()} ms)`,
-  );
-  startTime = new Date();
+    console.log(
+      `${ansis.greenBright.bold("✓")} Changed version from ${ansis.redBright.underline(oldVersion)} -> ${ansis.blueBright.underline(newVersion)} (${new Date().valueOf() - startTime.valueOf()} ms)`,
+    );
+    startTime = new Date();
 
-  // Commit and push changes
-  execSync("git add .", { stdio: "ignore" });
-  execSync(`git commit -m "v${newVersion}"`, { stdio: "ignore" });
-  execSync("git push", { stdio: "ignore" });
+    // Commit and push changes
+    execSync("git add .", { stdio: "ignore" });
+    execSync(`git commit -m "v${newVersion}"`, { stdio: "ignore" });
+    execSync("git push", { stdio: "ignore" });
 
-  console.log(
-    `${ansis.greenBright.bold("✓")} Committed and pushed changes (${new Date().valueOf() - startTime.valueOf()} ms)`,
-  );
-  startTime = new Date();
-
-  // Create a new tag and push it
-  execSync(`git tag v${newVersion}`, { stdio: "ignore" });
-  execSync("git push --tags", { stdio: "ignore" });
-
-  console.log(
-    `${ansis.greenBright.bold("✓")} Created a version tag (${new Date().valueOf() - startTime.valueOf()} ms)`,
-  );
+    console.log(
+      `${ansis.greenBright.bold("✓")} Committed and pushed changes (${new Date().valueOf() - startTime.valueOf()} ms)`,
+    );
+    startTime = new Date();
+    
+    // Create a new tag and push it
+    execSync(`git tag v${newVersion}`, { stdio: "ignore" });
+    execSync("git push --tags", { stdio: "ignore" });
+    
+    console.log(
+      `${ansis.greenBright.bold("✓")} Created a version tag (${new Date().valueOf() - startTime.valueOf()} ms)`,
+    );
+  } else {
+    console.log(
+      `${ansis.greenBright.bold("✓")} Current version: ${ansis.blueBright.underline(oldVersion)} (${new Date().valueOf() - startTime.valueOf()} ms)`,
+    );
+  }
   startTime = new Date();
 
   // Cleanup
