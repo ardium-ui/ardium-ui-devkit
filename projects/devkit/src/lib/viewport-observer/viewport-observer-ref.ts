@@ -76,12 +76,19 @@ export class ArdViewportObserverRef {
   };
   private readonly _scrollSubscription!: Subscription;
 
-  private readonly _position = signal<Readonly<TopBottom<number>> | undefined>(
-    undefined,
-  );
-  public readonly position = this._position.asReadonly();
+  private readonly _rawPosition = signal<
+    Readonly<TopBottom<number>> | undefined
+  >(undefined);
+  public readonly position = computed(() => {
+    const pos = this._rawPosition();
+    if (!pos) return undefined;
+    return {
+      top: pos.top - this._margins.top(),
+      bottom: pos.bottom - this._margins.bottom(),
+    };
+  });
   public readonly viewportRelation = computed<ViewportRelation | undefined>(
-    () => this._getNewRelation(this._position()),
+    () => this._getNewRelation(this._rawPosition()),
   );
   public readonly isInViewport = computed(() =>
     this.viewportRelation() === ViewportRelation.Undefined
@@ -93,7 +100,10 @@ export class ArdViewportObserverRef {
 
   private _updateViewportRelation() {
     const rect = this.element.getBoundingClientRect();
-    this._position.set({ top: rect.top, bottom: rect.bottom });
+    this._rawPosition.set({
+      top: rect.top,
+      bottom: window.innerHeight - rect.bottom,
+    });
   }
   private _getNewRelation(rect: TopBottom<number> | undefined) {
     if (!rect) return undefined;
