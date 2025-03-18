@@ -1,3 +1,18 @@
+## v7.3.0
+
+### Additions
+- Added a new value to `ViewportRelation`: InsideButTooLarge
+
+### Changes
+- `ArdViewportObserverRef`:
+  - now supports the additional `ViewportRelation` value - used when the element is both partially above and partially below the viewport.
+
+## v7.2.2
+
+### Fixes
+- Position was supposed to return the bottom position in reference to the bottom of the viewport. It is now fixed.
+- Position was also supposed to include the margins, which are now included 
+
 ## v7.2.0
 
 ### Additions

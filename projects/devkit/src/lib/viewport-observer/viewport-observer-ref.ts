@@ -15,6 +15,7 @@ enum ViewportRelation {
   Inside = 'inside',
   PartiallyBelow = 'partially-below',
   Below = 'below',
+  InsideButTooLarge = 'inside-too-large',
   Undefined = 'undefined',
 }
 
@@ -107,13 +108,17 @@ export class ArdViewportObserverRef {
   }
   private _getNewRelation(rect: TopBottom<number> | undefined) {
     if (!rect) return undefined;
-    if (rect.bottom <= this._margins.top()) {
+    const topThreshold = this._margins.top();
+    if (rect.bottom <= topThreshold) {
       return ViewportRelation.Above;
     }
-    if (rect.bottom > this._margins.top() && rect.top < this._margins.top()) {
+    if (rect.bottom > topThreshold && rect.top < topThreshold) {
       return ViewportRelation.PartiallyAbove;
     }
     const bottomThreshold = window.innerHeight - this._margins.bottom();
+    if (rect.top > topThreshold && rect.bottom > bottomThreshold) {
+      return ViewportRelation.InsideButTooLarge;
+    }
     if (rect.top < bottomThreshold && rect.bottom > bottomThreshold) {
       return ViewportRelation.PartiallyBelow;
     }
