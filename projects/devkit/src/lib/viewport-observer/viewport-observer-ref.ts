@@ -84,7 +84,7 @@ export class ArdViewportObserverRef {
     if (!pos) return undefined;
     return {
       top: pos.top - this._margins.top(),
-      bottom: pos.bottom - this._margins.bottom(),
+      bottom: window.innerHeight - pos.bottom - this._margins.bottom(),
     };
   });
   public readonly viewportRelation = computed<ViewportRelation | undefined>(
@@ -102,7 +102,7 @@ export class ArdViewportObserverRef {
     const rect = this.element.getBoundingClientRect();
     this._rawPosition.set({
       top: rect.top,
-      bottom: window.innerHeight - rect.bottom,
+      bottom: rect.bottom,
     });
   }
   private _getNewRelation(rect: TopBottom<number> | undefined) {
