@@ -1,4 +1,4 @@
-import { computed, signal } from '@angular/core';
+import { computed, Signal, signal } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { isNumber } from 'simple-bool';
 import { RequireAtLeastOne, throttleSaveLast } from './utils';
@@ -12,23 +12,18 @@ export const ViewportRelation = {
 export type ViewportRelation =
   (typeof ViewportRelation)[keyof typeof ViewportRelation];
 
-export interface ViewportMargins {
-  top: number;
-  bottom: number;
-}
-
-class ViewportMarginsImpl implements ViewportMargins {
-  top: number = 0;
-  bottom: number = 0;
+class ViewportMargins {
+  readonly top = signal<number>(0);
+  readonly bottom = signal<number>(0);
 
   constructor(margin: ArdViewportObserverConfig['margin']) {
     if (isNumber(margin)) {
-      this.top = margin;
-      this.bottom = margin;
+      this.top.set(margin);
+      this.bottom.set(margin);
       return;
     }
-    this.top = margin?.top ?? 0;
-    this.bottom = margin?.bottom ?? 0;
+    this.top.set(margin?.top ?? 0);
+    this.bottom.set(margin?.bottom ?? 0);
   }
 }
 
@@ -48,7 +43,7 @@ export class ArdViewportObserverRef {
     }, 0);
 
     this._throttleTime = config.throttleTime;
-    this._margins = new ViewportMarginsImpl(config.margin);
+    this._margins = new ViewportMargins(config.margin);
 
     this._scrollSubscription = this.scroll$
       .pipe(throttleSaveLast(this._throttleTime))
@@ -56,6 +51,10 @@ export class ArdViewportObserverRef {
   }
   private readonly _throttleTime!: number;
   private readonly _margins!: ViewportMargins;
+  public readonly margins = {
+    top: this._margins.top.asReadonly(),
+    bottom: this._margins.bottom.asReadonly(),
+  } as { readonly top: Signal<number>; readonly bottom: Signal<number> };
   private readonly _scrollSubscription!: Subscription;
 
   private readonly _viewportRelation = signal<ViewportRelation>(
@@ -74,8 +73,8 @@ export class ArdViewportObserverRef {
     this._viewportRelation.set(newRelation);
   }
   private _getNewRelation(rect: DOMRect) {
-    if (rect.bottom < this._margins.top) return ViewportRelation.Above;
-    if (rect.top > window.innerHeight - this._margins.bottom)
+    if (rect.bottom < this._margins.top()) return ViewportRelation.Above;
+    if (rect.top > window.innerHeight - this._margins.bottom())
       return ViewportRelation.Below;
     return ViewportRelation.Inside;
   }
@@ -96,8 +95,8 @@ export class ArdViewportObserverRef {
   public setMargin(topAndBottom: number): ArdViewportObserverRef;
   public setMargin(top: number, bottom: number): ArdViewportObserverRef;
   public setMargin(top: number, bottom: number = top): ArdViewportObserverRef {
-    this._margins.top = top;
-    this._margins.bottom = bottom;
+    this._margins.top.set(top);
+    this._margins.bottom.set(bottom);
     this._updateViewportRelation();
     return this;
   }
