@@ -7,6 +7,7 @@ import { InfiniteScrollHostPage } from './pages/infinite-scroll-host/infinite-sc
 import { InfiniteScrollPage } from './pages/infinite-scroll/infinite-scroll.page';
 import { KeyboardPage } from './pages/keyboard/keyboard.page';
 import { SignalsPage } from './pages/signals/signals.page';
+import { ViewportObserverPage } from './pages/viewport-observer/viewport-observer.page';
 
 export const routes: Routes = [
   { path: '', component: HomePage },
@@ -17,4 +18,5 @@ export const routes: Routes = [
   { path: 'hold', component: HoldPage },
   { path: 'http-service', component: HttpServicePage },
   { path: 'keyboard', component: KeyboardPage },
+  { path: 'viewport-observer', component: ViewportObserverPage },
 ];
