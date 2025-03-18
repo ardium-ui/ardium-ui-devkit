@@ -92,7 +92,7 @@ try {
     );
   } else {
     console.log(
-      `${ansis.greenBright.bold("✓")} Current version: ${ansis.blueBright.underline(oldVersion)} (${new Date().valueOf() - startTime.valueOf()} ms)`,
+      `${ansis.greenBright.bold("✓")} Skipping version bump. Current version: ${ansis.blueBright.underline(oldVersion)} (${new Date().valueOf() - startTime.valueOf()} ms)`,
     );
   }
   startTime = new Date();
