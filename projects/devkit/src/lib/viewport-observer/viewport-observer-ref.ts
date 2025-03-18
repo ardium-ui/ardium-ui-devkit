@@ -3,14 +3,14 @@ import { Observable, Subscription } from 'rxjs';
 import { isNumber } from 'simple-bool';
 import { RequireAtLeastOne, throttleSaveLast } from './utils';
 
-export const ViewportRelation = {
-  Above: 'above',
-  Inside: 'inside',
-  Below: 'below',
-  Undefined: 'undefined',
-} as const;
-export type ViewportRelation =
-  (typeof ViewportRelation)[keyof typeof ViewportRelation];
+enum ViewportRelation {
+  Above = 'above',
+  PartiallyAbove = 'partially-above',
+  Inside = 'inside',
+  PartiallyBelow = 'partially-below',
+  Below = 'below',
+  Undefined = 'undefined',
+}
 
 class ViewportMargins {
   readonly top = signal<number>(0);
@@ -64,7 +64,9 @@ export class ArdViewportObserverRef {
   public readonly isInViewport = computed(() =>
     this.viewportRelation() === ViewportRelation.Undefined
       ? undefined
-      : this.viewportRelation() === ViewportRelation.Inside,
+      : this.viewportRelation() === ViewportRelation.Inside ||
+        this.viewportRelation() === ViewportRelation.PartiallyAbove ||
+        this.viewportRelation() === ViewportRelation.PartiallyBelow,
   );
 
   private _updateViewportRelation() {
@@ -73,9 +75,19 @@ export class ArdViewportObserverRef {
     this._viewportRelation.set(newRelation);
   }
   private _getNewRelation(rect: DOMRect) {
-    if (rect.bottom < this._margins.top()) return ViewportRelation.Above;
-    if (rect.top > window.innerHeight - this._margins.bottom())
+    if (rect.bottom <= this._margins.top()) {
+      return ViewportRelation.Above;
+    }
+    if (rect.bottom > this._margins.top() && rect.top < this._margins.top()) {
+      return ViewportRelation.PartiallyAbove;
+    }
+    const bottomThreshold = window.innerHeight - this._margins.bottom();
+    if (rect.top < bottomThreshold && rect.bottom > bottomThreshold) {
+      return ViewportRelation.PartiallyBelow;
+    }
+    if (rect.top >= bottomThreshold) {
       return ViewportRelation.Below;
+    }
     return ViewportRelation.Inside;
   }
 
