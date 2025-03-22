@@ -1,10 +1,14 @@
 import { HttpContext, HttpEvent, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 
-export interface RequestOptions {
+export interface RequestOptions extends DefaultRequestOptions {
+  observe?: 'body' | 'events' | 'response';
+  responseType?: 'arraybuffer' | 'blob' | 'json' | 'text';
+}
+
+export interface DefaultRequestOptions {
   body?: any;
   headers?: HttpHeaders | { [header: string]: string | string[] };
   context?: HttpContext;
-  observe?: 'body' | 'events' | 'response';
   params?:
     | HttpParams
     | {
@@ -15,14 +19,13 @@ export interface RequestOptions {
           | ReadonlyArray<string | number | boolean>;
       };
   reportProgress?: boolean;
-  responseType?: 'arraybuffer' | 'blob' | 'json' | 'text';
   withCredentials?: boolean;
   transferCache?: { includeHeaders?: string[] } | boolean;
 }
 
 export type RequestReturnType<
   O extends RequestOptions,
-  TRes = any,
+  TRes,
 > = O['observe'] extends 'body'
   ? O['responseType'] extends 'arraybuffer'
     ? ArrayBuffer
@@ -51,4 +54,4 @@ export type RequestReturnType<
                 ? string
                 : TRes
         >
-      : never;
+      : TRes;
