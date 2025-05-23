@@ -61,6 +61,9 @@ export function throttledSignal<T>(
   internalSignal.set = (value: T) => {
     setThrottledValue(value);
   };
+  internalSignal.update = (fn: (v: T) => T) => {
+    setThrottledValue(fn(internalSignal()));
+  };
 
   return internalSignal;
 }
