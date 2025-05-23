@@ -1,10 +1,24 @@
+import { TestBed } from '@angular/core/testing';
+import { ARD_FILEEXT_PIPE_DEFAULTS } from './fileext.defaults';
 import { ArdiumFileExtensionPipe } from './fileext.pipe';
 
-describe('ArdiumFileextPipe', () => {
+describe('ArdiumFileExtensionPipe', () => {
   let pipe: ArdiumFileExtensionPipe;
 
   beforeEach(() => {
-    pipe = new ArdiumFileExtensionPipe();
+    TestBed.configureTestingModule({
+      providers: [
+        ArdiumFileExtensionPipe,
+        {
+          provide: ARD_FILEEXT_PIPE_DEFAULTS,
+          useValue: {
+            widthDot: false,
+          },
+        },
+      ],
+    });
+
+    pipe = TestBed.inject(ArdiumFileExtensionPipe);
   });
 
   it('should create an instance', () => {
@@ -40,6 +54,6 @@ describe('ArdiumFileextPipe', () => {
 
   it('should handle name that ends in a dot', () => {
     const result = pipe.transform('example.');
-    expect(result).toBe(null);
+    expect(result).toBeNull();
   });
 });

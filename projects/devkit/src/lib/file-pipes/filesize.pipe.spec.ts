@@ -1,10 +1,25 @@
+import { TestBed } from '@angular/core/testing';
+import { ARD_FILESIZE_PIPE_DEFAULTS } from './filesize.defaults';
 import { ArdiumFileSizePipe } from './filesize.pipe';
 
-describe('ArdiumFilesizePipe', () => {
+describe('ArdiumFileSizePipe', () => {
   let pipe: ArdiumFileSizePipe;
 
   beforeEach(() => {
-    pipe = new ArdiumFileSizePipe();
+    TestBed.configureTestingModule({
+      providers: [
+        ArdiumFileSizePipe,
+        {
+          provide: ARD_FILESIZE_PIPE_DEFAULTS,
+          useValue: {
+            precision: 2,
+            useSpace: false,
+          },
+        },
+      ],
+    });
+
+    pipe = TestBed.inject(ArdiumFileSizePipe);
   });
 
   it('should create an instance', () => {

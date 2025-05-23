@@ -1,4 +1,4 @@
-import { inject, Pipe, PipeTransform } from '@angular/core';
+import { Inject, Pipe, PipeTransform } from '@angular/core';
 import { ARD_FILESIZE_PIPE_DEFAULTS } from './filesize.defaults';
 
 const FILE_SIZE_UNITS = [
@@ -18,18 +18,22 @@ const FILE_SIZE_UNITS = [
   standalone: false,
 })
 export class ArdiumFileSizePipe implements PipeTransform {
-  private readonly _DEFAULTS = inject(ARD_FILESIZE_PIPE_DEFAULTS);
+  constructor(
+    @Inject(ARD_FILESIZE_PIPE_DEFAULTS)
+    private readonly _DEFAULTS: { precision: number; useSpace: boolean },
+  ) {}
 
   transform(
     value: number | File | null | undefined,
     precision: number = this._DEFAULTS.precision,
     useSpace: boolean = this._DEFAULTS.useSpace,
   ): string {
-    if (!value) return '0 B';
+    const space = useSpace ? ' ' : '';
+    if (!value) return `0${space}B`;
     if (typeof value != 'number') {
       value = value.size;
     }
-    if (value === 0) return '0 B';
+    if (value === 0) return `0${space}B`;
 
     const index = FILE_SIZE_UNITS.findIndex((unit) => value < unit.size);
 
@@ -42,7 +46,6 @@ export class ArdiumFileSizePipe implements PipeTransform {
       fileSizeUnit.unit === 'B'
         ? value
         : (value / fileSizeUnit.size).toFixed(precision);
-    const space = useSpace ? ' ' : '';
 
     return `${convertedValue}${space}${fileSizeUnit.unit}`;
   }
