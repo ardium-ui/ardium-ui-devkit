@@ -42,6 +42,9 @@ export function debouncedSignal<T>(
   internalSignal.set = (value: T) => {
     setDebouncedValue(value);
   };
+  internalSignal.update = (fn: (v: T) => T) => {
+    setDebouncedValue(fn(internalSignal()));
+  };
 
   return internalSignal;
 }
