@@ -58,6 +58,13 @@ export interface ArraySignal<T> extends WritableSignal<T[]> {
   set(value: T[]): void;
 
   /**
+   * Replaces the item at the given index with the new item.
+   * @param index - The index where the item should be replaced.
+   * @param newItem - The new item to be set at the given index.
+   */
+  setAt(index: number, newItem: T): void;
+
+  /**
    * Removes the first element from the array and returns it.
    * Updates the signal.
    * @returns The removed element, or undefined if the array was empty.
@@ -93,6 +100,13 @@ export interface ArraySignal<T> extends WritableSignal<T[]> {
    * @param updateFn - A function that receives the current array and returns the updated array.
    */
   update(updateFn: (value: T[]) => T[]): void;
+
+  /**
+   * Updates the item at the given index by applying the update function.
+   * @param index - The index where the item should be updated.
+   * @param updateFn - The function that will update the current item at the given index.
+   */
+  updateAt(index: number, updateFn: (current: T) => T): void;
 }
 
 export function arraySignal<T>(initialValue: T[] = []): ArraySignal<T> {
@@ -115,6 +129,23 @@ export function arraySignal<T>(initialValue: T[] = []): ArraySignal<T> {
   (internalSignal as any).isEmpty = computed(
     () => internalSignal().length === 0,
   );
+
+  // setAt & updateAt
+  internalSignal.setAt = (index: number, newItem: T) => {
+    internalSignal.update((arr) => {
+      const newArr = [...arr];
+      newArr[index] = newItem;
+      return newArr;
+    });
+  };
+
+  internalSignal.updateAt = (index: number, updateFn: (current: T) => T) => {
+    internalSignal.update((arr) => {
+      const newArr = [...arr];
+      newArr[index] = updateFn(newArr[index]);
+      return newArr;
+    });
+  };
 
   // Array methods
   internalSignal.fill = (value, start?, end?) => {

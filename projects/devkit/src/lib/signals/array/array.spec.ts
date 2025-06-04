@@ -1,8 +1,8 @@
 import { ArraySignal, arraySignal } from './array';
 
-describe('ArraySignal - Extended Tests', () => {
+describe('ArraySignal', () => {
   let signal: ArraySignal<number>;
-  const originalArray = [1,2,3];
+  const originalArray = [1, 2, 3];
 
   beforeEach(() => {
     signal = arraySignal([...originalArray]);
@@ -32,7 +32,6 @@ describe('ArraySignal - Extended Tests', () => {
       expect(s.isEmpty()).toBe(true);
     });
   });
-
 
   describe('asReadonly', () => {
     it('should reflect internal updates', () => {
@@ -145,7 +144,24 @@ describe('ArraySignal - Extended Tests', () => {
       const arr = [1, 2];
       signal.set(arr);
       arr[0] = 99;
-      expect(signal()).toEqual([1, 2]); // ensures immutability
+      expect(signal()).toEqual([1, 2]);
+    });
+  });
+
+  describe('setAt', () => {
+    it('should replace the item at the given index', () => {
+      signal.setAt(1, 42);
+      expect(signal()).toEqual([1, 42, 3]);
+    });
+
+    it('should work when setting the first item', () => {
+      signal.setAt(0, 99);
+      expect(signal()).toEqual([99, 2, 3]);
+    });
+
+    it('should work when setting the last item', () => {
+      signal.setAt(2, 100);
+      expect(signal()).toEqual([1, 2, 100]);
     });
   });
 
@@ -223,6 +239,23 @@ describe('ArraySignal - Extended Tests', () => {
       const empty = arraySignal<number>([]);
       empty.update((arr) => [...arr, 1]);
       expect(empty()).toEqual([1]);
+    });
+  });
+
+  describe('updateAt', () => {
+    it('should update the item at the given index using the update function', () => {
+      signal.updateAt(1, (current) => current * 2);
+      expect(signal()).toEqual([1, 4, 3]);
+    });
+
+    it('should work when updating the first item', () => {
+      signal.updateAt(0, (current) => current + 10);
+      expect(signal()).toEqual([11, 2, 3]);
+    });
+
+    it('should work when updating the last item', () => {
+      signal.updateAt(2, (current) => current - 1);
+      expect(signal()).toEqual([1, 2, 2]);
     });
   });
 });
