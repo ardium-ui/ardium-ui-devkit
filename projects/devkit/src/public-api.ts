@@ -18,6 +18,7 @@ export * from './lib/infinite-scroll'; // 100
 export * from './lib/file-pipes';
 
 //! feature group 3 - signals
+export * from './lib/signals/array';
 export * from './lib/signals/debounced';
 export * from './lib/signals/persistent'; // 300
 export * from './lib/signals/query-param'; // 301
