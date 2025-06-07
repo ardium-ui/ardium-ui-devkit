@@ -60,6 +60,37 @@ export interface WritableSetSignal<T> extends WritableSignal<Set<T>>, SetSignal<
   update(updateFn: (current: Set<T>) => Set<T>): void;
 }
 
+/**
+ * Creates a writable, reactive Set signal with convenient, immutable Set manipulation methods.
+ *
+ * This function returns a signal that wraps a JavaScript `Set` and exposes both non-mutating and mutating helpers,
+ * ensuring that all operations are fully reactive and immutably safe. All mutator methods (`add`, `delete`, `clear`, etc.)
+ * return a new Set value for robust signal reactivity.
+ *
+ * Also provides computed signals for queries such as `isEmpty`, `size`, and `asArray`, and offers a type-safe, read-only
+ * view via `.asReadonly()`.
+ *
+ * @template T The type of items stored in the set.
+ * @param {Iterable<T>} [initialValue=[]] Optional initial values for the set (can be another Set or any iterable).
+ * @returns {WritableSetSignal<T>} A writable Set signal instance with both native and Set-specific helpers.
+ *
+ * @example
+ * const ids = setSignal<number>([1, 2, 3]);
+ * ids.add(4);              // [1, 2, 3, 4]
+ * ids.delete(2);           // removes 2
+ * ids.has(3);              // true
+ * ids.asArray();           // [1, 3, 4]
+ * ids.clear();             // empty set
+ * ids.isEmpty();           // true
+ *
+ * @remarks
+ * - All mutator methods (`add`, `delete`, `clear`, `set`, `update`) will create a **new Set** object.
+ *   Reference equality is not preserved; do not rely on object identity.
+ * - Use `.asReadonly()` to obtain a type-safe, mutation-free Set signal for external consumers.
+ * - Computed signals (`isEmpty`, `size`, `asArray`) always stay in sync with the set's contents.
+ * - This is designed for Angular signals, but can be used for any reactivity pattern needing mutable Set logic.
+ * - For "has", "asArray", and other computed helpers, no mutation occurs.
+ */
 export function setSignal<T>(
   initialValue: Iterable<T> = [],
 ): WritableSetSignal<T> {

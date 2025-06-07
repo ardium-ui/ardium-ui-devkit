@@ -87,9 +87,36 @@ export interface WritableMapSignal<K, V>
 }
 
 /**
- * Creates a writable map signal with Map manipulation helpers.
- * @param initialValue - Initial map value as entries or a Map.
- * @returns WritableMapSignal<K, V>
+ * Creates a writable, reactive Map signal with full Map-like API and helpers.
+ *
+ * This factory returns a signal wrapping a JavaScript `Map`, exposing both non-mutating and mutating methods
+ * for convenient and fully reactive manipulation of key-value pairs.
+ *
+ * All mutator methods (`setKey`, `delete`, `clear`, `setMap`, etc.) always replace the Map with a cloned version,
+ * ensuring immutability for predictable reactivity.
+ *
+ * The signal also provides computed signals for common queries (such as `isEmpty`, `size`, `entriesArray`, `keysArray`, `valuesArray`),
+ * and offers a type-safe, readonly view via `.asReadonly()`.
+ *
+ * @template K The type of keys.
+ * @template V The type of values.
+ * @param {Iterable<[K, V]>} [initialValue=[]] Optional initial map contents, as entries or another Map.
+ * @returns {WritableMapSignal<K, V>} A writable Map signal instance with both native and Map-specific helpers.
+ *
+ * @example
+ * const map = mapSignal<string, number>([['a', 1], ['b', 2]]);
+ * map.setKey('c', 3);        // Adds key 'c'
+ * map.delete('a');           // Removes key 'a'
+ * map.update(m => { m.set('d', 4); return m; });
+ * map.entriesArray();        // [['b', 2], ['c', 3], ['d', 4]]
+ * map.asReadonly();          // Readonly view
+ *
+ * @remarks
+ * - All mutator methods produce a new Map object. Do **not** depend on Map reference identity between writes.
+ * - Use `asReadonly()` to get a type-safe, mutation-free interface to this signal.
+ * - Non-mutating Map methods (`get`, `has`) are available both on writable and readonly signals.
+ * - Computed signals (`isEmpty`, `size`, `entriesArray`, `keysArray`, `valuesArray`) update automatically when the signal changes.
+ * - Designed for use in Angular signals, but can be used for any reactivity pattern where mutable Map logic is desired.
  */
 export function mapSignal<K, V>(
   initialValue: Iterable<[K, V]> = [],

@@ -43,7 +43,36 @@ export interface WritableTupleSignal<T extends readonly unknown[]>
 }
 
 /**
- * Creates a tuple signal of a fixed length.
+ * Creates a writable, reactive tuple signal of **fixed length**, with tuple-specific and array-like helpers.
+ *
+ * This function returns a signal wrapping a tuple (fixed-length array), exposing safe, type-aware mutation and update helpers
+ * as well as computed signals for common tuple queries.
+ *
+ * All mutating methods (`set`, `setAt`, `updateAt`, `update`) return a new tuple value,
+ * preserving immutability and optimal signal reactivity.
+ *
+ * Also provides `.asReadonly()` for read-only consumption and computed signals for empty/entries.
+ *
+ * @template T The tuple type (e.g. `[number, string, boolean]`).
+ * @param {T} initialValue The initial tuple value.
+ * @returns {WritableTupleSignal<T>} A writable tuple signal with all mutation, query, and computed helpers.
+ *
+ * @example
+ * const point = tupleSignal<[number, number]>([0, 1]);
+ * point.setAt(1, 99);          // [0, 99]
+ * point.updateAt(0, x => x+10);// [10, 99]
+ * point();                     // [10, 99]
+ * point.entriesArray();        // [[0, 10], [1, 99]]
+ * point.isEmpty();             // false
+ * const read = point.asReadonly();
+ * read.getAt(1);               // 99
+ *
+ * @remarks
+ * - All mutation helpers return a new tuple (immutably). Do **not** depend on array reference equality.
+ * - `setAt` and `updateAt` preserve tuple length and typings.
+ * - Use `.asReadonly()` to obtain a read-only, mutation-free signal for external consumers.
+ * - Computed helpers (`isEmpty`, `entriesArray`) always reflect the latest tuple state.
+ * - Designed for Angular signals, but works in any reactivity pattern needing tuple semantics.
  */
 export function tupleSignal<T extends readonly unknown[]>(
   initialValue: T,
