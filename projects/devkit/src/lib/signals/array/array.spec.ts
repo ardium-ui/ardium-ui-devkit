@@ -1,7 +1,7 @@
-import { ArraySignal, arraySignal } from './array';
+import { arraySignal, ArraySignal, WritableArraySignal } from './array';
 
 describe('ArraySignal', () => {
-  let signal: ArraySignal<number>;
+  let signal: WritableArraySignal<number>;
   const originalArray = [1, 2, 3];
 
   beforeEach(() => {
@@ -34,10 +34,23 @@ describe('ArraySignal', () => {
   });
 
   describe('asReadonly', () => {
+    let readonly: ArraySignal<number>;
+
+    beforeEach(() => {
+      readonly = signal.asReadonly();
+    });
+
     it('should reflect internal updates', () => {
-      const readonly = signal.asReadonly();
       signal.push(4);
       expect(readonly()).toEqual([1, 2, 3, 4]);
+    });
+
+    it('should reflect isEmpty state', () => {
+      expect(readonly.isEmpty()).toBe(false);
+      
+      signal.set([]);
+
+      expect(readonly.isEmpty()).toBe(true);
     });
   });
 

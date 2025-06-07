@@ -22,6 +22,7 @@ export * from './lib/signals/array';
 export * from './lib/signals/debounced';
 export * from './lib/signals/persistent'; // 300
 export * from './lib/signals/query-param'; // 301
+export * from './lib/signals/set';
 export * from './lib/signals/throttled';
 export * from './lib/signals/typed-resource';
 

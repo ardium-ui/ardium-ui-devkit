@@ -1,6 +1,19 @@
 import { computed, Signal, signal, WritableSignal } from '@angular/core';
 
-export interface ArraySignal<T> extends WritableSignal<T[]> {
+/**
+ * A read-only array signal with non-mutating methods.
+ */
+export interface ArraySignal<T> extends Signal<T[]> {
+  /**
+   * A computed signal that returns `true` if the array is empty.
+   */
+  readonly isEmpty: Signal<boolean>;
+}
+
+/**
+ * A writable array signal with mutating and non-mutating methods.
+ */
+export interface WritableArraySignal<T> extends WritableSignal<T[]> {
   /**
    * A computed signal that returns `true` if the array is empty.
    */
@@ -9,7 +22,7 @@ export interface ArraySignal<T> extends WritableSignal<T[]> {
   /**
    * Returns a read-only version of the array signal.
    */
-  asReadonly(): WritableSignal<T[]>;
+  asReadonly(): ArraySignal<T>;
 
   /**
    * Fills all the elements of the array signal from a start index to an end index with a static value.
@@ -109,8 +122,15 @@ export interface ArraySignal<T> extends WritableSignal<T[]> {
   updateAt(index: number, updateFn: (current: T) => T): void;
 }
 
-export function arraySignal<T>(initialValue: T[] = []): ArraySignal<T> {
-  const internalSignal = signal<T[]>([...initialValue]) as ArraySignal<T>;
+/**
+ * Creates a writable array signal with array manipulation helpers.
+ * @param initialValue - Initial array value.
+ * @returns WritableArraySignal<T>
+ */
+export function arraySignal<T>(initialValue: T[] = []): WritableArraySignal<T> {
+  const internalSignal = signal<T[]>([
+    ...initialValue,
+  ]) as WritableArraySignal<T>;
 
   const _set = internalSignal.set;
   const _update = internalSignal.update;
@@ -122,8 +142,6 @@ export function arraySignal<T>(initialValue: T[] = []): ArraySignal<T> {
   internalSignal.update = (updateFn: (value: T[]) => T[]) => {
     _update((current) => [...updateFn(current)]);
   };
-
-  internalSignal.asReadonly = () => _asReadonly();
 
   // isEmpty
   (internalSignal as any).isEmpty = computed(
@@ -228,6 +246,15 @@ export function arraySignal<T>(initialValue: T[] = []): ArraySignal<T> {
       return newArr;
     });
     return length!;
+  };
+
+  // create a wrapper with only 
+  internalSignal.asReadonly = () => {
+    const readonlySignal = _asReadonly() as ArraySignal<T>;
+    
+    (readonlySignal as any).isEmpty = internalSignal.isEmpty;
+
+    return readonlySignal;
   };
 
   return internalSignal;
