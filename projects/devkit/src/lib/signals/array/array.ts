@@ -13,12 +13,7 @@ export interface ArraySignal<T> extends Signal<T[]> {
 /**
  * A writable array signal with mutating and non-mutating methods.
  */
-export interface WritableArraySignal<T> extends WritableSignal<T[]> {
-  /**
-   * A computed signal that returns `true` if the array is empty.
-   */
-  readonly isEmpty: Signal<boolean>;
-
+export interface WritableArraySignal<T> extends WritableSignal<T[]>, ArraySignal<T> {
   /**
    * Returns a read-only version of the array signal.
    */

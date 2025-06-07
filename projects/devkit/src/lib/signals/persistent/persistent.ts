@@ -1,10 +1,10 @@
 import {
-  effect,
-  inject,
-  Injector,
-  runInInjectionContext,
-  signal,
-  WritableSignal,
+    effect,
+    inject,
+    Injector,
+    runInInjectionContext,
+    signal,
+    WritableSignal,
 } from '@angular/core';
 import { isAnyString, isNull } from 'simple-bool';
 

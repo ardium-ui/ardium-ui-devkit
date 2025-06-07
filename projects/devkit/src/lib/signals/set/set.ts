@@ -12,15 +12,22 @@ export interface SetSignal<T> extends Signal<Set<T>> {
    * Computed signal for set size.
    */
   readonly size: Signal<number>;
+
+  /**
+   * Checks if a value exists in the set.
+   */
+  has(value: T): boolean;
+
+  /**
+   * Computed signal that returns a new array from the set.
+   */
+  readonly toArray: Signal<T[]>;
 }
 
 /**
  * A writable set signal with mutating and non-mutating methods.
  */
-export interface WritableSetSignal<T> extends WritableSignal<Set<T>> {
-  readonly isEmpty: Signal<boolean>;
-  readonly size: Signal<number>;
-
+export interface WritableSetSignal<T> extends WritableSignal<Set<T>>, SetSignal<T> {
   /**
    * Returns a read-only version of the set signal.
    */
@@ -48,19 +55,9 @@ export interface WritableSetSignal<T> extends WritableSignal<Set<T>> {
   set(value: Set<T>): void;
 
   /**
-   * Checks if a value exists in the set.
-   */
-  has(value: T): boolean;
-
-  /**
    * Updates the set using an update function.
    */
   update(updateFn: (current: Set<T>) => Set<T>): void;
-
-  /**
-   * Returns a new array from the set.
-   */
-  toArray(): T[];
 }
 
 export function setSignal<T>(
@@ -113,14 +110,15 @@ export function setSignal<T>(
     return internalSignal().has(value);
   };
 
-  internalSignal.toArray = (): T[] => {
-    return Array.from(internalSignal());
-  };
+  (internalSignal as any).toArray = computed(() =>
+    Array.from(internalSignal()),
+  );
 
   internalSignal.asReadonly = () => {
     const readonlySignal = _asReadonly() as SetSignal<T>;
     (readonlySignal as any).isEmpty = internalSignal.isEmpty;
     (readonlySignal as any).size = internalSignal.size;
+    (readonlySignal as any).toArray = internalSignal.toArray;
     return readonlySignal;
   };
 
