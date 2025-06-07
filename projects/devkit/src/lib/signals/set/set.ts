@@ -21,7 +21,7 @@ export interface SetSignal<T> extends Signal<Set<T>> {
   /**
    * Computed signal that returns a new array from the set.
    */
-  readonly toArray: Signal<T[]>;
+  readonly asArray: Signal<T[]>;
 }
 
 /**
@@ -118,7 +118,7 @@ export function setSignal<T>(
     const readonlySignal = _asReadonly() as SetSignal<T>;
     (readonlySignal as any).isEmpty = internalSignal.isEmpty;
     (readonlySignal as any).size = internalSignal.size;
-    (readonlySignal as any).toArray = internalSignal.toArray;
+    (readonlySignal as any).toArray = internalSignal.asArray;
     return readonlySignal;
   };
 

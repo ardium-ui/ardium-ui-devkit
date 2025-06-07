@@ -133,13 +133,13 @@ describe('SetSignal', () => {
 
   describe('toArray', () => {
     it('should return an array of set elements', () => {
-      const arr = signal.toArray();
+      const arr = signal.asArray();
       expect(arr.sort()).toEqual([1, 2, 3]);
     });
     it('should update after add/delete', () => {
       signal.add(7);
       signal.delete(1);
-      expect(signal.toArray().sort()).toEqual([2, 3, 7]);
+      expect(signal.asArray().sort()).toEqual([2, 3, 7]);
     });
   });
 
