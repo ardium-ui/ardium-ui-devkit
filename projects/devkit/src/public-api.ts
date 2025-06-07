@@ -20,10 +20,14 @@ export * from './lib/file-pipes';
 //! feature group 3 - signals
 export * from './lib/signals/array';
 export * from './lib/signals/debounced';
+export * from './lib/signals/map';
 export * from './lib/signals/persistent'; // 300
 export * from './lib/signals/query-param'; // 301
+export * from './lib/signals/queue';
 export * from './lib/signals/set';
+export * from './lib/signals/stack';
 export * from './lib/signals/throttled';
+export * from './lib/signals/tuple';
 export * from './lib/signals/typed-resource';
 
 //! feature group 9 - other
