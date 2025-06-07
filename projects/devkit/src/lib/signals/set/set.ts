@@ -78,8 +78,8 @@ export function setSignal<T>(
   };
 
   // Computed helpers
-  (internalSignal as any).isEmpty = computed(() => internalSignal().size === 0);
-  (internalSignal as any).size = computed(() => internalSignal().size);
+  (internalSignal.isEmpty as any) = computed(() => internalSignal().size === 0);
+  (internalSignal.size as any) = computed(() => internalSignal().size);
 
   // Set methods
   internalSignal.add = (value: T) => {
@@ -110,15 +110,15 @@ export function setSignal<T>(
     return internalSignal().has(value);
   };
 
-  (internalSignal as any).toArray = computed(() =>
+  (internalSignal.asArray as any) = computed(() =>
     Array.from(internalSignal()),
   );
 
   internalSignal.asReadonly = () => {
     const readonlySignal = _asReadonly() as SetSignal<T>;
-    (readonlySignal as any).isEmpty = internalSignal.isEmpty;
-    (readonlySignal as any).size = internalSignal.size;
-    (readonlySignal as any).toArray = internalSignal.asArray;
+    (readonlySignal.isEmpty as any) = internalSignal.isEmpty;
+    (readonlySignal.size as any) = internalSignal.size;
+    (readonlySignal.asArray as any) = internalSignal.asArray;
     return readonlySignal;
   };
 

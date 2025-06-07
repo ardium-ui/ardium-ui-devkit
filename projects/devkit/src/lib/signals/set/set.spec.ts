@@ -131,7 +131,7 @@ describe('SetSignal', () => {
     });
   });
 
-  describe('toArray', () => {
+  describe('asArray', () => {
     it('should return an array of set elements', () => {
       const arr = signal.asArray();
       expect(arr.sort()).toEqual([1, 2, 3]);

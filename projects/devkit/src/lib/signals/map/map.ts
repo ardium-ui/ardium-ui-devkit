@@ -145,28 +145,28 @@ export function mapSignal<K, V>(
     });
   };
 
-  (internalSignal as any).entriesArray = computed(() =>
+  (internalSignal.entriesArray as any) = computed(() =>
     Array.from(internalSignal().entries()),
   );
-  (internalSignal as any).keysArray = computed(() =>
+  (internalSignal.keysArray as any) = computed(() =>
     Array.from(internalSignal().keys()),
   );
-  (internalSignal as any).valuesArray = computed(() =>
+  (internalSignal.valuesArray as any) = computed(() =>
     Array.from(internalSignal().values()),
   );
 
-  (internalSignal as any).isEmpty = computed(() => internalSignal().size === 0);
-  (internalSignal as any).size = computed(() => internalSignal().size);
+  (internalSignal.isEmpty as any) = computed(() => internalSignal().size === 0);
+  (internalSignal.size as any) = computed(() => internalSignal().size);
 
   internalSignal.asReadonly = () => {
     const readonlySignal = _asReadonly() as MapSignal<K, V>;
-    (readonlySignal as any).isEmpty = internalSignal.isEmpty;
-    (readonlySignal as any).size = internalSignal.size;
+    (readonlySignal.isEmpty as any) = internalSignal.isEmpty;
+    (readonlySignal.size as any) = internalSignal.size;
     readonlySignal.get = internalSignal.get;
     readonlySignal.has = internalSignal.has;
-    (readonlySignal as any).entriesArray = internalSignal.entriesArray;
-    (readonlySignal as any).keysArray = internalSignal.keysArray;
-    (readonlySignal as any).valuesArray = internalSignal.valuesArray;
+    (readonlySignal.entriesArray as any) = internalSignal.entriesArray;
+    (readonlySignal.keysArray as any) = internalSignal.keysArray;
+    (readonlySignal.valuesArray as any) = internalSignal.valuesArray;
     return readonlySignal;
   };
 
