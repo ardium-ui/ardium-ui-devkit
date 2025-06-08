@@ -19,6 +19,7 @@ export * from './lib/file-pipes';
 
 //! feature group 3 - signals
 export * from './lib/signals/array';
+export * from './lib/signals/counter';
 export * from './lib/signals/debounced';
 export * from './lib/signals/map';
 export * from './lib/signals/persistent'; // 300
