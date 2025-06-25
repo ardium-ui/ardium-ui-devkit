@@ -9,7 +9,14 @@ const inquirer = require("inquirer").default;
 (async () => {
   let bumpType = process.argv[2];
 
-  const allowedBumpTypes = ["patch", "minor", "major", "no-version"];
+  const preVersions = ["prerelease", "prepatch", "preminor", "premajor"];
+  const allowedBumpTypes = [
+    "patch",
+    "minor",
+    "major",
+    ...preVersions,
+    "no-version",
+  ];
 
   if (!bumpType || !allowedBumpTypes.includes(bumpType)) {
     const anwsers = await inquirer.prompt([
@@ -24,6 +31,7 @@ const inquirer = require("inquirer").default;
     bumpType = anwsers.bumpType;
   }
 
+  const isAlphaBump = preVersions.includes(bumpType);
   const isNoVersionBump = bumpType === "no-version";
 
   let startTime = new Date();
@@ -62,7 +70,11 @@ const inquirer = require("inquirer").default;
     let finalVersion = oldVersion;
 
     if (!isNoVersionBump) {
-      execSync(`cd projects/devkit && npm version ${bumpType}`, {
+      const versionToBeSet = isAlphaBump
+        ? bumpType + " --preid=alpha"
+        : bumpType;
+      
+      execSync(`cd projects/devkit && npm version ${versionToBeSet}`, {
         stdio: "ignore",
       });
       const newVersion = readVersion();
@@ -112,12 +124,12 @@ const inquirer = require("inquirer").default;
 
     // Build and publish
     execSync("ng build --project=devkit", { stdio: "inherit" });
-    execSync("cd dist/devkit && npm publish --access public", {
+    execSync(`cd dist/devkit && npm publish --access public${isAlphaBump ? ' --tag alpha' : ''}`, {
       stdio: "inherit",
     });
 
     console.log(
-      `${ansis.greenBright.bold("✓")} Successfully released version ${ansis.blueBright.underline(finalVersion)}!`,
+      `\n${ansis.greenBright.bold("✓")} Successfully released version ${ansis.blueBright.underline(finalVersion)}!`,
     );
   } catch (error) {
     console.error("Error executing release steps:", error);
