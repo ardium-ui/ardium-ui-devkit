@@ -75,9 +75,9 @@ export interface WritableQueueSignal<T>
  *
  * @example
  * const queue = queueSignal<number>([1, 2, 3]);
- * queue.enqueue(4);
- * const value = queue.dequeue(); // 1
- * queue.clear();
+ * queue.enqueue(4);              // new value: [1, 2, 3, 4]
+ * const value = queue.dequeue(); // 1    new value: [2, 3, 4]
+ * queue.clear();                 // new value: []
  */
 export function queueSignal<T>(initialValue: T[] = []): WritableQueueSignal<T> {
   const internalSignal = signal<T[]>([

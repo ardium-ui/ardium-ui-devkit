@@ -29,7 +29,6 @@ export * from './lib/signals/set';
 export * from './lib/signals/stack';
 export * from './lib/signals/throttled';
 export * from './lib/signals/tuple';
-export * from './lib/signals/typed-resource';
 
 //! feature group 9 - other
 export * from './lib/coercion';

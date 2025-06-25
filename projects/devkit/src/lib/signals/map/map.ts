@@ -109,14 +109,6 @@ export interface WritableMapSignal<K, V>
  * map.delete('a');           // Removes key 'a'
  * map.update(m => { m.set('d', 4); return m; });
  * map.entriesArray();        // [['b', 2], ['c', 3], ['d', 4]]
- * map.asReadonly();          // Readonly view
- *
- * @remarks
- * - All mutator methods produce a new Map object. Do **not** depend on Map reference identity between writes.
- * - Use `asReadonly()` to get a type-safe, mutation-free interface to this signal.
- * - Non-mutating Map methods (`get`, `has`) are available both on writable and readonly signals.
- * - Computed signals (`isEmpty`, `size`, `entriesArray`, `keysArray`, `valuesArray`) update automatically when the signal changes.
- * - Designed for use in Angular signals, but can be used for any reactivity pattern where mutable Map logic is desired.
  */
 export function mapSignal<K, V>(
   initialValue: Iterable<[K, V]> = [],

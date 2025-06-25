@@ -5,10 +5,6 @@ import { computed, Signal, signal, WritableSignal } from '@angular/core';
  */
 export interface TupleSignal<T extends readonly unknown[]> extends Signal<T> {
   /**
-   * Returns a signal for whether the tuple is empty (length 0).
-   */
-  readonly isEmpty: Signal<boolean>;
-  /**
    * Computed signal that returns an array of tuple entries [index, value].
    */
   readonly entriesArray: Signal<{ [K in keyof T]: [K, T[K]] }[number][]>;
@@ -63,16 +59,6 @@ export interface WritableTupleSignal<T extends readonly unknown[]>
  * point.updateAt(0, x => x+10);// [10, 99]
  * point();                     // [10, 99]
  * point.entriesArray();        // [[0, 10], [1, 99]]
- * point.isEmpty();             // false
- * const read = point.asReadonly();
- * read.getAt(1);               // 99
- *
- * @remarks
- * - All mutation helpers return a new tuple (immutably). Do **not** depend on array reference equality.
- * - `setAt` and `updateAt` preserve tuple length and typings.
- * - Use `.asReadonly()` to obtain a read-only, mutation-free signal for external consumers.
- * - Computed helpers (`isEmpty`, `entriesArray`) always reflect the latest tuple state.
- * - Designed for Angular signals, but works in any reactivity pattern needing tuple semantics.
  */
 export function tupleSignal<T extends readonly unknown[]>(
   initialValue: T,
@@ -113,16 +99,12 @@ export function tupleSignal<T extends readonly unknown[]>(
   // Read-only API.
   internalSignal.asReadonly = () => {
     const readonlySignal = _asReadonly() as TupleSignal<T>;
-    (readonlySignal as any).isEmpty = internalSignal.isEmpty;
     (readonlySignal as any).entriesArray = internalSignal.entriesArray;
     readonlySignal.getAt = internalSignal.getAt;
     return readonlySignal;
   };
 
   // Computed helpers.
-  (internalSignal as any).isEmpty = computed(
-    () => internalSignal().length === 0,
-  );
   (internalSignal as any).entriesArray = computed(() => {
     const tuple = internalSignal();
     return tuple.map((value, index) => [index, value]) as {

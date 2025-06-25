@@ -75,9 +75,9 @@ export interface WritableStackSignal<T>
  *
  * @example
  * const stack = stackSignal<number>([1, 2, 3]);
- * stack.push(4);
- * const value = stack.pop(); // 4
- * stack.clear();
+ * stack.push(4);             // [1, 2, 3, 4]
+ * const value = stack.pop(); // 4        [1, 2, 3]
+ * stack.clear();             // []
  */
 export function stackSignal<T>(initialValue: T[] = []): WritableStackSignal<T> {
   const internalSignal = signal<T[]>([

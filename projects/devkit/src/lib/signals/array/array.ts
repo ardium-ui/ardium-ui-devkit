@@ -124,7 +124,7 @@ export interface WritableArraySignal<T> extends WritableSignal<T[]>, ArraySignal
  * all of which will automatically trigger Angular reactivity.
  *
  * All mutator methods (such as `push`, `pop`, `splice`, `setAt`, `updateAt`, etc) return a new array value, preserving
- * immutability for optimal signal reactivity.
+ * immutability for optimal signal reactivity. Do not depend on reference equality between updates.
  *
  * @template T The type of items stored in the array.
  * @param {T[]} [initialValue=[]] Optional initial value for the array.
@@ -136,13 +136,6 @@ export interface WritableArraySignal<T> extends WritableSignal<T[]>, ArraySignal
  * numbers.pop();            // returns 4, numbers() === [1, 2, 3]
  * numbers.setAt(1, 99);     // [1, 99, 3]
  * numbers.filter(x => x>1); // [99, 3]
- *
- * @remarks
- * - Every method (including `set`, `push`, `splice`, etc.) will replace the array with a **new cloned array**.
- *   Do not depend on reference equality between updates.
- * - Use `asReadonly()` to obtain a type-safe, read-only version of the array signal (mutators removed).
- * - All mutators and updaters are **reactive**: they will automatically update consumers of the signal.
- * - Array methods match standard JS array signatures for familiarity and easy porting.
  */
 export function arraySignal<T>(initialValue: T[] = []): WritableArraySignal<T> {
   const internalSignal = signal<T[]>([

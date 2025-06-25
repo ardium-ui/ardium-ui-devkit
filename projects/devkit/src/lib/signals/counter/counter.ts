@@ -67,12 +67,7 @@ export interface WritableCounterSignal
  * count.inc();     // 11
  * count.dec(2);    // 9
  * count.reset();   // 10
- * count.isPositive(); // true
- *
- * @remarks
- * - All mutations (inc, dec, set, reset) are fully reactive and create new signal values.
- * - Use `.asReadonly()` to obtain a safe, mutation-free signal for external use.
- * - Computed helpers (`isZero`, `isPositive`, `isNegative`) always reflect the latest value.
+ * count.isReset(); // true
  */
 export function counterSignal(initial = 0): WritableCounterSignal {
   const internalSignal = signal<number>(initial) as WritableCounterSignal;
