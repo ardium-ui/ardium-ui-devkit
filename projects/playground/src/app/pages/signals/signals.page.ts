@@ -1,11 +1,11 @@
 import { Component, effect } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { debouncedSignal } from '../../../../../devkit/src/lib/signals/debounced/debounced';
+import { debouncedSignal } from '../../../../../devkit/src/lib/signals/debounced/debounced-signal';
 import {
-    persistentSignal,
-    PersistentStorageMethod,
-    queryParamSignal,
-    throttledSignal,
+  persistentSignal,
+  PersistentStorageMethod,
+  queryParamSignal,
+  throttledSignal,
 } from '../../../../../devkit/src/public-api';
 
 @Component({

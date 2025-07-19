@@ -1,5 +1,5 @@
 import { fakeAsync, tick } from '@angular/core/testing';
-import { debouncedSignal } from './debounced';
+import { debouncedSignal } from './debounced-signal';
 
 describe('debouncedSignal', () => {
   it('should return a WritableSignal with initial value', () => {

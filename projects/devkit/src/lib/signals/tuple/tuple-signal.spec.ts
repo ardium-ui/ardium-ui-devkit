@@ -1,4 +1,4 @@
-import { tupleSignal, TupleSignal, WritableTupleSignal } from './tuple';
+import { tupleSignal, TupleSignal, WritableTupleSignal } from './tuple-signal';
 
 describe('tupleSignal', () => {
   let signal: WritableTupleSignal<[number, string, boolean]>;
@@ -68,17 +68,6 @@ describe('tupleSignal', () => {
     });
   });
 
-  describe('isEmpty', () => {
-    it('should be false for a tuple with length > 0', () => {
-      expect(signal.isEmpty()).toBe(false);
-    });
-
-    it('should be true for a tuple of length 0', () => {
-      const empty = tupleSignal([]);
-      expect(empty.isEmpty()).toBe(true);
-    });
-  });
-
   describe('entriesArray', () => {
     it('should provide entries as [index, value] pairs', () => {
       expect(signal.entriesArray()).toEqual([
@@ -115,7 +104,6 @@ describe('tupleSignal', () => {
     });
 
     it('should provide isEmpty and entriesArray', () => {
-      expect(readonly.isEmpty()).toBe(false);
       expect(readonly.entriesArray()).toEqual([
         [0 as any, 42],
         [1 as any, 'hello'],

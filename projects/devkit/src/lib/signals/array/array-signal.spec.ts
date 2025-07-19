@@ -1,4 +1,4 @@
-import { arraySignal, ArraySignal, WritableArraySignal } from './array';
+import { arraySignal, ArraySignal, WritableArraySignal } from './array-signal';
 
 describe('ArraySignal', () => {
   let signal: WritableArraySignal<number>;

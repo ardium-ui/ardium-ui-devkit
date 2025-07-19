@@ -1,2 +1,2 @@
-export * from './persistent';
+export * from './persistent-signal';
 

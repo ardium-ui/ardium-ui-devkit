@@ -1,4 +1,4 @@
-import { setSignal, SetSignal, WritableSetSignal } from './set';
+import { setSignal, SetSignal, WritableSetSignal } from './set-signal';
 
 describe('SetSignal', () => {
   let signal: WritableSetSignal<number>;

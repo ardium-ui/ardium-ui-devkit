@@ -1,2 +1,2 @@
-export * from './throttled';
+export * from './throttled-signal';
 

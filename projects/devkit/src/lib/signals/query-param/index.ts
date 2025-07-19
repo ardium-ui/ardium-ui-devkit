@@ -1,2 +1,2 @@
-export * from './query-param';
+export * from './query-param-signal';
 

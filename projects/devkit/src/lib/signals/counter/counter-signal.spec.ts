@@ -2,7 +2,7 @@ import {
   counterSignal,
   CounterSignal,
   WritableCounterSignal,
-} from './counter';
+} from './counter-signal';
 
 describe('counterSignal', () => {
   let counter: WritableCounterSignal;

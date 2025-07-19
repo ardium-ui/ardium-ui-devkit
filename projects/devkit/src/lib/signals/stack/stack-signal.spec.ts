@@ -1,4 +1,4 @@
-import { stackSignal, StackSignal, WritableStackSignal } from './stack';
+import { stackSignal, StackSignal, WritableStackSignal } from './stack-signal';
 
 describe('stackSignal', () => {
   let signal: WritableStackSignal<number>;

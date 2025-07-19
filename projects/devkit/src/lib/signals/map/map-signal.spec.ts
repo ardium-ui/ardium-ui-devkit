@@ -1,4 +1,4 @@
-import { mapSignal, MapSignal, WritableMapSignal } from './map';
+import { mapSignal, MapSignal, WritableMapSignal } from './map-signal';
 
 describe('mapSignal', () => {
   let signal: WritableMapSignal<string, number>;

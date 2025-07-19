@@ -1,2 +1,2 @@
-export * from './debounced';
+export * from './debounced-signal';
 

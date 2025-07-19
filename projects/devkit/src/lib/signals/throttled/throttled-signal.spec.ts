@@ -1,5 +1,5 @@
 import { fakeAsync, tick } from '@angular/core/testing';
-import { throttledSignal } from './throttled';
+import { throttledSignal } from './throttled-signal';
 
 describe('throttledSignal', () => {
   it('should return a WritableSignal with initial value', () => {

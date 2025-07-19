@@ -1,4 +1,4 @@
-import { queueSignal, QueueSignal, WritableQueueSignal } from './queue';
+import { queueSignal, QueueSignal, WritableQueueSignal } from './queue-signal';
 
 describe('queueSignal', () => {
   let signal: WritableQueueSignal<number>;
