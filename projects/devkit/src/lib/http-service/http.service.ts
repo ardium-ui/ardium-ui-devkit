@@ -9,14 +9,13 @@ import {
 } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import {
-  DefaultRequestOptions,
-  RequestOptions
-} from './_types';
+import { DefaultRequestOptions, RequestOptions } from './_types';
+import { normalizePath } from './_utils';
 
 const FAULTY_URL_REGEX = /https?:\/\//;
 
-function getUrl(apiUrl: string, url: string): string {
+function getUrl(apiUrl: string, url: string | string[]): string {
+  url = normalizePath(url);
   const finalUrl = apiUrl + url.replace(/^\//, '');
   if (FAULTY_URL_REGEX.test(url)) {
     console.warn(
@@ -67,7 +66,7 @@ export function createHttpService(
      */
     request(
       method: string,
-      url: string,
+      url: string | string[],
       options: {
         body?: any;
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -99,7 +98,7 @@ export function createHttpService(
      */
     request(
       method: string,
-      url: string,
+      url: string | string[],
       options: {
         body?: any;
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -131,7 +130,7 @@ export function createHttpService(
      */
     request(
       method: string,
-      url: string,
+      url: string | string[],
       options: {
         body?: any;
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -163,7 +162,7 @@ export function createHttpService(
      */
     request(
       method: string,
-      url: string,
+      url: string | string[],
       options: {
         body?: any;
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -195,7 +194,7 @@ export function createHttpService(
      */
     request(
       method: string,
-      url: string,
+      url: string | string[],
       options: {
         body?: any;
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -227,7 +226,7 @@ export function createHttpService(
      */
     request(
       method: string,
-      url: string,
+      url: string | string[],
       options: {
         body?: any;
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -259,7 +258,7 @@ export function createHttpService(
      */
     request(
       method: string,
-      url: string,
+      url: string | string[],
       options: {
         body?: any;
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -292,7 +291,7 @@ export function createHttpService(
      */
     request<R>(
       method: string,
-      url: string,
+      url: string | string[],
       options: {
         body?: any;
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -324,7 +323,7 @@ export function createHttpService(
      */
     request(
       method: string,
-      url: string,
+      url: string | string[],
       options: {
         body?: any;
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -356,7 +355,7 @@ export function createHttpService(
      */
     request(
       method: string,
-      url: string,
+      url: string | string[],
       options: {
         body?: any;
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -388,7 +387,7 @@ export function createHttpService(
      */
     request(
       method: string,
-      url: string,
+      url: string | string[],
       options: {
         body?: any;
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -420,7 +419,7 @@ export function createHttpService(
      */
     request(
       method: string,
-      url: string,
+      url: string | string[],
       options: {
         body?: any;
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -452,7 +451,7 @@ export function createHttpService(
      */
     request<R>(
       method: string,
-      url: string,
+      url: string | string[],
       options: {
         body?: any;
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -484,7 +483,7 @@ export function createHttpService(
      */
     request(
       method: string,
-      url: string,
+      url: string | string[],
       options?: {
         body?: any;
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -517,7 +516,7 @@ export function createHttpService(
      */
     request<R>(
       method: string,
-      url: string,
+      url: string | string[],
       options?: {
         body?: any;
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -549,7 +548,7 @@ export function createHttpService(
      */
     request(
       method: string,
-      url: string,
+      url: string | string[],
       options?: {
         body?: any;
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -573,7 +572,7 @@ export function createHttpService(
 
     request(
       methodOrReq: string | HttpRequest<any>,
-      url?: string,
+      url?: string | string[],
       options?: RequestOptions,
     ) {
       if (typeof methodOrReq === 'string') {
@@ -597,7 +596,7 @@ export function createHttpService(
      * @return An `Observable` of the response body as an `ArrayBuffer`.
      */
     delete(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
@@ -627,7 +626,7 @@ export function createHttpService(
      * @return An `Observable` of the response body as a `Blob`.
      */
     delete(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
@@ -657,7 +656,7 @@ export function createHttpService(
      * @return An `Observable` of the response, with the response body of type string.
      */
     delete(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
@@ -688,7 +687,7 @@ export function createHttpService(
      * with response body as an `ArrayBuffer`.
      */
     delete(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
@@ -718,7 +717,7 @@ export function createHttpService(
      * @return An `Observable` of all the `HttpEvent`s for the request, with the response body as a `Blob`.
      */
     delete(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
@@ -748,7 +747,7 @@ export function createHttpService(
      * @return An `Observable` of all `HttpEvent`s for the request, with the response body of type string.
      */
     delete(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
@@ -778,7 +777,7 @@ export function createHttpService(
      * @return An `Observable` of all `HttpEvent`s for the request, with response body of type `Object`.
      */
     delete(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
@@ -808,7 +807,7 @@ export function createHttpService(
      * @return An `Observable` of all `HttpEvent`s for the request, with a response body in the requested type.
      */
     delete<TRes>(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
@@ -838,7 +837,7 @@ export function createHttpService(
      * @return An `Observable` of the full `HttpResponse`, with the response body as an `ArrayBuffer`.
      */
     delete(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
@@ -868,7 +867,7 @@ export function createHttpService(
      * @return An `Observable` of the `HttpResponse`, with the response body of type `Blob`.
      */
     delete(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
@@ -898,7 +897,7 @@ export function createHttpService(
      * @return An `Observable` of the full `HttpResponse`, with the response body of type string.
      */
     delete(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
@@ -928,7 +927,7 @@ export function createHttpService(
      * @return An `Observable` of the `HttpResponse`, with the response body of type `Object`.
      */
     delete(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
@@ -958,7 +957,7 @@ export function createHttpService(
      * @return An `Observable` of the `HttpResponse`, with the response body of the requested type.
      */
     delete<TRes>(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
@@ -988,7 +987,7 @@ export function createHttpService(
      * @return An `Observable` of the response, with the response body of type `Object`.
      */
     delete(
-      url: string,
+      url: string | string[],
       options?: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
@@ -1018,7 +1017,7 @@ export function createHttpService(
      * @return An `Observable` of the response body in the requested type.
      */
     delete<TRes>(
-      url: string,
+      url: string | string[],
       options?: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
@@ -1039,7 +1038,7 @@ export function createHttpService(
       },
     ): Observable<TRes>;
 
-    delete(url: string, options?: RequestOptions) {
+    delete(url: string | string[], options?: RequestOptions) {
       const finalUrl = getUrl(apiUrl, url);
       const finalOptions = getOpts(defaultOptions, options);
       return http.delete(finalUrl, finalOptions) as any;
@@ -1058,7 +1057,7 @@ export function createHttpService(
      * @return An `Observable` of the response, with the response body as an `ArrayBuffer`.
      */
     get(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
@@ -1088,7 +1087,7 @@ export function createHttpService(
      * @return An `Observable` of the response, with the response body as a `Blob`.
      */
     get(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
@@ -1118,7 +1117,7 @@ export function createHttpService(
      * @return An `Observable` of the response, with the response body of type string.
      */
     get(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
@@ -1149,7 +1148,7 @@ export function createHttpService(
      * with the response body as an `ArrayBuffer`.
      */
     get(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
@@ -1180,7 +1179,7 @@ export function createHttpService(
      * with the response body as a `Blob`.
      */
     get(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
@@ -1211,7 +1210,7 @@ export function createHttpService(
      * with the response body of type string.
      */
     get(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
@@ -1241,7 +1240,7 @@ export function createHttpService(
      * @return An `Observable` of the response, with the response body of type `Object`.
      */
     get(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
@@ -1271,7 +1270,7 @@ export function createHttpService(
      * @return An `Observable` of the response, with a response body in the requested type.
      */
     get<TRes>(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
@@ -1302,7 +1301,7 @@ export function createHttpService(
      * with the response body as an `ArrayBuffer`.
      */
     get(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
@@ -1333,7 +1332,7 @@ export function createHttpService(
      * with the response body as a `Blob`.
      */
     get(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
@@ -1364,7 +1363,7 @@ export function createHttpService(
      * with the response body of type string.
      */
     get(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
@@ -1395,7 +1394,7 @@ export function createHttpService(
      * with the response body of type `Object`.
      */
     get(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
@@ -1426,7 +1425,7 @@ export function createHttpService(
      * with a response body in the requested type.
      */
     get<TRes>(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
@@ -1456,7 +1455,7 @@ export function createHttpService(
      * @return An `Observable` of the response body as a JavaScript object.
      */
     get(
-      url: string,
+      url: string | string[],
       options?: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
@@ -1486,7 +1485,7 @@ export function createHttpService(
      * @return An `Observable` of the response body in the requested type.
      */
     get<TRes>(
-      url: string,
+      url: string | string[],
       options?: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
@@ -1507,7 +1506,7 @@ export function createHttpService(
       },
     ): Observable<TRes>;
 
-    get(url: string, options?: RequestOptions) {
+    get(url: string | string[], options?: RequestOptions) {
       const finalUrl = getUrl(apiUrl, url);
       const finalOptions = getOpts(defaultOptions, options);
       return http.get(finalUrl, finalOptions) as any;
@@ -1526,7 +1525,7 @@ export function createHttpService(
      * @return An `Observable` of the response, with the response body as an `ArrayBuffer`.
      */
     head(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
@@ -1556,7 +1555,7 @@ export function createHttpService(
      * @return An `Observable` of the response, with the response body as a `Blob`.
      */
     head(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
@@ -1586,7 +1585,7 @@ export function createHttpService(
      * @return An `Observable` of the response, with the response body of type string.
      */
     head(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
@@ -1617,7 +1616,7 @@ export function createHttpService(
      * with the response body as an `ArrayBuffer`.
      */
     head(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
@@ -1648,7 +1647,7 @@ export function createHttpService(
      * with the response body as a `Blob`.
      */
     head(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
@@ -1679,7 +1678,7 @@ export function createHttpService(
      * with the response body of type string.
      */
     head(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
@@ -1710,7 +1709,7 @@ export function createHttpService(
      * with a response body of type `Object`.
      */
     head(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
@@ -1741,7 +1740,7 @@ export function createHttpService(
      * with a response body in the requested type.
      */
     head<TRes>(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
@@ -1772,7 +1771,7 @@ export function createHttpService(
      * with the response body as an `ArrayBuffer`.
      */
     head(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
@@ -1803,7 +1802,7 @@ export function createHttpService(
      * with the response body as a blob.
      */
     head(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
@@ -1834,7 +1833,7 @@ export function createHttpService(
      * with the response body of type string.
      */
     head(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
@@ -1865,7 +1864,7 @@ export function createHttpService(
      * with the response body of type `Object`.
      */
     head(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
@@ -1896,7 +1895,7 @@ export function createHttpService(
      * with a response body of the requested type.
      */
     head<TRes>(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe?: 'body';
@@ -1917,7 +1916,7 @@ export function createHttpService(
       },
     ): Observable<TRes>;
 
-    head(url: string, options?: RequestOptions) {
+    head(url: string | string[], options?: RequestOptions) {
       const finalUrl = getUrl(apiUrl, url);
       const finalOptions = getOpts(defaultOptions, options);
       return http.head(finalUrl, finalOptions) as any;
@@ -1935,7 +1934,7 @@ export function createHttpService(
      *
      * @return An `Observable` of the response object, with response body as an object.
      */
-    jsonp(url: string, callbackParam: string): Observable<Object>;
+    jsonp(url: string | string[], callbackParam: string): Observable<Object>;
 
     /**
      * Constructs a `JSONP` request for the given URL and name of the callback parameter.
@@ -1948,9 +1947,12 @@ export function createHttpService(
      *
      * @return An `Observable` of the response object, with response body in the requested type.
      */
-    jsonp<TRes>(url: string, callbackParam: string): Observable<TRes>;
+    jsonp<TRes>(
+      url: string | string[],
+      callbackParam: string,
+    ): Observable<TRes>;
 
-    jsonp(url: string, callbackParam: string) {
+    jsonp(url: string | string[], callbackParam: string) {
       url = getUrl(apiUrl, url);
       return http.jsonp(url, callbackParam) as any;
     }
@@ -1969,7 +1971,7 @@ export function createHttpService(
      * @return An `Observable` of the response, with the response body as an `ArrayBuffer`.
      */
     options(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
@@ -1999,7 +2001,7 @@ export function createHttpService(
      * @return An `Observable` of the response, with the response body as a `Blob`.
      */
     options(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
@@ -2029,7 +2031,7 @@ export function createHttpService(
      * @return An `Observable` of the response, with the response body of type string.
      */
     options(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
@@ -2060,7 +2062,7 @@ export function createHttpService(
      * with the response body as an `ArrayBuffer`.
      */
     options(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
@@ -2091,7 +2093,7 @@ export function createHttpService(
      * with the response body as a `Blob`.
      */
     options(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
@@ -2122,7 +2124,7 @@ export function createHttpService(
      * with the response body of type string.
      */
     options(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
@@ -2153,7 +2155,7 @@ export function createHttpService(
      * body of type `Object`.
      */
     options(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
@@ -2184,7 +2186,7 @@ export function createHttpService(
      * with a response body in the requested type.
      */
     options<TRes>(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
@@ -2215,7 +2217,7 @@ export function createHttpService(
      * with the response body as an `ArrayBuffer`.
      */
     options(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
@@ -2246,7 +2248,7 @@ export function createHttpService(
      * with the response body as a `Blob`.
      */
     options(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
@@ -2277,7 +2279,7 @@ export function createHttpService(
      * with the response body of type string.
      */
     options(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
@@ -2308,7 +2310,7 @@ export function createHttpService(
      * with the response body of type `Object`.
      */
     options(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
@@ -2339,7 +2341,7 @@ export function createHttpService(
      * with a response body in the requested type.
      */
     options<TRes>(
-      url: string,
+      url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
@@ -2369,7 +2371,7 @@ export function createHttpService(
      * @return An `Observable` of the response, with the response body as an object parsed from JSON.
      */
     options(
-      url: string,
+      url: string | string[],
       options?: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
@@ -2399,7 +2401,7 @@ export function createHttpService(
      * @return An `Observable` of the `HttpResponse`, with a response body of the given type.
      */
     options<TRes>(
-      url: string,
+      url: string | string[],
       options?: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
@@ -2419,7 +2421,7 @@ export function createHttpService(
       },
     ): Observable<TRes>;
 
-    options(url: string, options?: RequestOptions) {
+    options(url: string | string[], options?: RequestOptions) {
       const finalUrl = getUrl(apiUrl, url);
       const finalOptions = getOpts(defaultOptions, options);
       return http.options(finalUrl, finalOptions) as any;
@@ -2440,7 +2442,7 @@ export function createHttpService(
      * @return An `Observable` of the response, with the response body as an `ArrayBuffer`.
      */
     patch<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -2472,7 +2474,7 @@ export function createHttpService(
      * @return An `Observable` of the response, with the response body as a `Blob`.
      */
     patch<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -2504,7 +2506,7 @@ export function createHttpService(
      * @return An `Observable` of the response, with a response body of type string.
      */
     patch<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -2537,7 +2539,7 @@ export function createHttpService(
      * with the response body as an `ArrayBuffer`.
      */
     patch<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -2569,7 +2571,7 @@ export function createHttpService(
      * @return An `Observable` of all the `HttpEvent`s for the request, with the response body as `Blob`.
      */
     patch<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -2602,7 +2604,7 @@ export function createHttpService(
      * response body of type string.
      */
     patch<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -2635,7 +2637,7 @@ export function createHttpService(
      * with a response body of type `Object`.
      */
     patch<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -2668,7 +2670,7 @@ export function createHttpService(
      * with a response body in the requested type.
      */
     patch<TRes, TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -2701,7 +2703,7 @@ export function createHttpService(
      * with the response body as an `ArrayBuffer`.
      */
     patch<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -2734,7 +2736,7 @@ export function createHttpService(
      * with the response body as a `Blob`.
      */
     patch<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -2767,7 +2769,7 @@ export function createHttpService(
      * with a response body of type string.
      */
     patch<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -2800,7 +2802,7 @@ export function createHttpService(
      * with a response body in the requested type.
      */
     patch<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -2833,7 +2835,7 @@ export function createHttpService(
      * with a response body in the given type.
      */
     patch<TRes, TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -2865,7 +2867,7 @@ export function createHttpService(
      * @return An `Observable` of the response, with the response body as an object parsed from JSON.
      */
     patch<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options?: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -2898,7 +2900,7 @@ export function createHttpService(
      * with a response body in the given type.
      */
     patch<TRes, TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options?: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -2919,7 +2921,7 @@ export function createHttpService(
       },
     ): Observable<TRes>;
 
-    patch(url: string, body: any | null, options?: RequestOptions) {
+    patch(url: string | string[], body: any | null, options?: RequestOptions) {
       const finalUrl = getUrl(apiUrl, url);
       const finalOptions = getOpts(defaultOptions, options);
       return http.patch(finalUrl, body, finalOptions) as any;
@@ -2940,7 +2942,7 @@ export function createHttpService(
      * @return An `Observable` of the response, with the response body as an `ArrayBuffer`.
      */
     post<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -2973,7 +2975,7 @@ export function createHttpService(
      * @return An `Observable` of the response, with the response body as a `Blob`.
      */
     post<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -3006,7 +3008,7 @@ export function createHttpService(
      * @return An `Observable` of the response, with a response body of type string.
      */
     post<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -3039,7 +3041,7 @@ export function createHttpService(
      * @return An `Observable` of all `HttpEvent`s for the request, with the response body as an `ArrayBuffer`.
      */
     post<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -3072,7 +3074,7 @@ export function createHttpService(
      * @return An `Observable` of all `HttpEvent`s for the request, with the response body as `Blob`.
      */
     post<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -3105,7 +3107,7 @@ export function createHttpService(
      * @return An `Observable` of all `HttpEvent`s for the request, with a response body of type string.
      */
     post<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -3138,7 +3140,7 @@ export function createHttpService(
      * @return An `Observable` of all `HttpEvent`s for the request, with a response body of type `Object`.
      */
     post<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -3171,7 +3173,7 @@ export function createHttpService(
      * @return An `Observable` of all `HttpEvent`s for the request, with a response body in the requested type.
      */
     post<TRes, TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -3204,7 +3206,7 @@ export function createHttpService(
      * @return An `Observable` of the `HttpResponse` for the request, with the response body as an `ArrayBuffer`.
      */
     post<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -3237,7 +3239,7 @@ export function createHttpService(
      * @return An `Observable` of the `HttpResponse` for the request, with the response body as a `Blob`.
      */
     post<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -3270,7 +3272,7 @@ export function createHttpService(
      * @return An `Observable` of the `HttpResponse` for the request, with a response body of type string.
      */
     post<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -3303,7 +3305,7 @@ export function createHttpService(
      * @return An `Observable` of the `HttpResponse` for the request, with a response body of type `Object`.
      */
     post<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -3336,7 +3338,7 @@ export function createHttpService(
      * @return An `Observable` of the `HttpResponse` for the request, with a response body in the requested type.
      */
     post<TRes, TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -3369,7 +3371,7 @@ export function createHttpService(
      * @return An `Observable` of the response, with the response body as an object parsed from JSON.
      */
     post<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options?: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -3401,7 +3403,7 @@ export function createHttpService(
      * @return An `Observable` of the `HttpResponse` for the request, with a response body in the requested type.
      */
     post<TRes, TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options?: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -3423,7 +3425,7 @@ export function createHttpService(
       },
     ): Observable<TRes>;
 
-    post(url: string, body: any | null, options?: RequestOptions) {
+    post(url: string | string[], body: any | null, options?: RequestOptions) {
       const finalUrl = getUrl(apiUrl, url);
       const finalOptions = getOpts(defaultOptions, options);
       return http.post(finalUrl, body, finalOptions) as any;
@@ -3444,7 +3446,7 @@ export function createHttpService(
      * @return An `Observable` of the response, with the response body as an `ArrayBuffer`.
      */
     put<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -3476,7 +3478,7 @@ export function createHttpService(
      * @return An `Observable` of the response, with the response body as a `Blob`.
      */
     put<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -3508,7 +3510,7 @@ export function createHttpService(
      * @return An `Observable` of the response, with a response body of type string.
      */
     put<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -3541,7 +3543,7 @@ export function createHttpService(
      * with the response body as an `ArrayBuffer`.
      */
     put<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -3574,7 +3576,7 @@ export function createHttpService(
      * with the response body as a `Blob`.
      */
     put<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -3607,7 +3609,7 @@ export function createHttpService(
      * with a response body of type string.
      */
     put<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -3640,7 +3642,7 @@ export function createHttpService(
      * with a response body of type `Object`.
      */
     put<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -3672,7 +3674,7 @@ export function createHttpService(
      * with a response body in the requested type.
      */
     put<TRes, TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -3704,7 +3706,7 @@ export function createHttpService(
      * @return An `Observable` of the `HttpResponse` for the request, with the response body as an `ArrayBuffer`.
      */
     put<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -3736,7 +3738,7 @@ export function createHttpService(
      * @return An `Observable` of the `HttpResponse` for the request, with the response body as a `Blob`.
      */
     put<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -3768,7 +3770,7 @@ export function createHttpService(
      * @return An `Observable` of the `HttpResponse` for the request, with a response body of type string.
      */
     put<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -3800,7 +3802,7 @@ export function createHttpService(
      * @return An `Observable` of the `HttpResponse` for the request, with a response body of type `Object`.
      */
     put<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -3832,7 +3834,7 @@ export function createHttpService(
      * @return An `Observable` of the `HttpResponse` for the request, with a response body in the requested type.
      */
     put<TRes, TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -3864,7 +3866,7 @@ export function createHttpService(
      * @return An `Observable` of the response as a JavaScript object.
      */
     put<TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options?: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -3896,7 +3898,7 @@ export function createHttpService(
      * @return An `Observable` of the requested type.
      */
     put<TRes, TBody = any>(
-      url: string,
+      url: string | string[],
       body: TBody | null,
       options?: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -3917,7 +3919,7 @@ export function createHttpService(
       },
     ): Observable<TRes>;
 
-    put(url: string, body: any | null, options?: RequestOptions) {
+    put(url: string | string[], body: any | null, options?: RequestOptions) {
       const finalUrl = getUrl(apiUrl, url);
       const finalOptions = getOpts(defaultOptions, options);
       return http.put(finalUrl, body, finalOptions) as any;

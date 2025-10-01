@@ -1,3 +1,14 @@
+## v7.8.0
+
+### Additions
+
+- Add support for array-based URLs in all HttpService methods.
+  - The URL will be created by joining all parts together, like `path.join()` in Node JS.
+- Created `formatFileExtension`, `formatFileName`, and `formatFileSize` functions.
+  - Work exactly the same as their pipe equivalents, but can be easily used in typescript files.
+  - They do not follow the default values provided using the provider functions!
+- Added JSDoc comments to all file pipes.
+
 ## v7.7.1
 
 ### Changes
