@@ -28,4 +28,11 @@ export class HttpServicePage {
   });
 
   readonly error = computed(() => (this.users.error() as any).message);
+
+  readonly users2 = rxResource({
+    request: () => ({ id: this.id() }),
+    loader: ({ request }) => this.http.get(['users', request.id]),
+  });
+
+  readonly error2 = computed(() => (this.users.error() as any).message);
 }

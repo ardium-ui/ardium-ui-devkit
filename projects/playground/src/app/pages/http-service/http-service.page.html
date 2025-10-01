@@ -9,4 +9,11 @@
   } @else {
   <pre>{{ users.value() | json }}</pre>
   }
+  @if (users2.isLoading()) {
+  <pre>Loading...</pre>
+  } @else if (users2.error()) {
+  <pre>{{ error2() }}</pre>
+  } @else {
+  <pre>{{ users2.value() | json }}</pre>
+  }
 </main>
