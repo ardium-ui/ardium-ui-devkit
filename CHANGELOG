@@ -1,21 +1,78 @@
+## v7.7.1
+
+### Changes
+
+- Removed `isEmpty` property from `tupleSignal`, as it may never be empty.
+- Simplified JSDoc comments on some new signals.
+
+## v7.7.0
+
+### Additions
+
+- `arraySignal`:
+  - Added `asReadonly` method.
+  -
+- Created `setSignal` - a signal for handling `Set` values.
+- Created `mapSignal` - a signal for handling `Map` values.
+- Created `tupleSignal` - a signal for handling tuples (fixed-length arrays).
+- Created `stackSignal` - an array-based signal that behaves like the stack data structure.
+- Created `queueSignal` - an array-based signal that behaves like the queue data structure.
+- Created `counterSignal` - a number-based signal that allows easier incrementing, decrementing, and resetting of its value.
+
+## v7.6.1
+
+### Additions
+
+- `arraySignal`:
+  - Added `setAt` method for setting a value at a specific index.
+  - Added `updateAt` method for updating a value at a specific index.
+
+### Bugfixes
+
+- Export `arraySignal` from public api, as it was inaccessible.
+
+## v7.6.0
+
+No changes.
+
+## v7.5.0
+
+### Additions
+
+- Created `arraySignal` - a signal that simplifies handling array values.
+
+### Bugfixes
+
+- Fixed `debouncedSignal` and `throttledSignal` update methods not working.
+
+## v7.4.0
+
+### Changes
+
+- `createHttpService` now uses method overloads instead of a single method with varying options.
+
 ## v7.3.0
 
 ### Additions
+
 - Added a new value to `ViewportRelation`: InsideButTooLarge
 
 ### Changes
+
 - `ArdViewportObserverRef`:
   - now supports the additional `ViewportRelation` value - used when the element is both partially above and partially below the viewport.
 
 ## v7.2.2
 
 ### Fixes
+
 - Position was supposed to return the bottom position in reference to the bottom of the viewport. It is now fixed.
-- Position was also supposed to include the margins, which are now included 
+- Position was also supposed to include the margins, which are now included
 
 ## v7.2.0
 
 ### Additions
+
 - Added two new values to `ViewportRelation`: PartiallyAbove and PartiallyBelow
 - `ArdiumViewportObserverService`:
   - `observeElement` now supports passing in `ElementRef`s
@@ -24,13 +81,15 @@
   - added `positon` signal: returns the current position of the element in reference to the top of the viewport
 
 ### Changes
+
 - `ArdViewportObserverRef`:
   - now supports the additional `ViewportRelation` values.
-  - `isInViewport` returns true if the element is *at least partially* inside the viewport.
+  - `isInViewport` returns true if the element is _at least partially_ inside the viewport.
 
 ## v7.1.0
 
 ### Additions
+
 - `ArdViewportObserverRef`: added `margins` property, which contains signals returning the currently set top & bottom margin values.
 
 ## v7.0.0
