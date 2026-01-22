@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { ARD_FILEEXT_PIPE_DEFAULTS } from './fileext.defaults';
+import { ARD_FILEEXT_PIPE_DEFAULTS } from './file-pipes.defaults';
 import { ArdiumFileExtensionPipe } from './fileext.pipe';
 
 describe('ArdiumFileExtensionPipe', () => {

@@ -1,4 +1,4 @@
-import { InjectionToken } from '@angular/core';
+import { InjectionToken, Provider } from '@angular/core';
 import { ArdInfScrollTarget } from './infinite-scroll.directive';
 
 export interface ArdInfiniteScrollDefaults {
@@ -6,13 +6,22 @@ export interface ArdInfiniteScrollDefaults {
   target: ArdInfScrollTarget;
 }
 
+const _infiniteScrollDefaults: ArdInfiniteScrollDefaults = {
+  threshold: 200,
+  target: ArdInfScrollTarget.HTML,
+};
+
 export const ARD_INFINITE_SCROLL_DEFAULTS =
   new InjectionToken<ArdInfiniteScrollDefaults>(
     'ard-infinite-scroll-defaults',
     {
-      factory: () => ({
-        threshold: 200,
-        target: ArdInfScrollTarget.HTML,
-      }),
+      factory: () => ({ ..._infiniteScrollDefaults }),
     },
   );
+
+export function provideInfiniteScrollDefaults(config: Partial<ArdInfiniteScrollDefaults>): Provider {
+  return {
+    provide: ARD_INFINITE_SCROLL_DEFAULTS,
+    useValue: { ..._infiniteScrollDefaults, ...config },
+  };
+}

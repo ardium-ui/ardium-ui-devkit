@@ -39,15 +39,15 @@ export class ArdiumInfiniteScrollDirective {
 
   //! options
   readonly ardInfScrollThreshold = input<number, any>(
-    this._DEFAULTS.threshold ?? 200,
+    this._DEFAULTS.threshold,
     {
-      transform: (v) => coerceNumberProperty(v, this._DEFAULTS.threshold ?? 200),
+      transform: (v) => coerceNumberProperty(v, this._DEFAULTS.threshold),
     },
   );
-  readonly ardInfScrollActive = model<boolean>(true, {});
+  readonly ardInfScrollActive = model<boolean>(true);
 
   readonly ardInfScrollTarget = input<ArdInfScrollTarget>(
-    this._DEFAULTS.target ?? ArdInfScrollTarget.HTML,
+    this._DEFAULTS.target,
   );
 
   //! event handlers

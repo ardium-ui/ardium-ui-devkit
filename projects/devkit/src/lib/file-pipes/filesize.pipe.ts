@@ -1,5 +1,5 @@
 import { inject, Pipe, PipeTransform } from '@angular/core';
-import { ARD_FILESIZE_PIPE_DEFAULTS } from './filesize.defaults';
+import { ARD_FILE_PIPES_DEFAULTS } from './file-pipes.defaults';
 
 const FILE_SIZE_UNITS = [
   { unit: 'B', size: 1 }, // bytes
@@ -71,14 +71,14 @@ export function formatFileSize(
 })
 export class ArdiumFileSizePipe implements PipeTransform {
   /** Default configuration for the pipe */
-  protected readonly _DEFAULTS = inject(ARD_FILESIZE_PIPE_DEFAULTS);
+  protected readonly _DEFAULTS = inject(ARD_FILE_PIPES_DEFAULTS);
 
   /**
    * Transforms the given value to a human-readable file size string.
    *
    * @param {number | File | null | undefined} value - The file size as a number or File object whose size is to be extracted.
-   * @param {number} [precision=this._DEFAULTS.precision] - The number of decimal places to round to (defaults to config value).
-   * @param {boolean} [useSpace=this._DEFAULTS.useSpace] - Whether to include a space between the number and the unit (defaults to config value).
+   * @param {number} precision - The number of decimal places to round to (defaults to config value).
+   * @param {boolean} useSpace - Whether to include a space between the number and the unit (defaults to config value).
    * @returns {string} - The formatted file size string (e.g., '1.5 MB', '10 kB').
    *
    * @example
@@ -90,8 +90,8 @@ export class ArdiumFileSizePipe implements PipeTransform {
    */
   transform(
     value: number | File | null | undefined,
-    precision: number = this._DEFAULTS.precision,
-    useSpace: boolean = this._DEFAULTS.useSpace,
+    precision: number = this._DEFAULTS.sizePrecision,
+    useSpace: boolean = this._DEFAULTS.sizeUseSpace,
   ): string {
     return formatFileSize(value, precision, useSpace);
   }

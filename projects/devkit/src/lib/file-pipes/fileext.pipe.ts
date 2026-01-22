@@ -1,5 +1,5 @@
 import { inject, Pipe, PipeTransform } from '@angular/core';
-import { ARD_FILEEXT_PIPE_DEFAULTS } from './fileext.defaults';
+import { ARD_FILE_PIPES_DEFAULTS } from './file-pipes.defaults';
 
 /**
  * Formats a file extension from a string or File object.
@@ -37,13 +37,13 @@ export function formatFileExtension(
   standalone: false,
 })
 export class ArdiumFileExtensionPipe implements PipeTransform {
-  protected readonly _DEFAULTS = inject(ARD_FILEEXT_PIPE_DEFAULTS);
+  protected readonly _DEFAULTS = inject(ARD_FILE_PIPES_DEFAULTS);
 
   /**
    * Transforms the given value to its file extension.
    *
    * @param {string | File | null | undefined} value - The file name or File object to extract the extension from.
-   * @param {boolean} [withDot=this._DEFAULTS.widthDot] - Whether to include a dot before the extension (defaults to config value).
+   * @param {boolean} withDot - Whether to include a dot before the extension (defaults to config value).
    * @returns {string | null} - The file extension or null if no extension is found.
    *
    *
@@ -53,7 +53,7 @@ export class ArdiumFileExtensionPipe implements PipeTransform {
    */
   transform(
     value: string | File | null | undefined,
-    withDot: boolean = this._DEFAULTS.widthDot,
+    withDot: boolean = this._DEFAULTS.extensionWithDot,
   ): string | null {
     return formatFileExtension(value, withDot);
   }
