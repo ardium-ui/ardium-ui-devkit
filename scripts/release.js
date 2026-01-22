@@ -125,7 +125,7 @@ const VERSION_ALIAS_MAP = {
     console.log(`${ansis.greenBright.bold('✓')} Built projects/devkit (${new Date().valueOf() - startTime.valueOf()} ms)`);
 
     // Publish
-    execSync(`cd dist/ui && npm publish --access public${isAlphaBump ? ' --tag alpha' : ''}`, {
+    execSync(`cd dist/devkit && npm publish --access public${isAlphaBump ? ' --tag alpha' : ''}`, {
       stdio: 'inherit',
     });
 
