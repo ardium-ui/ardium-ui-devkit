@@ -129,6 +129,7 @@ const VERSION_ALIAS_MAP = {
       stdio: 'inherit',
     });
 
+    startTime = new Date();
     // Cleanup
     execSync('rmdir /s /Q dist', { stdio: 'ignore' });
 
