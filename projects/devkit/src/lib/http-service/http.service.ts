@@ -32,6 +32,38 @@ function getOpts(
   return { ...defaultOptions, ...(options ?? {}) };
 }
 
+function convertToHttpParams(
+  params:
+    | HttpParams
+    | {
+        [param: string]:
+          | string
+          | number
+          | boolean
+          | ReadonlyArray<string | number | boolean>;
+      }
+    | undefined,
+): HttpParams {
+  if (params instanceof HttpParams || !params) {
+    return params as HttpParams;
+  }
+  let httpParams = new HttpParams();
+  for (const key of Object.keys(params)) {
+    const value = params[key];
+    if (value == null) {
+      continue;
+    }
+    if (Array.isArray(value)) {
+      value.forEach((item) => {
+        httpParams = httpParams.append(key, item.toString());
+      });
+    } else {
+      httpParams = httpParams.append(key, value.toString());
+    }
+  }
+  return httpParams;
+}
+
 export function createHttpService(
   apiUrl: string,
   defaultOptions: DefaultRequestOptions = {},
@@ -578,6 +610,9 @@ export function createHttpService(
       if (typeof methodOrReq === 'string') {
         const finalUrl = getUrl(apiUrl, url!);
         const finalOptions = getOpts(defaultOptions, options);
+        if (finalOptions.params) {
+          finalOptions.params = convertToHttpParams(finalOptions.params);
+        }
         return http.request(methodOrReq, finalUrl, finalOptions) as any;
       }
       return http.request(methodOrReq) as any;
@@ -1041,6 +1076,9 @@ export function createHttpService(
     delete(url: string | string[], options?: RequestOptions) {
       const finalUrl = getUrl(apiUrl, url);
       const finalOptions = getOpts(defaultOptions, options);
+      if (finalOptions.params) {
+        finalOptions.params = convertToHttpParams(finalOptions.params);
+      }
       return http.delete(finalUrl, finalOptions) as any;
     }
 
@@ -1509,6 +1547,9 @@ export function createHttpService(
     get(url: string | string[], options?: RequestOptions) {
       const finalUrl = getUrl(apiUrl, url);
       const finalOptions = getOpts(defaultOptions, options);
+      if (finalOptions.params) {
+        finalOptions.params = convertToHttpParams(finalOptions.params);
+      }
       return http.get(finalUrl, finalOptions) as any;
     }
 
@@ -1919,6 +1960,9 @@ export function createHttpService(
     head(url: string | string[], options?: RequestOptions) {
       const finalUrl = getUrl(apiUrl, url);
       const finalOptions = getOpts(defaultOptions, options);
+      if (finalOptions.params) {
+        finalOptions.params = convertToHttpParams(finalOptions.params);
+      }
       return http.head(finalUrl, finalOptions) as any;
     }
 
@@ -2424,6 +2468,9 @@ export function createHttpService(
     options(url: string | string[], options?: RequestOptions) {
       const finalUrl = getUrl(apiUrl, url);
       const finalOptions = getOpts(defaultOptions, options);
+      if (finalOptions.params) {
+        finalOptions.params = convertToHttpParams(finalOptions.params);
+      }
       return http.options(finalUrl, finalOptions) as any;
     }
 
@@ -2924,6 +2971,9 @@ export function createHttpService(
     patch(url: string | string[], body: any | null, options?: RequestOptions) {
       const finalUrl = getUrl(apiUrl, url);
       const finalOptions = getOpts(defaultOptions, options);
+      if (finalOptions.params) {
+        finalOptions.params = convertToHttpParams(finalOptions.params);
+      }
       return http.patch(finalUrl, body, finalOptions) as any;
     }
 
@@ -3428,6 +3478,9 @@ export function createHttpService(
     post(url: string | string[], body: any | null, options?: RequestOptions) {
       const finalUrl = getUrl(apiUrl, url);
       const finalOptions = getOpts(defaultOptions, options);
+      if (finalOptions.params) {
+        finalOptions.params = convertToHttpParams(finalOptions.params);
+      }
       return http.post(finalUrl, body, finalOptions) as any;
     }
 
@@ -3922,6 +3975,9 @@ export function createHttpService(
     put(url: string | string[], body: any | null, options?: RequestOptions) {
       const finalUrl = getUrl(apiUrl, url);
       const finalOptions = getOpts(defaultOptions, options);
+      if (finalOptions.params) {
+        finalOptions.params = convertToHttpParams(finalOptions.params);
+      }
       return http.put(finalUrl, body, finalOptions) as any;
     }
   };
