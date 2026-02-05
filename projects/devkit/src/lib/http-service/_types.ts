@@ -16,6 +16,8 @@ export interface DefaultRequestOptions {
           | string
           | number
           | boolean
+          | null
+          | undefined
           | ReadonlyArray<string | number | boolean>;
       };
   reportProgress?: boolean;

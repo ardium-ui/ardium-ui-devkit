@@ -40,7 +40,9 @@ function convertToHttpParams(
           | string
           | number
           | boolean
-          | ReadonlyArray<string | number | boolean>;
+          | null
+                | undefined
+                | ReadonlyArray<string | number | boolean>;
       }
     | undefined,
 ): HttpParams {
@@ -111,6 +113,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -143,6 +147,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -175,6 +181,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -207,6 +215,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -239,6 +249,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -271,6 +283,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -304,6 +318,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         responseType?: 'json';
@@ -337,6 +353,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         responseType?: 'json';
@@ -368,6 +386,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -400,6 +420,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -432,6 +454,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -465,6 +489,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         responseType?: 'json';
@@ -497,6 +523,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         responseType?: 'json';
@@ -528,6 +556,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         responseType?: 'json';
@@ -561,6 +591,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         responseType?: 'json';
@@ -592,6 +624,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         observe?: 'body' | 'events' | 'response';
@@ -643,6 +677,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -673,6 +709,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -703,6 +741,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -734,6 +774,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -764,6 +806,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -794,6 +838,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -824,6 +870,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -884,6 +932,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -914,6 +964,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -944,6 +996,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -974,6 +1028,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -1004,6 +1060,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -1034,6 +1092,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -1064,6 +1124,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -1107,6 +1169,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -1137,6 +1201,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -1167,6 +1233,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -1198,6 +1266,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -1229,6 +1299,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -1260,6 +1332,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -1290,6 +1364,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -1320,6 +1396,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -1351,6 +1429,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -1382,6 +1462,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -1413,6 +1495,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -1444,6 +1528,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -1475,6 +1561,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -1505,6 +1593,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -1535,6 +1625,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -1578,6 +1670,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -1608,6 +1702,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -1638,6 +1734,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -1669,6 +1767,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -1700,6 +1800,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -1731,6 +1833,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -1762,6 +1866,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -1793,6 +1899,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -1824,6 +1932,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -1855,6 +1965,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -1886,6 +1998,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -1917,6 +2031,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -1948,6 +2064,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -2027,6 +2145,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -2057,6 +2177,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -2087,6 +2209,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -2118,6 +2242,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -2149,6 +2275,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -2180,6 +2308,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -2211,6 +2341,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -2242,6 +2374,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -2273,6 +2407,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -2304,6 +2440,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -2335,6 +2473,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -2366,6 +2506,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -2397,6 +2539,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -2427,6 +2571,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -2457,6 +2603,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -2502,6 +2650,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -2534,6 +2684,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -2566,6 +2718,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -2599,6 +2753,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -2631,6 +2787,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -2664,6 +2822,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -2697,6 +2857,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -2730,6 +2892,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -2763,6 +2927,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -2796,6 +2962,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -2829,6 +2997,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -2862,6 +3032,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -2895,6 +3067,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -2927,6 +3101,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -2960,6 +3136,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -3005,6 +3183,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -3038,6 +3218,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -3071,6 +3253,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -3104,6 +3288,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -3137,6 +3323,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -3170,6 +3358,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -3203,6 +3393,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -3236,6 +3428,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -3269,6 +3463,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -3302,6 +3498,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -3335,6 +3533,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -3368,6 +3568,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -3401,6 +3603,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -3434,6 +3638,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -3466,6 +3672,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -3512,6 +3720,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -3544,6 +3754,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -3576,6 +3788,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -3609,6 +3823,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -3642,6 +3858,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -3675,6 +3893,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -3708,6 +3928,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -3740,6 +3962,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -3772,6 +3996,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -3804,6 +4030,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -3836,6 +4064,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -3868,6 +4098,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -3900,6 +4132,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -3932,6 +4166,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
@@ -3964,6 +4200,8 @@ export function createHttpService(
                 | string
                 | number
                 | boolean
+                | null
+                | undefined
                 | ReadonlyArray<string | number | boolean>;
             };
         reportProgress?: boolean;
