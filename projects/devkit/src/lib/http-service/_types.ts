@@ -1,25 +1,19 @@
 import { HttpContext, HttpEvent, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 
-export interface RequestOptions extends DefaultRequestOptions {
+export type ObjectHttpParams = Record<string, string | number | boolean | null | undefined | ReadonlyArray<string | number | boolean>>;
+
+export interface RequestOptions<TParams extends ObjectHttpParams = ObjectHttpParams> extends DefaultRequestOptions<TParams> {
   observe?: 'body' | 'events' | 'response';
   responseType?: 'arraybuffer' | 'blob' | 'json' | 'text';
 }
 
-export interface DefaultRequestOptions {
+export interface DefaultRequestOptions<TParams extends ObjectHttpParams = ObjectHttpParams> {
   body?: any;
   headers?: HttpHeaders | { [header: string]: string | string[] };
   context?: HttpContext;
   params?:
     | HttpParams
-    | {
-        [param: string]:
-          | string
-          | number
-          | boolean
-          | null
-          | undefined
-          | ReadonlyArray<string | number | boolean>;
-      };
+    | TParams;
   reportProgress?: boolean;
   withCredentials?: boolean;
   transferCache?: { includeHeaders?: string[] } | boolean;

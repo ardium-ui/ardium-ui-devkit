@@ -9,7 +9,11 @@ import {
 } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { DefaultRequestOptions, RequestOptions } from './_types';
+import {
+  DefaultRequestOptions,
+  ObjectHttpParams,
+  RequestOptions,
+} from './_types';
 import { normalizePath } from './_utils';
 
 const FAULTY_URL_REGEX = /https?:\/\//;
@@ -33,18 +37,7 @@ function getOpts(
 }
 
 function convertToHttpParams(
-  params:
-    | HttpParams
-    | {
-        [param: string]:
-          | string
-          | number
-          | boolean
-          | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-      }
-    | undefined,
+  params: HttpParams | ObjectHttpParams | undefined,
 ): HttpParams {
   if (params instanceof HttpParams || !params) {
     return params as HttpParams;
@@ -98,7 +91,7 @@ export function createHttpService(
      * @param options The HTTP options with responseType set to 'arraybuffer'.
      * @return An `Observable` of the response, with the response body as an `ArrayBuffer`.
      */
-    request(
+    request<TParams extends ObjectHttpParams>(
       method: string,
       url: string | string[],
       options: {
@@ -106,17 +99,7 @@ export function createHttpService(
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'arraybuffer';
         withCredentials?: boolean;
@@ -132,7 +115,7 @@ export function createHttpService(
      * @param options The HTTP options with responseType set to 'blob'.
      * @return An `Observable` of the response, with the response body as a `Blob`.
      */
-    request(
+    request<TParams extends ObjectHttpParams = ObjectHttpParams>(
       method: string,
       url: string | string[],
       options: {
@@ -140,17 +123,7 @@ export function createHttpService(
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'blob';
         withCredentials?: boolean;
@@ -166,7 +139,7 @@ export function createHttpService(
      * @param options The HTTP options with responseType set to 'text'.
      * @return An `Observable` of the response, with the response body as a string.
      */
-    request(
+    request<TParams extends ObjectHttpParams = ObjectHttpParams>(
       method: string,
       url: string | string[],
       options: {
@@ -174,17 +147,7 @@ export function createHttpService(
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'text';
         withCredentials?: boolean;
@@ -200,7 +163,7 @@ export function createHttpService(
      * @param options The HTTP options with observe set to 'events' and responseType set to 'arraybuffer'.
      * @return An `Observable` of `HttpEvent<ArrayBuffer>`.
      */
-    request(
+    request<TParams extends ObjectHttpParams = ObjectHttpParams>(
       method: string,
       url: string | string[],
       options: {
@@ -208,17 +171,7 @@ export function createHttpService(
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'arraybuffer';
         withCredentials?: boolean;
@@ -234,7 +187,7 @@ export function createHttpService(
      * @param options The HTTP options with observe set to 'events' and responseType set to 'blob'.
      * @return An `Observable` of `HttpEvent<Blob>`.
      */
-    request(
+    request<TParams extends ObjectHttpParams = ObjectHttpParams>(
       method: string,
       url: string | string[],
       options: {
@@ -242,17 +195,7 @@ export function createHttpService(
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'blob';
         withCredentials?: boolean;
@@ -268,7 +211,7 @@ export function createHttpService(
      * @param options The HTTP options with observe set to 'events' and responseType set to 'text'.
      * @return An `Observable` of `HttpEvent<string>`.
      */
-    request(
+    request<TParams extends ObjectHttpParams = ObjectHttpParams>(
       method: string,
       url: string | string[],
       options: {
@@ -276,17 +219,7 @@ export function createHttpService(
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'text';
         withCredentials?: boolean;
@@ -302,7 +235,7 @@ export function createHttpService(
      * @param options The HTTP options with observe set to 'events' and responseType set to 'json'.
      * @return An `Observable` of `HttpEvent<any>`.
      */
-    request(
+    request<TParams extends ObjectHttpParams = ObjectHttpParams>(
       method: string,
       url: string | string[],
       options: {
@@ -311,17 +244,7 @@ export function createHttpService(
         context?: HttpContext;
         reportProgress?: boolean;
         observe: 'events';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         responseType?: 'json';
         withCredentials?: boolean;
         transferCache?: { includeHeaders?: string[] } | boolean;
@@ -337,7 +260,7 @@ export function createHttpService(
      * @param options The HTTP options with observe set to 'events' and responseType set to 'json'.
      * @return An `Observable` of `HttpEvent<R>`.
      */
-    request<R>(
+    request<R, TParams extends ObjectHttpParams = ObjectHttpParams>(
       method: string,
       url: string | string[],
       options: {
@@ -346,17 +269,7 @@ export function createHttpService(
         context?: HttpContext;
         reportProgress?: boolean;
         observe: 'events';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         responseType?: 'json';
         withCredentials?: boolean;
         transferCache?: { includeHeaders?: string[] } | boolean;
@@ -371,7 +284,7 @@ export function createHttpService(
      * @param options The HTTP options with observe set to 'response' and responseType set to 'arraybuffer'.
      * @return An `Observable` of `HttpResponse<ArrayBuffer>`.
      */
-    request(
+    request<TParams extends ObjectHttpParams = ObjectHttpParams>(
       method: string,
       url: string | string[],
       options: {
@@ -379,17 +292,7 @@ export function createHttpService(
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'arraybuffer';
         withCredentials?: boolean;
@@ -405,7 +308,7 @@ export function createHttpService(
      * @param options The HTTP options with observe set to 'response' and responseType set to 'blob'.
      * @return An `Observable` of `HttpResponse<Blob>`.
      */
-    request(
+    request<TParams extends ObjectHttpParams = ObjectHttpParams>(
       method: string,
       url: string | string[],
       options: {
@@ -413,17 +316,7 @@ export function createHttpService(
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'blob';
         withCredentials?: boolean;
@@ -439,7 +332,7 @@ export function createHttpService(
      * @param options The HTTP options with observe set to 'response' and responseType set to 'text'.
      * @return An `Observable` of `HttpResponse<string>`.
      */
-    request(
+    request<TParams extends ObjectHttpParams = ObjectHttpParams>(
       method: string,
       url: string | string[],
       options: {
@@ -447,17 +340,7 @@ export function createHttpService(
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'text';
         withCredentials?: boolean;
@@ -473,7 +356,7 @@ export function createHttpService(
      * @param options The HTTP options with observe set to 'response' and responseType set to 'json'.
      * @return An `Observable` of `HttpResponse<Object>`.
      */
-    request(
+    request<TParams extends ObjectHttpParams = ObjectHttpParams>(
       method: string,
       url: string | string[],
       options: {
@@ -482,17 +365,7 @@ export function createHttpService(
         context?: HttpContext;
         reportProgress?: boolean;
         observe: 'response';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         responseType?: 'json';
         withCredentials?: boolean;
       },
@@ -507,7 +380,7 @@ export function createHttpService(
      * @param options The HTTP options with observe set to 'response' and responseType set to 'json'.
      * @return An `Observable` of `HttpResponse<R>`.
      */
-    request<R>(
+    request<R, TParams extends ObjectHttpParams = ObjectHttpParams>(
       method: string,
       url: string | string[],
       options: {
@@ -516,17 +389,7 @@ export function createHttpService(
         context?: HttpContext;
         reportProgress?: boolean;
         observe: 'response';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         responseType?: 'json';
         withCredentials?: boolean;
         transferCache?: { includeHeaders?: string[] } | boolean;
@@ -541,7 +404,7 @@ export function createHttpService(
      * @param options The HTTP options with default observe and responseType settings.
      * @return An `Observable` of the response body as an object.
      */
-    request(
+    request<TParams extends ObjectHttpParams = ObjectHttpParams>(
       method: string,
       url: string | string[],
       options?: {
@@ -549,17 +412,7 @@ export function createHttpService(
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         responseType?: 'json';
         reportProgress?: boolean;
         withCredentials?: boolean;
@@ -576,7 +429,7 @@ export function createHttpService(
      * @param options The HTTP options with default observe and responseType settings.
      * @return An `Observable` of the response body of type `R`.
      */
-    request<R>(
+    request<R, TParams extends ObjectHttpParams = ObjectHttpParams>(
       method: string,
       url: string | string[],
       options?: {
@@ -584,17 +437,7 @@ export function createHttpService(
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         responseType?: 'json';
         reportProgress?: boolean;
         withCredentials?: boolean;
@@ -610,24 +453,14 @@ export function createHttpService(
      * @param options The HTTP options with flexible observe and responseType settings.
      * @return An `Observable` of the requested response.
      */
-    request(
+    request<TParams extends ObjectHttpParams = ObjectHttpParams>(
       method: string,
       url: string | string[],
       options?: {
         body?: any;
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         observe?: 'body' | 'events' | 'response';
         reportProgress?: boolean;
         responseType?: 'arraybuffer' | 'blob' | 'json' | 'text';
@@ -636,10 +469,10 @@ export function createHttpService(
       },
     ): Observable<any>;
 
-    request(
+    request<TParams extends ObjectHttpParams = ObjectHttpParams>(
       methodOrReq: string | HttpRequest<any>,
       url?: string | string[],
-      options?: RequestOptions,
+      options?: RequestOptions<TParams>,
     ) {
       if (typeof methodOrReq === 'string') {
         const finalUrl = getUrl(apiUrl, url!);
@@ -664,23 +497,13 @@ export function createHttpService(
      * @param options The HTTP options to send with the request.
      * @return An `Observable` of the response body as an `ArrayBuffer`.
      */
-    delete(
+    delete<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'arraybuffer';
         withCredentials?: boolean;
@@ -696,23 +519,13 @@ export function createHttpService(
      * @param options The HTTP options to send with the request.
      * @return An `Observable` of the response body as a `Blob`.
      */
-    delete(
+    delete<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'blob';
         withCredentials?: boolean;
@@ -728,23 +541,13 @@ export function createHttpService(
      * @param options The HTTP options to send with the request.
      * @return An `Observable` of the response, with the response body of type string.
      */
-    delete(
+    delete<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'text';
         withCredentials?: boolean;
@@ -761,23 +564,13 @@ export function createHttpService(
      * @return An `Observable` of all `HttpEvent`s for the request,
      * with response body as an `ArrayBuffer`.
      */
-    delete(
+    delete<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'arraybuffer';
         withCredentials?: boolean;
@@ -793,23 +586,13 @@ export function createHttpService(
      * @param options The HTTP options to send with the request.
      * @return An `Observable` of all the `HttpEvent`s for the request, with the response body as a `Blob`.
      */
-    delete(
+    delete<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'blob';
         withCredentials?: boolean;
@@ -825,23 +608,13 @@ export function createHttpService(
      * @param options The HTTP options to send with the request.
      * @return An `Observable` of all `HttpEvent`s for the request, with the response body of type string.
      */
-    delete(
+    delete<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'text';
         withCredentials?: boolean;
@@ -857,23 +630,13 @@ export function createHttpService(
      * @param options The HTTP options to send with the request.
      * @return An `Observable` of all `HttpEvent`s for the request, with response body of type `Object`.
      */
-    delete(
+    delete<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -889,7 +652,7 @@ export function createHttpService(
      * @param options The HTTP options to send with the request.
      * @return An `Observable` of all `HttpEvent`s for the request, with a response body in the requested type.
      */
-    delete<TRes>(
+    delete<TRes, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -919,23 +682,13 @@ export function createHttpService(
      * @param options The HTTP options to send with the request.
      * @return An `Observable` of the full `HttpResponse`, with the response body as an `ArrayBuffer`.
      */
-    delete(
+    delete<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'arraybuffer';
         withCredentials?: boolean;
@@ -951,23 +704,13 @@ export function createHttpService(
      * @param options The HTTP options to send with the request.
      * @return An `Observable` of the `HttpResponse`, with the response body of type `Blob`.
      */
-    delete(
+    delete<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'blob';
         withCredentials?: boolean;
@@ -983,23 +726,13 @@ export function createHttpService(
      * @param options The HTTP options to send with the request.
      * @return An `Observable` of the full `HttpResponse`, with the response body of type string.
      */
-    delete(
+    delete<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'text';
         withCredentials?: boolean;
@@ -1015,23 +748,13 @@ export function createHttpService(
      * @param options The HTTP options to send with the request.
      * @return An `Observable` of the `HttpResponse`, with the response body of type `Object`.
      */
-    delete(
+    delete<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -1047,23 +770,13 @@ export function createHttpService(
      * @param options The HTTP options to send with the request.
      * @return An `Observable` of the `HttpResponse`, with the response body of the requested type.
      */
-    delete<TRes>(
+    delete<TRes, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -1079,23 +792,13 @@ export function createHttpService(
      * @param options The HTTP options to send with the request.
      * @return An `Observable` of the response, with the response body of type `Object`.
      */
-    delete(
+    delete<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options?: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -1111,23 +814,13 @@ export function createHttpService(
      * @param options The HTTP options to send with the request.
      * @return An `Observable` of the response body in the requested type.
      */
-    delete<TRes>(
+    delete<TRes, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options?: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -1135,7 +828,10 @@ export function createHttpService(
       },
     ): Observable<TRes>;
 
-    delete(url: string | string[], options?: RequestOptions) {
+    delete<TParams extends ObjectHttpParams = ObjectHttpParams>(
+      url: string | string[],
+      options?: RequestOptions<TParams>,
+    ) {
       const finalUrl = getUrl(apiUrl, url);
       const finalOptions = getOpts(defaultOptions, options);
       if (finalOptions.params) {
@@ -1156,23 +852,13 @@ export function createHttpService(
      * @param options The HTTP options to send with the request.
      * @return An `Observable` of the response, with the response body as an `ArrayBuffer`.
      */
-    get(
+    get<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'arraybuffer';
         withCredentials?: boolean;
@@ -1188,23 +874,13 @@ export function createHttpService(
      * @param options The HTTP options to send with the request.
      * @return An `Observable` of the response, with the response body as a `Blob`.
      */
-    get(
+    get<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'blob';
         withCredentials?: boolean;
@@ -1220,23 +896,13 @@ export function createHttpService(
      * @param options The HTTP options to send with the request.
      * @return An `Observable` of the response, with the response body of type string.
      */
-    get(
+    get<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'text';
         withCredentials?: boolean;
@@ -1253,23 +919,13 @@ export function createHttpService(
      * @return An `Observable` of all `HttpEvent`s for the request,
      * with the response body as an `ArrayBuffer`.
      */
-    get(
+    get<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'arraybuffer';
         withCredentials?: boolean;
@@ -1286,23 +942,13 @@ export function createHttpService(
      * @return An `Observable` of all `HttpEvent`s for the request,
      * with the response body as a `Blob`.
      */
-    get(
+    get<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'blob';
         withCredentials?: boolean;
@@ -1319,23 +965,13 @@ export function createHttpService(
      * @return An `Observable` of all `HttpEvent`s for the request,
      * with the response body of type string.
      */
-    get(
+    get<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'text';
         withCredentials?: boolean;
@@ -1351,23 +987,13 @@ export function createHttpService(
      * @param options The HTTP options to send with the request.
      * @return An `Observable` of the response, with the response body of type `Object`.
      */
-    get(
+    get<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -1383,23 +1009,13 @@ export function createHttpService(
      * @param options The HTTP options to send with the request.
      * @return An `Observable` of the response, with a response body in the requested type.
      */
-    get<TRes>(
+    get<TRes, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -1416,23 +1032,13 @@ export function createHttpService(
      * @return An `Observable` of the `HttpResponse` for the request,
      * with the response body as an `ArrayBuffer`.
      */
-    get(
+    get<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'arraybuffer';
         withCredentials?: boolean;
@@ -1449,23 +1055,13 @@ export function createHttpService(
      * @return An `Observable` of the `HttpResponse` for the request,
      * with the response body as a `Blob`.
      */
-    get(
+    get<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'blob';
         withCredentials?: boolean;
@@ -1482,23 +1078,13 @@ export function createHttpService(
      * @return An `Observable` of the `HttpResponse` for the request,
      * with the response body of type string.
      */
-    get(
+    get<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'text';
         withCredentials?: boolean;
@@ -1515,23 +1101,13 @@ export function createHttpService(
      * @return An `Observable` of the full `HttpResponse`,
      * with the response body of type `Object`.
      */
-    get(
+    get<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -1548,23 +1124,13 @@ export function createHttpService(
      * @return An `Observable` of the full `HttpResponse` for the request,
      * with a response body in the requested type.
      */
-    get<TRes>(
+    get<TRes, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -1580,23 +1146,13 @@ export function createHttpService(
      * @param options The HTTP options to send with the request.
      * @return An `Observable` of the response body as a JavaScript object.
      */
-    get(
+    get<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options?: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -1612,23 +1168,13 @@ export function createHttpService(
      * @param options The HTTP options to send with the request.
      * @return An `Observable` of the response body in the requested type.
      */
-    get<TRes>(
+    get<TRes, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options?: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -1636,7 +1182,10 @@ export function createHttpService(
       },
     ): Observable<TRes>;
 
-    get(url: string | string[], options?: RequestOptions) {
+    get<TParams extends ObjectHttpParams = ObjectHttpParams>(
+      url: string | string[],
+      options?: RequestOptions<TParams>,
+    ) {
       const finalUrl = getUrl(apiUrl, url);
       const finalOptions = getOpts(defaultOptions, options);
       if (finalOptions.params) {
@@ -1657,23 +1206,13 @@ export function createHttpService(
      * @param options The HTTP options to send with the request.
      * @return An `Observable` of the response, with the response body as an `ArrayBuffer`.
      */
-    head(
+    head<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'arraybuffer';
         withCredentials?: boolean;
@@ -1689,23 +1228,13 @@ export function createHttpService(
      * @param options The HTTP options to send with the request.
      * @return An `Observable` of the response, with the response body as a `Blob`.
      */
-    head(
+    head<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'blob';
         withCredentials?: boolean;
@@ -1721,23 +1250,13 @@ export function createHttpService(
      * @param options The HTTP options to send with the request.
      * @return An `Observable` of the response, with the response body of type string.
      */
-    head(
+    head<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'text';
         withCredentials?: boolean;
@@ -1754,23 +1273,13 @@ export function createHttpService(
      * @return An `Observable` of all `HttpEvent`s for the request,
      * with the response body as an `ArrayBuffer`.
      */
-    head(
+    head<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'arraybuffer';
         withCredentials?: boolean;
@@ -1787,23 +1296,13 @@ export function createHttpService(
      * @return An `Observable` of all `HttpEvent`s for the request,
      * with the response body as a `Blob`.
      */
-    head(
+    head<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'blob';
         withCredentials?: boolean;
@@ -1820,23 +1319,13 @@ export function createHttpService(
      * @return An `Observable` of all `HttpEvent`s for the request,
      * with the response body of type string.
      */
-    head(
+    head<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'text';
         withCredentials?: boolean;
@@ -1853,23 +1342,13 @@ export function createHttpService(
      * @return An `Observable` of all `HttpEvent`s for the request,
      * with a response body of type `Object`.
      */
-    head(
+    head<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -1886,23 +1365,13 @@ export function createHttpService(
      * @return An `Observable` of all the `HttpEvent`s for the request,
      * with a response body in the requested type.
      */
-    head<TRes>(
+    head<TRes, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -1919,23 +1388,13 @@ export function createHttpService(
      * @return An `Observable` of the `HttpResponse` for the request,
      * with the response body as an `ArrayBuffer`.
      */
-    head(
+    head<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'arraybuffer';
         withCredentials?: boolean;
@@ -1952,23 +1411,13 @@ export function createHttpService(
      * @return An `Observable` of the `HttpResponse` for the request,
      * with the response body as a blob.
      */
-    head(
+    head<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'blob';
         withCredentials?: boolean;
@@ -1985,23 +1434,13 @@ export function createHttpService(
      * @return An `Observable` of the `HttpResponse` for the request,
      * with the response body of type string.
      */
-    head(
+    head<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'text';
         withCredentials?: boolean;
@@ -2018,23 +1457,13 @@ export function createHttpService(
      * @return An `Observable` of the `HttpResponse` for the request,
      * with the response body of type `Object`.
      */
-    head(
+    head<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -2051,23 +1480,13 @@ export function createHttpService(
      * @return An `Observable` of the `HttpResponse` for the request,
      * with a response body of the requested type.
      */
-    head<TRes>(
+    head<TRes, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe?: 'body';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -2075,7 +1494,10 @@ export function createHttpService(
       },
     ): Observable<TRes>;
 
-    head(url: string | string[], options?: RequestOptions) {
+    head<TParams extends ObjectHttpParams = ObjectHttpParams>(
+      url: string | string[],
+      options?: RequestOptions<TParams>,
+    ) {
       const finalUrl = getUrl(apiUrl, url);
       const finalOptions = getOpts(defaultOptions, options);
       if (finalOptions.params) {
@@ -2132,23 +1554,13 @@ export function createHttpService(
      *
      * @return An `Observable` of the response, with the response body as an `ArrayBuffer`.
      */
-    options(
+    options<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'arraybuffer';
         withCredentials?: boolean;
@@ -2164,23 +1576,13 @@ export function createHttpService(
      *
      * @return An `Observable` of the response, with the response body as a `Blob`.
      */
-    options(
+    options<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'blob';
         withCredentials?: boolean;
@@ -2196,23 +1598,13 @@ export function createHttpService(
      *
      * @return An `Observable` of the response, with the response body of type string.
      */
-    options(
+    options<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'text';
         withCredentials?: boolean;
@@ -2229,23 +1621,13 @@ export function createHttpService(
      * @return An `Observable` of all `HttpEvent`s for the request,
      * with the response body as an `ArrayBuffer`.
      */
-    options(
+    options<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'arraybuffer';
         withCredentials?: boolean;
@@ -2262,23 +1644,13 @@ export function createHttpService(
      * @return An `Observable` of all `HttpEvent`s for the request,
      * with the response body as a `Blob`.
      */
-    options(
+    options<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'blob';
         withCredentials?: boolean;
@@ -2295,23 +1667,13 @@ export function createHttpService(
      * @return An `Observable` of all the `HttpEvent`s for the request,
      * with the response body of type string.
      */
-    options(
+    options<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'text';
         withCredentials?: boolean;
@@ -2328,23 +1690,13 @@ export function createHttpService(
      * @return An `Observable` of all the `HttpEvent`s for the request with the response
      * body of type `Object`.
      */
-    options(
+    options<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -2361,23 +1713,13 @@ export function createHttpService(
      * @return An `Observable` of all the `HttpEvent`s for the request,
      * with a response body in the requested type.
      */
-    options<TRes>(
+    options<TRes, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -2394,23 +1736,13 @@ export function createHttpService(
      * @return An `Observable` of the `HttpResponse` for the request,
      * with the response body as an `ArrayBuffer`.
      */
-    options(
+    options<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'arraybuffer';
         withCredentials?: boolean;
@@ -2427,23 +1759,13 @@ export function createHttpService(
      * @return An `Observable` of the `HttpResponse` for the request,
      * with the response body as a `Blob`.
      */
-    options(
+    options<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'blob';
         withCredentials?: boolean;
@@ -2460,23 +1782,13 @@ export function createHttpService(
      * @return An `Observable` of the `HttpResponse` for the request,
      * with the response body of type string.
      */
-    options(
+    options<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'text';
         withCredentials?: boolean;
@@ -2493,23 +1805,13 @@ export function createHttpService(
      * @return An `Observable` of the `HttpResponse` for the request,
      * with the response body of type `Object`.
      */
-    options(
+    options<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -2526,23 +1828,13 @@ export function createHttpService(
      * @return An `Observable` of the `HttpResponse` for the request,
      * with a response body in the requested type.
      */
-    options<TRes>(
+    options<TRes, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -2558,23 +1850,13 @@ export function createHttpService(
      *
      * @return An `Observable` of the response, with the response body as an object parsed from JSON.
      */
-    options(
+    options<TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options?: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -2590,30 +1872,23 @@ export function createHttpService(
      *
      * @return An `Observable` of the `HttpResponse`, with a response body of the given type.
      */
-    options<TRes>(
+    options<TRes, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       options?: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
       },
     ): Observable<TRes>;
 
-    options(url: string | string[], options?: RequestOptions) {
+    options<TParams extends ObjectHttpParams = ObjectHttpParams>(
+      url: string | string[],
+      options?: RequestOptions<TParams>,
+    ) {
       const finalUrl = getUrl(apiUrl, url);
       const finalOptions = getOpts(defaultOptions, options);
       if (finalOptions.params) {
@@ -2636,24 +1911,14 @@ export function createHttpService(
      *
      * @return An `Observable` of the response, with the response body as an `ArrayBuffer`.
      */
-    patch<TBody = any>(
+    patch<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'arraybuffer';
         withCredentials?: boolean;
@@ -2670,24 +1935,14 @@ export function createHttpService(
      *
      * @return An `Observable` of the response, with the response body as a `Blob`.
      */
-    patch<TBody = any>(
+    patch<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'blob';
         withCredentials?: boolean;
@@ -2704,24 +1959,14 @@ export function createHttpService(
      *
      * @return An `Observable` of the response, with a response body of type string.
      */
-    patch<TBody = any>(
+    patch<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'text';
         withCredentials?: boolean;
@@ -2739,24 +1984,14 @@ export function createHttpService(
      * @return An `Observable` of all the `HttpEvent`s for the request,
      * with the response body as an `ArrayBuffer`.
      */
-    patch<TBody = any>(
+    patch<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'arraybuffer';
         withCredentials?: boolean;
@@ -2773,24 +2008,14 @@ export function createHttpService(
      *
      * @return An `Observable` of all the `HttpEvent`s for the request, with the response body as `Blob`.
      */
-    patch<TBody = any>(
+    patch<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'blob';
         withCredentials?: boolean;
@@ -2808,24 +2033,14 @@ export function createHttpService(
      * @return An `Observable` of all the `HttpEvent`s for the request, with a
      * response body of type string.
      */
-    patch<TBody = any>(
+    patch<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'text';
         withCredentials?: boolean;
@@ -2843,24 +2058,14 @@ export function createHttpService(
      * @return An `Observable` of all the `HttpEvent`s for the request,
      * with a response body of type `Object`.
      */
-    patch<TBody = any>(
+    patch<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -2878,24 +2083,18 @@ export function createHttpService(
      * @return An `Observable` of all the `HttpEvent`s for the request,
      * with a response body in the requested type.
      */
-    patch<TRes, TBody = any>(
+    patch<
+      TRes,
+      TBody = any,
+      TParams extends ObjectHttpParams = ObjectHttpParams,
+    >(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -2913,24 +2112,14 @@ export function createHttpService(
      * @return An `Observable` of the `HttpResponse` for the request,
      * with the response body as an `ArrayBuffer`.
      */
-    patch<TBody = any>(
+    patch<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'arraybuffer';
         withCredentials?: boolean;
@@ -2948,24 +2137,14 @@ export function createHttpService(
      * @return An `Observable` of the `HttpResponse` for the request,
      * with the response body as a `Blob`.
      */
-    patch<TBody = any>(
+    patch<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'blob';
         withCredentials?: boolean;
@@ -2983,24 +2162,14 @@ export function createHttpService(
      * @return An `Observable` of the `HttpResponse` for the request,
      * with a response body of type string.
      */
-    patch<TBody = any>(
+    patch<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'text';
         withCredentials?: boolean;
@@ -3018,24 +2187,14 @@ export function createHttpService(
      * @return An `Observable` of the `HttpResponse` for the request,
      * with a response body in the requested type.
      */
-    patch<TBody = any>(
+    patch<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -3053,24 +2212,18 @@ export function createHttpService(
      * @return An `Observable` of the `HttpResponse` for the request,
      * with a response body in the given type.
      */
-    patch<TRes, TBody = any>(
+    patch<
+      TRes,
+      TBody = any,
+      TParams extends ObjectHttpParams = ObjectHttpParams,
+    >(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -3087,24 +2240,14 @@ export function createHttpService(
      *
      * @return An `Observable` of the response, with the response body as an object parsed from JSON.
      */
-    patch<TBody = any>(
+    patch<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options?: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -3122,31 +2265,29 @@ export function createHttpService(
      * @return An `Observable` of the `HttpResponse` for the request,
      * with a response body in the given type.
      */
-    patch<TRes, TBody = any>(
+    patch<
+      TRes,
+      TBody = any,
+      TParams extends ObjectHttpParams = ObjectHttpParams,
+    >(
       url: string | string[],
       body: TBody | null,
       options?: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
       },
     ): Observable<TRes>;
 
-    patch(url: string | string[], body: any | null, options?: RequestOptions) {
+    patch<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
+      url: string | string[],
+      body: TBody | null,
+      options?: RequestOptions<TParams>,
+    ) {
       const finalUrl = getUrl(apiUrl, url);
       const finalOptions = getOpts(defaultOptions, options);
       if (finalOptions.params) {
@@ -3169,24 +2310,14 @@ export function createHttpService(
      *
      * @return An `Observable` of the response, with the response body as an `ArrayBuffer`.
      */
-    post<TBody = any>(
+    post<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'arraybuffer';
         withCredentials?: boolean;
@@ -3204,24 +2335,14 @@ export function createHttpService(
      *
      * @return An `Observable` of the response, with the response body as a `Blob`.
      */
-    post<TBody = any>(
+    post<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'blob';
         withCredentials?: boolean;
@@ -3239,24 +2360,14 @@ export function createHttpService(
      *
      * @return An `Observable` of the response, with a response body of type string.
      */
-    post<TBody = any>(
+    post<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'text';
         withCredentials?: boolean;
@@ -3274,24 +2385,14 @@ export function createHttpService(
      *
      * @return An `Observable` of all `HttpEvent`s for the request, with the response body as an `ArrayBuffer`.
      */
-    post<TBody = any>(
+    post<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'arraybuffer';
         withCredentials?: boolean;
@@ -3309,24 +2410,14 @@ export function createHttpService(
      *
      * @return An `Observable` of all `HttpEvent`s for the request, with the response body as `Blob`.
      */
-    post<TBody = any>(
+    post<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'blob';
         withCredentials?: boolean;
@@ -3344,24 +2435,14 @@ export function createHttpService(
      *
      * @return An `Observable` of all `HttpEvent`s for the request, with a response body of type string.
      */
-    post<TBody = any>(
+    post<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'text';
         withCredentials?: boolean;
@@ -3379,24 +2460,14 @@ export function createHttpService(
      *
      * @return An `Observable` of all `HttpEvent`s for the request, with a response body of type `Object`.
      */
-    post<TBody = any>(
+    post<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -3414,24 +2485,18 @@ export function createHttpService(
      *
      * @return An `Observable` of all `HttpEvent`s for the request, with a response body in the requested type.
      */
-    post<TRes, TBody = any>(
+    post<
+      TRes,
+      TBody = any,
+      TParams extends ObjectHttpParams = ObjectHttpParams,
+    >(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -3449,24 +2514,14 @@ export function createHttpService(
      *
      * @return An `Observable` of the `HttpResponse` for the request, with the response body as an `ArrayBuffer`.
      */
-    post<TBody = any>(
+    post<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'arraybuffer';
         withCredentials?: boolean;
@@ -3484,24 +2539,14 @@ export function createHttpService(
      *
      * @return An `Observable` of the `HttpResponse` for the request, with the response body as a `Blob`.
      */
-    post<TBody = any>(
+    post<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'blob';
         withCredentials?: boolean;
@@ -3519,24 +2564,14 @@ export function createHttpService(
      *
      * @return An `Observable` of the `HttpResponse` for the request, with a response body of type string.
      */
-    post<TBody = any>(
+    post<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'text';
         withCredentials?: boolean;
@@ -3554,24 +2589,14 @@ export function createHttpService(
      *
      * @return An `Observable` of the `HttpResponse` for the request, with a response body of type `Object`.
      */
-    post<TBody = any>(
+    post<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -3589,24 +2614,18 @@ export function createHttpService(
      *
      * @return An `Observable` of the `HttpResponse` for the request, with a response body in the requested type.
      */
-    post<TRes, TBody = any>(
+    post<
+      TRes,
+      TBody = any,
+      TParams extends ObjectHttpParams = ObjectHttpParams,
+    >(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -3624,24 +2643,14 @@ export function createHttpService(
      *
      * @return An `Observable` of the response, with the response body as an object parsed from JSON.
      */
-    post<TBody = any>(
+    post<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options?: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -3658,24 +2667,18 @@ export function createHttpService(
      *
      * @return An `Observable` of the `HttpResponse` for the request, with a response body in the requested type.
      */
-    post<TRes, TBody = any>(
+    post<
+      TRes,
+      TBody = any,
+      TParams extends ObjectHttpParams = ObjectHttpParams,
+    >(
       url: string | string[],
       body: TBody | null,
       options?: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -3683,7 +2686,11 @@ export function createHttpService(
       },
     ): Observable<TRes>;
 
-    post(url: string | string[], body: any | null, options?: RequestOptions) {
+    post<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
+      url: string | string[],
+      body: TBody | null,
+      options?: RequestOptions<TParams>,
+    ) {
       const finalUrl = getUrl(apiUrl, url);
       const finalOptions = getOpts(defaultOptions, options);
       if (finalOptions.params) {
@@ -3706,24 +2713,14 @@ export function createHttpService(
      *
      * @return An `Observable` of the response, with the response body as an `ArrayBuffer`.
      */
-    put<TBody = any>(
+    put<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'arraybuffer';
         withCredentials?: boolean;
@@ -3740,24 +2737,14 @@ export function createHttpService(
      *
      * @return An `Observable` of the response, with the response body as a `Blob`.
      */
-    put<TBody = any>(
+    put<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'blob';
         withCredentials?: boolean;
@@ -3774,24 +2761,14 @@ export function createHttpService(
      *
      * @return An `Observable` of the response, with a response body of type string.
      */
-    put<TBody = any>(
+    put<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'text';
         withCredentials?: boolean;
@@ -3809,24 +2786,14 @@ export function createHttpService(
      * @return An `Observable` of all `HttpEvent`s for the request,
      * with the response body as an `ArrayBuffer`.
      */
-    put<TBody = any>(
+    put<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'arraybuffer';
         withCredentials?: boolean;
@@ -3844,24 +2811,14 @@ export function createHttpService(
      * @return An `Observable` of all `HttpEvent`s for the request,
      * with the response body as a `Blob`.
      */
-    put<TBody = any>(
+    put<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'blob';
         withCredentials?: boolean;
@@ -3879,24 +2836,14 @@ export function createHttpService(
      * @return An `Observable` of all `HttpEvent`s for the request,
      * with a response body of type string.
      */
-    put<TBody = any>(
+    put<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'text';
         withCredentials?: boolean;
@@ -3914,24 +2861,14 @@ export function createHttpService(
      * @return An `Observable` of all `HttpEvent`s for the request,
      * with a response body of type `Object`.
      */
-    put<TBody = any>(
+    put<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -3948,24 +2885,14 @@ export function createHttpService(
      * @return An `Observable` of all `HttpEvent`s for the request,
      * with a response body in the requested type.
      */
-    put<TRes, TBody = any>(
+    put<TRes, TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'events';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -3982,24 +2909,14 @@ export function createHttpService(
      *
      * @return An `Observable` of the `HttpResponse` for the request, with the response body as an `ArrayBuffer`.
      */
-    put<TBody = any>(
+    put<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'arraybuffer';
         withCredentials?: boolean;
@@ -4016,24 +2933,14 @@ export function createHttpService(
      *
      * @return An `Observable` of the `HttpResponse` for the request, with the response body as a `Blob`.
      */
-    put<TBody = any>(
+    put<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'blob';
         withCredentials?: boolean;
@@ -4050,24 +2957,14 @@ export function createHttpService(
      *
      * @return An `Observable` of the `HttpResponse` for the request, with a response body of type string.
      */
-    put<TBody = any>(
+    put<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType: 'text';
         withCredentials?: boolean;
@@ -4084,24 +2981,14 @@ export function createHttpService(
      *
      * @return An `Observable` of the `HttpResponse` for the request, with a response body of type `Object`.
      */
-    put<TBody = any>(
+    put<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -4118,24 +3005,14 @@ export function createHttpService(
      *
      * @return An `Observable` of the `HttpResponse` for the request, with a response body in the requested type.
      */
-    put<TRes, TBody = any>(
+    put<TRes, TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         observe: 'response';
         context?: HttpContext;
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -4152,24 +3029,14 @@ export function createHttpService(
      *
      * @return An `Observable` of the response as a JavaScript object.
      */
-    put<TBody = any>(
+    put<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options?: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
@@ -4186,31 +3053,25 @@ export function createHttpService(
      *
      * @return An `Observable` of the requested type.
      */
-    put<TRes, TBody = any>(
+    put<TRes, TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
       url: string | string[],
       body: TBody | null,
       options?: {
         headers?: HttpHeaders | { [header: string]: string | string[] };
         context?: HttpContext;
         observe?: 'body';
-        params?:
-          | HttpParams
-          | {
-              [param: string]:
-                | string
-                | number
-                | boolean
-                | null
-                | undefined
-                | ReadonlyArray<string | number | boolean>;
-            };
+        params?: HttpParams | TParams;
         reportProgress?: boolean;
         responseType?: 'json';
         withCredentials?: boolean;
       },
     ): Observable<TRes>;
 
-    put(url: string | string[], body: any | null, options?: RequestOptions) {
+    put<TBody = any, TParams extends ObjectHttpParams = ObjectHttpParams>(
+      url: string | string[],
+      body: TBody | null,
+      options?: RequestOptions<TParams>,
+    ) {
       const finalUrl = getUrl(apiUrl, url);
       const finalOptions = getOpts(defaultOptions, options);
       if (finalOptions.params) {
