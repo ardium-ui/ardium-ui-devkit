@@ -35,4 +35,5 @@ export * from './lib/coercion';
 export * from './lib/dom-boxes';
 export * from './lib/find-functions';
 export * from './lib/relative-pos'; // 900
+export * from './lib/validators';
 

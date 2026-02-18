@@ -1,5 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-import { ARD_FILEEXT_PIPE_DEFAULTS } from './file-pipes.defaults';
+import {
+  ARD_FILE_PIPES_DEFAULTS,
+  ArdFilePipesDefaults
+} from './file-pipes.defaults';
 import { ArdiumFileExtensionPipe } from './fileext.pipe';
 
 describe('ArdiumFileExtensionPipe', () => {
@@ -10,10 +13,12 @@ describe('ArdiumFileExtensionPipe', () => {
       providers: [
         ArdiumFileExtensionPipe,
         {
-          provide: ARD_FILEEXT_PIPE_DEFAULTS,
+          provide: ARD_FILE_PIPES_DEFAULTS,
           useValue: {
-            widthDot: false,
-          },
+            sizePrecision: 2,
+            sizeUseSpace: false,
+            extensionWithDot: false,
+          } satisfies ArdFilePipesDefaults,
         },
       ],
     });
