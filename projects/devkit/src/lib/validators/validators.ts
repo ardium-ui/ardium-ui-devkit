@@ -1,4 +1,9 @@
-import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import {
+  AbstractControl,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 
 const ASCII_REGEX = /^[\x00-\x7F]*$/;
 const BASE64_REGEX =
@@ -146,7 +151,7 @@ export class ExtValidators {
   }
 
   /**
-   * Validator that validates a control's value against a provided named regex.
+   * Validator that wraps the built-in `Validators.pattern` but allows specifying a custom error name instead of the default `pattern` key.
    *
    * @param name The error name to use when the validation fails.
    * @param pattern A string or RegExp to test the control's value against.
@@ -165,18 +170,15 @@ export class ExtValidators {
    * ```
    */
   static namedPattern(name: string, pattern: string | RegExp): ValidatorFn {
-    const regex = typeof pattern === 'string' ? new RegExp(pattern) : pattern;
+    const validator = Validators.pattern(pattern);
     return (control) => {
-      const value = control.value;
-      if (typeof value !== 'string') {
-        // don't validate empty values to allow optional controls
-        // don't validate non-string values to avoid false positives
+      const validationResult: ValidationErrors | null = validator(control);
+      if (validationResult === null) {
         return null;
       }
-      if (regex.test(value)) {
-        return null;
-      }
-      return { [name]: { actualValue: value } };
+      return {
+        [name]: { actualValue: validationResult['pattern'].actualValue },
+      };
     };
   }
 
