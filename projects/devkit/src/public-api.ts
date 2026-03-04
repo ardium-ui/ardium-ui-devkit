@@ -30,6 +30,9 @@ export * from './lib/signals/stack';
 export * from './lib/signals/throttled';
 export * from './lib/signals/tuple';
 
+//! feature group 4 - forms
+export * from './lib/forms';
+
 //! feature group 9 - other
 export * from './lib/coercion';
 export * from './lib/dom-boxes';
