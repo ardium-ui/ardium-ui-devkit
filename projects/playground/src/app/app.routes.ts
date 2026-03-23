@@ -4,6 +4,7 @@ import { HoldPage } from './pages/hold/hold.page';
 import { HomePage } from './pages/home/home.page';
 import { HttpServicePage } from './pages/http-service/http-service.page';
 import { InfiniteScrollHostPage } from './pages/infinite-scroll-host/infinite-scroll-host.page';
+import { InfiniteScrollSmallItemsPage } from './pages/infinite-scroll-small-items/infinite-scroll-small-items.page';
 import { InfiniteScrollPage } from './pages/infinite-scroll/infinite-scroll.page';
 import { KeyboardPage } from './pages/keyboard/keyboard.page';
 import { SignalsPage } from './pages/signals/signals.page';
@@ -13,6 +14,7 @@ export const routes: Routes = [
   { path: '', component: HomePage },
   { path: 'infinite-scroll', component: InfiniteScrollPage },
   { path: 'infinite-scroll-host', component: InfiniteScrollHostPage },
+  { path: 'infinite-scroll-small-items', component: InfiniteScrollSmallItemsPage },
   { path: 'signals', component: SignalsPage },
   { path: 'file-system', component: FileSystemPage },
   { path: 'hold', component: HoldPage },
