@@ -55,7 +55,7 @@ export interface TrackedFormControl<T> {
   readonly disabled: Signal<boolean>;
   readonly enabled$: Observable<boolean>;
   readonly enabled: Signal<boolean>;
-  readonly invalidTouched: Signal<boolean>;
+  readonly touchedHasErrors: Signal<boolean>;
   readonly validators$: Observable<ValidatorFn[] | null>;
   readonly validators: Signal<ValidatorFn[] | null>;
   readonly asyncValidators$: Observable<AsyncValidatorFn[] | null>;
@@ -152,8 +152,8 @@ class FormControlTracker<T> {
     initialValue: true,
   });
 
-  public readonly invalidTouched = computed(
-    () => this.invalid() && this.touched(),
+  public readonly touchedHasErrors = computed(
+    () => !!this.errors() && this.touched(),
   );
 
   private readonly _validators$ = new BehaviorSubject<ValidatorFn[] | null>(
