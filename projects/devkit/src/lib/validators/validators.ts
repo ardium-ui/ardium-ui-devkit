@@ -393,7 +393,7 @@ export class ExtValidators {
    * // null
    * ```
    */
-  static ipAddress(ipType: 4 | 6): ValidatorFn {
+  static ipAddress(ipType: 4 | 6 | 'any'): ValidatorFn {
     return (control) => {
       const value = control.value;
       if (typeof value !== 'string') {
@@ -402,14 +402,26 @@ export class ExtValidators {
         return null;
       }
 
+      if (ipType === 6) {
+        return IPV6_REGEX.test(value)
+          ? null
+          : {
+              ipAddress: {
+                requiredType: 6,
+                actualValue: value,
+              },
+            };
+      }
       if (ipType === 4) {
         return IPV4_REGEX.test(value)
           ? null
-          : { ipAddress: { requiredType: 'IPv4', actualValue: value } };
+          : { ipAddress: { requiredType: 4, actualValue: value } };
       }
-      return IPV6_REGEX.test(value)
+      return IPV4_REGEX.test(value) || IPV6_REGEX.test(value)
         ? null
-        : { ipAddress: { requiredType: 'IPv6', actualValue: value } };
+        : {
+            ipAddress: { requiredType: 'any', actualValue: value },
+          };
     };
   }
 
