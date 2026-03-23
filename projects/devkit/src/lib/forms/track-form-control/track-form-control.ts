@@ -333,7 +333,9 @@ class FormControlTracker<T> {
  */
 export function trackFormControl<T = any>(
   formControl: AbstractControl<T>,
-): TrackedFormControl<T>;
+): TrackedFormControl<T> {
+  return new FormControlTracker<T>(formControl);
+}
 
 /**
  * Gives reactive access to the properties of the Form Control assigned to the component instance.
@@ -357,16 +359,11 @@ export function trackFormControl<T = any>(
  * }
  * ```
  */
-export function trackFormControl<T = any>(
+export function trackBoundControl<T = any>(
   thisObj: any,
   options?: { attachValueAccessor?: boolean },
-): TrackedFormControl<T>;
-
-export function trackFormControl<T = any>(
-  thisObjOrAbstractControl: any,
-  options: { attachValueAccessor?: boolean } = {},
 ): TrackedFormControl<T> {
-  return new FormControlTracker<T>(thisObjOrAbstractControl, options);
+  return new FormControlTracker<T>(thisObj, options);
 }
 
 // --- helper: wraps an accessor setter on a single instance ---
