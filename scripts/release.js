@@ -22,7 +22,7 @@ const VERSION_ALIAS_MAP = {
   let startTime = new Date();
   // Check if all changes are committed
   try {
-    // execSync('git diff-index --quiet HEAD --');
+    execSync('git diff-index --quiet HEAD --');
     console.log(
       `${ansis.greenBright.bold('✓')} No uncommmitted changes. Proceeding... (${new Date().valueOf() - startTime.valueOf()} ms)`
     );
