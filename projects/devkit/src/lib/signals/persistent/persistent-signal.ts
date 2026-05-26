@@ -36,18 +36,7 @@ export const PersistentStorageMethod = {
 export type PersistentStorageMethod =
   (typeof PersistentStorageMethod)[keyof typeof PersistentStorageMethod];
 
-/**
- * Options for persisting the signal value.
- */
-export interface PersistentSignalOptions<T> {
-  /**
-   * @deprecated Use `key` instead. The name/key used to store the signal value in the chosen storage method.
-   */
-  name: string;
-  /**
-   * The name/key used to store the signal value in the chosen storage method.
-   */
-  key: string;
+interface _PersistentSignalOptionsBase<T> {
   /**
    * The persistent storage method to use for storing the signal value. Options include:
    * - `PersistentStorageMethod.LocalStorage`: Uses the browser's localStorage to persist the value across sessions.
@@ -81,6 +70,26 @@ export interface PersistentSignalOptions<T> {
    */
   deserialize?: (value: string) => T | null;
 }
+interface _PersistentSignalOptionsDeprecated<T>
+  extends _PersistentSignalOptionsBase<T> {
+  /**
+   * @deprecated Use `key` instead. The name/key used to store the signal value in the chosen storage method.
+   */
+  name: string;
+}
+interface _PersistentSignalOptions<T> extends _PersistentSignalOptionsBase<T> {
+  /**
+   * The name/key used to store the signal value in the chosen storage method.
+   */
+  key: string;
+}
+
+/**
+ * Options for persisting the signal value.
+ */
+export type PersistentSignalOptions<T> =
+  | _PersistentSignalOptionsDeprecated<T>
+  | _PersistentSignalOptions<T>;
 
 function isSerializableSignal<T>(
   options: PersistentSignalOptions<T>,
@@ -122,7 +131,7 @@ export function persistentSignal<T>(
   const internalSignal = signal<T>(initialValue) as PersistentSignal<T>;
   Object.assign(internalSignal, {
     method: options.method,
-    key: options.name,
+    key: getKey(options),
   });
 
   const storedValue = loadFromStorage<T>(options);
@@ -148,12 +157,12 @@ function loadFromStorage<T>(options: PersistentSignalOptions<T>): T | null {
   let storedValue: string | null = null;
 
   if (options.method === PersistentStorageMethod.LocalStorage) {
-    storedValue = localStorage.getItem(options.name);
+    storedValue = localStorage.getItem(getKey(options));
   } else if (options.method === PersistentStorageMethod.SessionStorage) {
-    storedValue = sessionStorage.getItem(options.name);
+    storedValue = sessionStorage.getItem(getKey(options));
   } else if (options.method === PersistentStorageMethod.Cookies) {
     const match = document.cookie.match(
-      '(^|;)\\s*' + options.name + '\\s*=\\s*([^;]+)',
+      '(^|;)\\s*' + getKey(options) + '\\s*=\\s*([^;]+)',
     );
     storedValue = match ? decodeURIComponent(match[2]) : null;
   }
@@ -167,13 +176,13 @@ function updateStorage<T>(
   const serializedValue = serializeValue(value, options);
 
   if (options.method === PersistentStorageMethod.LocalStorage) {
-    if (serializedValue === null) localStorage.removeItem(options.name);
-    else localStorage.setItem(options.name, serializedValue);
+    if (serializedValue === null) localStorage.removeItem(getKey(options));
+    else localStorage.setItem(getKey(options), serializedValue);
   } else if (options.method === PersistentStorageMethod.SessionStorage) {
-    if (serializedValue === null) sessionStorage.removeItem(options.name);
-    else sessionStorage.setItem(options.name, serializedValue);
+    if (serializedValue === null) sessionStorage.removeItem(getKey(options));
+    else sessionStorage.setItem(getKey(options), serializedValue);
   } else if (options.method === PersistentStorageMethod.Cookies) {
-    let cookieString = `${options.name}=${serializedValue !== null ? encodeURIComponent(serializedValue) : ''}`;
+    let cookieString = `${getKey(options)}=${serializedValue !== null ? encodeURIComponent(serializedValue) : ''}`;
 
     if (serializedValue !== null) {
       cookieString += `; expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
@@ -193,6 +202,10 @@ function updateStorage<T>(
 
     document.cookie = cookieString;
   }
+}
+
+function getKey<T>(options: PersistentSignalOptions<T>): string {
+  return 'key' in options ? options.key : options.name;
 }
 
 function serializeValue<T>(
