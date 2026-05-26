@@ -8,6 +8,8 @@
     "tslib",
     "more-rounding",
     "dice-coefficient",
+    "@types/lodash",
+    "lodash",
     "simple-bool",
     "key-display-names"
   ]

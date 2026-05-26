@@ -1,3 +1,104 @@
+## v8.1.0
+
+### Additions
+
+#### `trackFormControl`
+
+Added `trackFormControl` function which creates a Form Control tracker instance. It tracks all properties of a `FormControl` instance and exposes them as signals and as RxJs observables. Tracked properties include:
+
+- `value`
+- `errors`
+- `touched`
+- `untouched`
+- `pristine`
+- `dirty`
+- `status`
+- `valid`
+- `invalid`
+- `pending`
+- `disabled`
+- `enabled`
+- `validators`
+- `asyncValidators`
+- `touchedHasErrors` - computed property that returns `true` if the Form Control is touched and has any own errors
+- `instance` - non-reactive property that holds the `FormControl` instance
+
+##### `trackBoundControl`
+
+`trackBoundControl` is a variant of `trackFormControl` that is meant to be used within a component that implements `ControlValueAccessor` to track the bound `FormControl` instance.
+
+In most cases the tracker will be initialized before the component will be attached to the FormControl instance, so the tracker will do that automatically. In some cases, however, the tracker can be used inside a component or directive that does not implement `ControlValueAccessor`, in which case this functionality must be disabled throught the `options.attachValueAccessor` option.
+
+#### `dualControlToRangeControlAdapter`
+
+The `dualControlToRangeControlAdapter` is a function that allows to connect two `FormControl`s to a single component which outputs a `{ from: T, to: T }` kind of object. When used with the adapter, one form control will be bound to the `from` value, and the other to the `to` value.
+
+The adapter synchronizes the touched, pristine, and disabled states between the two `FormControl`s, which is required for the adapter to work properly.
+
+#### `ExtValidators`
+
+Added `ExtValidators` static class containing additional validators.
+
+**String validators**
+
+- `ExtValidators.contains` checks if the value contains a specific substring
+- `ExtValidators.notContains` checks if the value DOES NOT contain a specific substring
+- `ExtValidators.lowercase` checks if the value is a lowercase string
+- `ExtValidators.uppercase` checks if the value is a uppercase string
+- `ExtValidators.namedPattern` works like the native `Validators.pattern`, but outputs the error into a customizable property name, instead of always being in the `pattern` property.
+- `ExtValidators.ascii` checks if the value contains only ASCII characters
+- `ExtValidators.base64` checks if the value contains only Base64 encoding characters
+- `ExtValidators.hex` checks if the value contains only base-16 encoding characters
+- `ExtValidators.octal` checks if the value contains only base-8 encoding characters
+- `ExtValidators.binary` checks if the value contains only base-2 encoding characters
+
+**Number validators**
+
+- `ExtValidators.divisibleBy` checks if the value is a number divisble by the given divisor
+
+**Computer-related validators**
+
+- `ExtValidators.ipAddress` checks if the value is a valid IP address. Can be configured to accept only IPv4, only IPv6, or both
+- `ExtValidators.uuid` checks if the value is a valid hex-encoded UUID
+- `ExtValidators.hexColor` checks if the value is a valid hex color code. Both 3-character and 6-character codes are accepted.
+- `ExtValidators.rgbColor` checks if the value is a valid rgb color string
+- `ExtValidators.hslColor` checks if the value is a valid hsl color string
+- `ExtValidators.password` checks if the value meets the configured password requirements. Outputs an object describing which rules were not met
+
+**Array validators**
+
+- `ExtValidators.arrayContains` checks if the value is an array that contains a specific value
+- `ExtValidators.arrayNotContains` checks if the value is an array that DOES NOT contain a specific value
+- `ExtValidators.arrayUnique` checks if the value is an array that contains only unique (non-repeating) values
+
+**File validators**
+
+All of the below file validators accept both a single File object and an array of File objects
+
+- `ExtValidators.fileMaxSize` checks if the value is a File object which size in bytes meets the configured maximum value
+- `ExtValidators.fileMinSize` checks if the value is a File object which size in bytes meets the configured minimum value
+- `ExtValidators.fileExtension` checks if the value is a File object which extension matches any of the configured allowed extensions
+
+### Bugfixes
+- Infinite Scroll directive does not notify that the threshold is reached when the content does not fill the whole available vertical space (when there is no scrollbar)
+  - It now immediately re-emits the threshold notification whenever it becomes active again
+
+## v8.0.1
+
+### Changes
+
+- `HttpService` now allows for the `options.params` property to be null or undefined
+
+## v8.0.0
+
+### Breaking Changes
+
+`ARD_FILEEXT_PIPE_DEFAULTS` and `ARD_FILESIZE_PIPE_DEFAULTS` injection tokens have been removed; a `ARD_FILE_PIPES_DEFAULTS` injection token replaces those two, combining properties of both. Use the `provideFilePipesDefaults` to provide default values for all file pipes at the same time.
+
+### Additions
+
+- Added `provideInfiniteScrollDefaults` that simlifies providing default values for the Infinite Scroll directive
+
 ## v7.8.0
 
 ### Additions

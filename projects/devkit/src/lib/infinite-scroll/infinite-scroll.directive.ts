@@ -1,11 +1,13 @@
 import {
   Directive,
+  effect,
   ElementRef,
   HostListener,
   inject,
   input,
   model,
   output,
+  untracked,
 } from '@angular/core';
 import { coerceNumberProperty } from './../coercion/number';
 import { ARD_INFINITE_SCROLL_DEFAULTS } from './infinite-scroll.defaults';
@@ -37,6 +39,22 @@ export class ArdiumInfiniteScrollDirective {
     return this.elementRef.nativeElement.scrollHeight;
   }
 
+  constructor() {
+    // re-check if threshold is reached immediately when directive becomes active again
+    // needed when the content is not enough to fill the container and thus the scroll is already at the end when the directive becomes active
+    effect(() => {
+      const active = this.ardInfScrollActive();
+      if (!active) return;
+
+      const target = untracked(() => this.ardInfScrollTarget());
+      if (target === ArdInfScrollTarget.Host) {
+        this._detectHostReachThreshold();
+        return;
+      }
+      this._detectWindowReachThreshold();
+    });
+  }
+
   //! options
   readonly ardInfScrollThreshold = input<number, any>(
     this._DEFAULTS.threshold,
@@ -59,7 +77,19 @@ export class ArdiumInfiniteScrollDirective {
       console.error(
         `DKT-NF1000: ardInfScroll directive has target set to "html", but the host element has just been scrolled. To ensure the directive functions properly, make the host element unscrollable.`,
       );
+      return;
     }
+    this._detectHostReachThreshold();
+  }
+  @HostListener('window:scroll')
+  onWindowScroll() {
+    if (!this.ardInfScrollActive()) return;
+    if (this.ardInfScrollTarget() !== ArdInfScrollTarget.HTML) return;
+
+    this._detectWindowReachThreshold();
+  }
+
+  private _detectHostReachThreshold() {
     const { height } = this._getElementRect();
     const scrollTop = this._getElementScrollTop();
     const scrollHeight = this._getElementScrollHeight();
@@ -70,11 +100,7 @@ export class ArdiumInfiniteScrollDirective {
       this.ardInfScrollReachThreshold.emit();
     }
   }
-  @HostListener('window:scroll')
-  onWindowScroll() {
-    if (!this.ardInfScrollActive()) return;
-    if (this.ardInfScrollTarget() !== ArdInfScrollTarget.HTML) return;
-
+  private _detectWindowReachThreshold() {
     const { top, height } = this._getElementRect();
     const viewportHeight = window.innerHeight;
     const thresholdOffset = this.ardInfScrollThreshold();
