@@ -1,5 +1,11 @@
 ## v8.1.0
 
+### Changes
+
+`coerceDateProperty` now supports a third parameter `alwaysUTC` - when set to `true`, the result date will always be a UTC date. Does not affect the fallback date parameter.
+
+## v8.0.2
+
 ### Additions
 
 #### `trackFormControl`
@@ -80,6 +86,7 @@ All of the below file validators accept both a single File object and an array o
 - `ExtValidators.fileExtension` checks if the value is a File object which extension matches any of the configured allowed extensions
 
 ### Bugfixes
+
 - Infinite Scroll directive does not notify that the threshold is reached when the content does not fill the whole available vertical space (when there is no scrollbar)
   - It now immediately re-emits the threshold notification whenever it becomes active again
 
