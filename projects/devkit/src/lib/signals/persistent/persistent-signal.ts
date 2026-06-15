@@ -10,18 +10,28 @@ import {
 } from '@angular/core';
 import { isAnyString, isNull } from 'simple-bool';
 
-/**
- * A `PersistentSignal` is a specialized type of `WritableSignal` that automatically persists its value using a specified storage method (localStorage, sessionStorage, or cookies). It extends the standard `WritableSignal` interface by including additional properties to define the persistence mechanism and key used for storage. The `PersistentSignal` ensures that any changes to its value are saved to the chosen storage method, and it initializes its value from storage if available when created.
- */
-export interface PersistentSignalNonNullable<T> extends WritableSignal<T> {
+export interface PersistentSignalNonNullable<T> extends Signal<T> {
   readonly method: PersistentStorageMethod;
   readonly key: string;
   readonly serialized: Signal<string | null>;
 }
 
 export interface PersistentSignal<T>
-  extends PersistentSignalNonNullable<T | null> {
+  extends PersistentSignalNonNullable<T | null> {}
+
+/**
+ * A `PersistentSignal` is a specialized type of `WritableSignal` that automatically persists its value using a specified storage method (localStorage, sessionStorage, or cookies). It extends the standard `WritableSignal` interface by including additional properties to define the persistence mechanism and key used for storage. The `PersistentSignal` ensures that any changes to its value are saved to the chosen storage method, and it initializes its value from storage if available when created.
+ */
+export interface WritablePersistentSignalNonNullable<T>
+  extends WritableSignal<T>,
+    PersistentSignalNonNullable<T> {
+  asReadonly(): PersistentSignalNonNullable<T>;
+}
+
+export interface WritablePersistentSignal<T>
+  extends WritablePersistentSignalNonNullable<T | null> {
   clear(): void;
+  asReadonly(): PersistentSignal<T>;
 }
 
 /**
@@ -126,15 +136,15 @@ function isSerializableSignal<T>(
 export function persistentSignal<T>(
   initialValue: T,
   options: PersistentSignalOptions<T> & { nonNullable: true },
-): PersistentSignalNonNullable<T>;
+): WritablePersistentSignalNonNullable<T>;
 export function persistentSignal<T>(
   initialValue: T | null,
   options: PersistentSignalOptions<T>,
-): PersistentSignal<T>;
+): WritablePersistentSignal<T>;
 export function persistentSignal<T>(
   initialValue: T | null,
   options: PersistentSignalOptions<T>,
-): PersistentSignal<T> | PersistentSignalNonNullable<T> {
+): WritablePersistentSignal<T> | WritablePersistentSignalNonNullable<T> {
   if (!!options.serialize !== !!options.deserialize) {
     throw new Error(
       'DKT-FT3000: Both serialize and deserialize must either be both defined or both undefined.',
@@ -160,8 +170,11 @@ export function persistentSignal<T>(
 
   const internalSignal = signal<T | null>(initialValue);
 
+  const _asReadonly = internalSignal.asReadonly;
+
   if (isNonNullable) {
-    const nonNullableSignal = internalSignal as PersistentSignalNonNullable<T>;
+    const nonNullableSignal =
+      internalSignal as WritablePersistentSignalNonNullable<T>;
     Object.assign(nonNullableSignal, {
       method: options.method,
       key: getKey(options),
@@ -169,10 +182,21 @@ export function persistentSignal<T>(
     });
 
     _assignPersistentSignalListeners(nonNullableSignal, options);
+
+    nonNullableSignal.asReadonly = () => {
+      const readonlySignal = _asReadonly() as PersistentSignalNonNullable<T>;
+
+      (readonlySignal as any).method = nonNullableSignal.method;
+      (readonlySignal as any).key = nonNullableSignal.key;
+      (readonlySignal as any).serialized = nonNullableSignal.serialized;
+
+      return readonlySignal;
+    };
+
     return nonNullableSignal;
   }
 
-  const nullableSignal = internalSignal as PersistentSignal<T>;
+  const nullableSignal = internalSignal as WritablePersistentSignal<T>;
   Object.assign(nullableSignal, {
     method: options.method,
     key: getKey(options),
@@ -181,12 +205,25 @@ export function persistentSignal<T>(
   });
 
   _assignPersistentSignalListeners(nullableSignal, options);
+
+  nullableSignal.asReadonly = () => {
+    const readonlySignal = _asReadonly() as PersistentSignal<T>;
+
+    (readonlySignal as any).method = nullableSignal.method;
+    (readonlySignal as any).key = nullableSignal.key;
+    (readonlySignal as any).serialized = nullableSignal.serialized;
+
+    return readonlySignal;
+  };
+
   return nullableSignal;
 }
 
 function _assignPersistentSignalListeners<
   T,
-  S extends PersistentSignal<T> | PersistentSignalNonNullable<T>,
+  S extends
+    | WritablePersistentSignal<T>
+    | WritablePersistentSignalNonNullable<T>,
 >(signal: S, options: PersistentSignalOptions<T>): void {
   const storedValue = loadFromStorage<T>(options);
 

@@ -39,6 +39,7 @@ export class SignalsPage {
     serialize: (value) => (value === null ? null : value.toString()),
     deserialize: (value) => parseInt(value),
   });
+  readonly animalCountReadonly = this.animalCount.asReadonly();
 
   // Query signals examples
   readonly simpleQueryParam = queryParamSignal('default', 'simple-param');
@@ -47,6 +48,7 @@ export class SignalsPage {
     serialize: (value) => value?.toString() ?? null,
     deserialize: (value) => parseInt(value ?? '0'),
   });
+  readonly numberQueryParamReadonly = this.numberQueryParam.asReadonly();
   readonly numberQueryParamNonNullable = queryParamSignal<number>(5, {
     paramName: 'number-param',
     serialize: (value) => value?.toString() ?? null,

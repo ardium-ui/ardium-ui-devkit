@@ -14,14 +14,25 @@ import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
 import { isAnyString, isNull } from 'simple-bool';
 
-export interface QueryParamSignalNonNullable<T> extends WritableSignal<T> {
+export interface QueryParamSignalNonNullable<T> extends Signal<T> {
   readonly paramName: string;
   readonly serialized: Signal<string | null>;
 }
 
 export interface QueryParamSignal<T>
-  extends QueryParamSignalNonNullable<T | null> {
+  extends QueryParamSignalNonNullable<T | null> {}
+
+export interface WritableQueryParamSignalNonNullable<T>
+  extends WritableSignal<T>,
+    QueryParamSignalNonNullable<T> {
+  asReadonly(): QueryParamSignalNonNullable<T>;
+}
+
+export interface WritableQueryParamSignal<T>
+  extends WritableQueryParamSignalNonNullable<T | null>,
+    QueryParamSignal<T> {
   clear(): void;
+  asReadonly(): QueryParamSignal<T>;
 }
 
 export interface QueryParamSignalOptions<T> {
@@ -52,15 +63,15 @@ function isSerializableSignal<T>(
 export function queryParamSignal<T>(
   initialValue: T,
   options: QueryParamSignalOptions<T> & { nonNullable: true },
-): QueryParamSignalNonNullable<T>;
+): WritableQueryParamSignalNonNullable<T>;
 export function queryParamSignal<T>(
   initialValue: T | null,
   optionsOrParam: string | QueryParamSignalOptions<T>,
-): QueryParamSignal<T>;
+): WritableQueryParamSignal<T>;
 export function queryParamSignal<T>(
   initialValue: T | null,
   optionsOrParam: string | QueryParamSignalOptions<T>,
-): QueryParamSignal<T> | QueryParamSignalNonNullable<T> {
+): WritableQueryParamSignal<T> | WritableQueryParamSignalNonNullable<T> {
   let options: QueryParamSignalOptions<T>;
 
   if (typeof optionsOrParam === 'string') {
@@ -94,18 +105,30 @@ export function queryParamSignal<T>(
 
   const internalSignal = signal<T | null>(initialValue);
 
+  const _asReadonly = internalSignal.asReadonly;
+
   if (isNonNullable) {
-    const nonNullableSignal = internalSignal as QueryParamSignalNonNullable<T>;
+    const nonNullableSignal =
+      internalSignal as WritableQueryParamSignalNonNullable<T>;
     Object.assign(nonNullableSignal, {
       paramName: options.paramName,
       serialized: computed(() => serializeValue(nonNullableSignal(), options)),
     });
 
     _assignQueryParamListeners(nonNullableSignal, options);
+
+    nonNullableSignal.asReadonly = () => {
+      const readonlySignal = _asReadonly() as QueryParamSignalNonNullable<T>;
+
+      (readonlySignal as any).serialized = nonNullableSignal.serialized;
+
+      return readonlySignal;
+    };
+
     return nonNullableSignal;
   }
 
-  const nullableSignal = internalSignal as QueryParamSignal<T>;
+  const nullableSignal = internalSignal as WritableQueryParamSignal<T>;
   Object.assign(nullableSignal, {
     paramName: options.paramName,
     serialized: computed(() => serializeValue(nullableSignal(), options)),
@@ -113,12 +136,23 @@ export function queryParamSignal<T>(
   });
 
   _assignQueryParamListeners(nullableSignal, options);
+
+  nullableSignal.asReadonly = () => {
+    const readonlySignal = _asReadonly() as QueryParamSignal<T>;
+
+    (readonlySignal as any).serialized = nullableSignal.serialized;
+
+    return readonlySignal;
+  };
+
   return nullableSignal;
 }
 
 function _assignQueryParamListeners<
   T,
-  S extends QueryParamSignal<T> | QueryParamSignalNonNullable<T>,
+  S extends
+    | WritableQueryParamSignal<T>
+    | WritableQueryParamSignalNonNullable<T>,
 >(signal: S, options: QueryParamSignalOptions<T>): void {
   const router = inject(Router);
   const storedValue = loadFromQueryParam(router, options);
