@@ -1,3 +1,4 @@
+import { JsonPipe } from '@angular/common';
 import { Component, effect } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { debouncedSignal } from '../../../../../devkit/src/lib/signals/debounced/debounced-signal';
@@ -11,7 +12,7 @@ import {
 @Component({
   selector: 'signals-page',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, JsonPipe],
   templateUrl: './signals.page.html',
   styleUrl: './signals.page.scss',
 })
@@ -38,10 +39,16 @@ export class SignalsPage {
 
   // Query signals examples
   readonly simpleQueryParam = queryParamSignal('default', 'simple-param');
-  readonly numberQueryParam = queryParamSignal<number>(0, {
+  readonly numberQueryParam = queryParamSignal<number>(null, {
     paramName: 'number-param',
     serialize: (value) => value?.toString() ?? null,
     deserialize: (value) => parseInt(value ?? '0'),
+  });
+  readonly numberQueryParamNonNullable = queryParamSignal<number>(5, {
+    paramName: 'number-param',
+    serialize: (value) => value?.toString() ?? null,
+    deserialize: (value) => parseInt(value ?? '0'),
+    nonNullable: true,
   });
 
   constructor() {

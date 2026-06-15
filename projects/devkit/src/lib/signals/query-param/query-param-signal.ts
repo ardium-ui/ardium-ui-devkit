@@ -1,28 +1,37 @@
 import {
+  computed,
   effect,
   inject,
   Injector,
   runInInjectionContext,
+  Signal,
   signal,
   WritableSignal,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { isAnyString, isNull } from 'simple-bool';
 
-export interface QueryParamSignal<T> extends WritableSignal<T | null> {
+export interface QueryParamSignalNonNullable<T> extends WritableSignal<T> {
   readonly paramName: string;
+  readonly serialized: Signal<string | null>;
+}
+
+export interface QueryParamSignal<T>
+  extends QueryParamSignalNonNullable<T | null> {
   clear(): void;
 }
 
-interface QueryParamSignalOptions<T> {
+export interface QueryParamSignalOptions<T> {
   paramName: string;
   serialize?: (value: T | null) => string | null;
   deserialize?: (value: string) => T | null;
+  nonNullable?: boolean;
 }
 
 function isSerializableSignal<T>(
   options: QueryParamSignalOptions<T>,
-): options is Required<QueryParamSignalOptions<T>> {
+): options is QueryParamSignalOptions<T> &
+  Required<Pick<QueryParamSignalOptions<T>, 'serialize' | 'deserialize'>> {
   return !!options.serialize && !!options.deserialize;
 }
 
@@ -34,12 +43,21 @@ function isSerializableSignal<T>(
  * @param options.paramName - The name of the query parameter used to store the signal value.
  * @param options.serialize - A function to serialize the value into a string for the query parameter.
  * @param options.deserialize - A function to deserialize the value from a string back to the original type.
+ * @param options.nonNullable - If true, returns a non-nullable signal interface.
  * @returns A `WritableSignal<T | null>` that persists its value using the specified query parameter.
  */
 export function queryParamSignal<T>(
+  initialValue: T,
+  options: QueryParamSignalOptions<T> & { nonNullable: true },
+): QueryParamSignalNonNullable<T>;
+export function queryParamSignal<T>(
   initialValue: T | null,
   optionsOrParam: string | QueryParamSignalOptions<T>,
-): QueryParamSignal<T> {
+): QueryParamSignal<T>;
+export function queryParamSignal<T>(
+  initialValue: T | null,
+  optionsOrParam: string | QueryParamSignalOptions<T>,
+): QueryParamSignal<T> | QueryParamSignalNonNullable<T> {
   let options: QueryParamSignalOptions<T>;
 
   if (typeof optionsOrParam === 'string') {
@@ -48,11 +66,19 @@ export function queryParamSignal<T>(
     options = optionsOrParam;
   }
 
-  if (!!options.serialize !== !!options.serialize) {
+  if (!!options.serialize !== !!options.deserialize) {
     throw new Error(
       'DKT-FT3010: Both serialize and deserialize must either be both defined or both undefined.',
     );
   }
+
+  const isNonNullable = options.nonNullable === true;
+  if (isNonNullable && isNull(initialValue)) {
+    throw new Error(
+      'DKT-FT3012: Non-nullable query param signals require a non-null initial value.',
+    );
+  }
+
   if (
     !isSerializableSignal(options) &&
     !isAnyString(initialValue) &&
@@ -63,33 +89,53 @@ export function queryParamSignal<T>(
     );
   }
 
-  const internalSignal = signal<T | null>(initialValue) as QueryParamSignal<T>;
-  Object.assign(internalSignal, {
+  const internalSignal = signal<T | null>(initialValue);
+
+  if (isNonNullable) {
+    const nonNullableSignal = internalSignal as QueryParamSignalNonNullable<T>;
+    Object.assign(nonNullableSignal, {
+      paramName: options.paramName,
+      serialized: computed(() => serializeValue(nonNullableSignal(), options)),
+    });
+
+    _assignQueryParamListeners(nonNullableSignal, options);
+    return nonNullableSignal;
+  }
+
+  const nullableSignal = internalSignal as QueryParamSignal<T>;
+  Object.assign(nullableSignal, {
     paramName: options.paramName,
-    clear: () => internalSignal.set(null),
+    serialized: computed(() => serializeValue(nullableSignal(), options)),
+    clear: () => nullableSignal.set(null),
   });
 
-  const router = inject(Router);
+  _assignQueryParamListeners(nullableSignal, options);
+  return nullableSignal;
+}
+
+function _assignQueryParamListeners<
+  T,
+  S extends QueryParamSignal<T> | QueryParamSignalNonNullable<T>,
+>(signal: S, options: QueryParamSignalOptions<T>): void {
   const storedValue = loadFromQueryParam(options);
+  const router = inject(Router);
+  const injector = inject(Injector);
+
   if (storedValue !== null) {
-    internalSignal.set(storedValue);
+    signal.set(storedValue);
   } else {
-    updateQueryParam(router, options, internalSignal());
+    updateQueryParam(router, options, signal());
   }
 
   setTimeout(() => {
-    updateQueryParam(router, options, internalSignal());
+    updateQueryParam(router, options, signal());
   }, 0);
-
-  const injector = inject(Injector);
 
   runInInjectionContext(injector, () => {
     effect(() => {
-      updateQueryParam(router, options, internalSignal());
+      updateQueryParam(router, options, signal());
     });
   });
-
-  return internalSignal;
 }
 
 function loadFromQueryParam<T>(options: QueryParamSignalOptions<T>): T | null {

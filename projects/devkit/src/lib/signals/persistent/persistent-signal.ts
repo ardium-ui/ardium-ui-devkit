@@ -1,8 +1,10 @@
 import {
+  computed,
   effect,
   inject,
   Injector,
   runInInjectionContext,
+  Signal,
   signal,
   WritableSignal,
 } from '@angular/core';
@@ -11,9 +13,15 @@ import { isAnyString, isNull } from 'simple-bool';
 /**
  * A `PersistentSignal` is a specialized type of `WritableSignal` that automatically persists its value using a specified storage method (localStorage, sessionStorage, or cookies). It extends the standard `WritableSignal` interface by including additional properties to define the persistence mechanism and key used for storage. The `PersistentSignal` ensures that any changes to its value are saved to the chosen storage method, and it initializes its value from storage if available when created.
  */
-export interface PersistentSignal<T> extends WritableSignal<T> {
+export interface PersistentSignalNonNullable<T> extends WritableSignal<T> {
   readonly method: PersistentStorageMethod;
   readonly key: string;
+  readonly serialized: Signal<string | null>;
+}
+
+export interface PersistentSignal<T>
+  extends PersistentSignalNonNullable<T | null> {
+  clear(): void;
 }
 
 /**
@@ -69,6 +77,11 @@ interface _PersistentSignalOptionsBase<T> {
    * @returns The deserialized value of type `T`, or `null` if the input value is `null`.
    */
   deserialize?: (value: string) => T | null;
+
+  /**
+   * If true, creates a non-nullable persistent signal interface.
+   */
+  nonNullable?: boolean;
 }
 interface _PersistentSignalOptionsDeprecated<T>
   extends _PersistentSignalOptionsBase<T> {
@@ -93,7 +106,8 @@ export type PersistentSignalOptions<T> =
 
 function isSerializableSignal<T>(
   options: PersistentSignalOptions<T>,
-): options is Required<PersistentSignalOptions<T>> {
+): options is PersistentSignalOptions<T> &
+  Required<Pick<_PersistentSignalOptionsBase<T>, 'serialize' | 'deserialize'>> {
   return !!options.serialize && !!options.deserialize;
 }
 
@@ -111,13 +125,29 @@ function isSerializableSignal<T>(
  */
 export function persistentSignal<T>(
   initialValue: T,
+  options: PersistentSignalOptions<T> & { nonNullable: true },
+): PersistentSignalNonNullable<T>;
+export function persistentSignal<T>(
+  initialValue: T | null,
   options: PersistentSignalOptions<T>,
-): PersistentSignal<T> {
-  if (!!options.serialize !== !!options.serialize) {
+): PersistentSignal<T>;
+export function persistentSignal<T>(
+  initialValue: T | null,
+  options: PersistentSignalOptions<T>,
+): PersistentSignal<T> | PersistentSignalNonNullable<T> {
+  if (!!options.serialize !== !!options.deserialize) {
     throw new Error(
       'DKT-FT3000: Both serialize and deserialize must either be both defined or both undefined.',
     );
   }
+
+  const isNonNullable = options.nonNullable === true;
+  if (isNonNullable && isNull(initialValue)) {
+    throw new Error(
+      'DKT-FT3002: Non-nullable persistent signals require a non-null initial value.',
+    );
+  }
+
   if (
     !isSerializableSignal(options) &&
     !isAnyString(initialValue) &&
@@ -128,29 +158,52 @@ export function persistentSignal<T>(
     );
   }
 
-  const internalSignal = signal<T>(initialValue) as PersistentSignal<T>;
-  Object.assign(internalSignal, {
+  const internalSignal = signal<T | null>(initialValue);
+
+  if (isNonNullable) {
+    const nonNullableSignal = internalSignal as PersistentSignalNonNullable<T>;
+    Object.assign(nonNullableSignal, {
+      method: options.method,
+      key: getKey(options),
+      serialized: computed(() => serializeValue(nonNullableSignal(), options)),
+    });
+
+    _assignPersistentSignalListeners(nonNullableSignal, options);
+    return nonNullableSignal;
+  }
+
+  const nullableSignal = internalSignal as PersistentSignal<T>;
+  Object.assign(nullableSignal, {
     method: options.method,
     key: getKey(options),
+    serialized: computed(() => serializeValue(nullableSignal(), options)),
+    clear: () => nullableSignal.set(null),
   });
 
+  _assignPersistentSignalListeners(nullableSignal, options);
+  return nullableSignal;
+}
+
+function _assignPersistentSignalListeners<
+  T,
+  S extends PersistentSignal<T> | PersistentSignalNonNullable<T>,
+>(signal: S, options: PersistentSignalOptions<T>): void {
   const storedValue = loadFromStorage<T>(options);
+
   if (storedValue !== null) {
-    internalSignal.set(storedValue);
+    signal.set(storedValue);
   } else {
-    updateStorage(options, internalSignal());
+    updateStorage(options, signal());
   }
 
   const injector = inject(Injector);
 
   runInInjectionContext(injector, () => {
     effect(() => {
-      const value = internalSignal();
+      const value = signal();
       updateStorage(options, value);
     });
   });
-
-  return internalSignal;
 }
 
 function loadFromStorage<T>(options: PersistentSignalOptions<T>): T | null {

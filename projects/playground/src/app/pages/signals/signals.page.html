@@ -30,6 +30,15 @@
       [(ngModel)]="numberQueryParam"
     />
   </div>
+  <pre>{{ { real: numberQueryParam(), serialized: numberQueryParam.serialized() } | json }}</pre>
+  <div>
+    <label for="number-query-param-non-nullable">Query Param (Number, Non-Nullable)</label>
+    <input
+      type="number"
+      id="number-query-param-non-nullable"
+      [(ngModel)]="numberQueryParamNonNullable"
+    />
+  </div>
 
   <h2>Throttled Signal</h2>
   <div>
