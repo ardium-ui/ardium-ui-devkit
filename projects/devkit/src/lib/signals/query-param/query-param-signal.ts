@@ -1,5 +1,6 @@
 import {
   computed,
+  DestroyRef,
   effect,
   inject,
   Injector,
@@ -8,7 +9,9 @@ import {
   signal,
   WritableSignal,
 } from '@angular/core';
-import { Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs';
 import { isAnyString, isNull } from 'simple-bool';
 
 export interface QueryParamSignalNonNullable<T> extends WritableSignal<T> {
@@ -117,9 +120,11 @@ function _assignQueryParamListeners<
   T,
   S extends QueryParamSignal<T> | QueryParamSignalNonNullable<T>,
 >(signal: S, options: QueryParamSignalOptions<T>): void {
-  const storedValue = loadFromQueryParam(options);
   const router = inject(Router);
+  const storedValue = loadFromQueryParam(router, options);
+  const destroyRef = inject(DestroyRef);
   const injector = inject(Injector);
+  let isApplyingRouterValue = false;
 
   if (storedValue !== null) {
     signal.set(storedValue);
@@ -131,16 +136,49 @@ function _assignQueryParamListeners<
     updateQueryParam(router, options, signal());
   }, 0);
 
+  router.events
+    .pipe(
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+      takeUntilDestroyed(destroyRef),
+    )
+    .subscribe(() => {
+      const nextValue = loadFromQueryParam(router, options);
+      const writableSignal = signal as WritableSignal<T | null>;
+      if (options.nonNullable === true && nextValue === null) {
+        return;
+      }
+
+      const currentSerialized = serializeValue(writableSignal(), options);
+      const nextSerialized = serializeValue(nextValue, options);
+      if (currentSerialized === nextSerialized) {
+        return;
+      }
+
+      isApplyingRouterValue = true;
+      writableSignal.set(nextValue);
+      isApplyingRouterValue = false;
+    });
+
   runInInjectionContext(injector, () => {
     effect(() => {
+      if (isApplyingRouterValue) {
+        return;
+      }
       updateQueryParam(router, options, signal());
     });
   });
 }
 
-function loadFromQueryParam<T>(options: QueryParamSignalOptions<T>): T | null {
-  const urlParams = new URLSearchParams(window.location.search);
-  const storedValue = urlParams.get(options.paramName);
+function loadFromQueryParam<T>(
+  router: Router,
+  options: QueryParamSignalOptions<T>,
+): T | null {
+  const urlTree = router.parseUrl(router.url);
+  const queryParamValue = urlTree.queryParams[options.paramName];
+  const storedValue =
+    queryParamValue === undefined || queryParamValue === null
+      ? null
+      : String(queryParamValue);
 
   return deserializeValue(storedValue, options);
 }
@@ -152,6 +190,15 @@ function updateQueryParam<T>(
 ): void {
   const serializedValue = serializeValue(value, options);
   const urlTree = router.parseUrl(router.url);
+  const currentParam =
+    urlTree.queryParams[options.paramName] == null
+      ? null
+      : String(urlTree.queryParams[options.paramName]);
+
+  if (currentParam === serializedValue) {
+    return;
+  }
+
   const queryParams = {
     ...urlTree.queryParams,
     [options.paramName]: serializedValue,

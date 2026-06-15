@@ -1,6 +1,7 @@
 import { JsonPipe } from '@angular/common';
-import { Component, effect } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { debouncedSignal } from '../../../../../devkit/src/lib/signals/debounced/debounced-signal';
 import {
   persistentSignal,
@@ -17,6 +18,8 @@ import {
   styleUrl: './signals.page.scss',
 })
 export class SignalsPage {
+  private readonly router = inject(Router);
+
   // Persistent signals examples
   readonly favoriteAnimalCookie = persistentSignal('initial', {
     name: 'favorite-animal',
@@ -50,6 +53,13 @@ export class SignalsPage {
     deserialize: (value) => parseInt(value ?? '0'),
     nonNullable: true,
   });
+
+  updateQueryParam() {
+    this.router.navigate([], {
+      queryParams: { 'simple-param': 'updated' },
+      queryParamsHandling: 'merge',
+    });
+  }
 
   constructor() {
     effect(() => {

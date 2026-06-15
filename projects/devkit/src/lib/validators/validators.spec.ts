@@ -243,7 +243,7 @@ describe('ExtValidators', () => {
       it('returns error for invalid IPv4', () => {
         const control = new FormControl('999.1.2.3', ExtValidators.ipAddress(4));
         expect(control.errors).toEqual({
-          ipAddress: { requiredType: 'IPv4', actualValue: '999.1.2.3' },
+          ipAddress: { requiredType: 4, actualValue: '999.1.2.3' },
         });
       });
 
@@ -262,7 +262,7 @@ describe('ExtValidators', () => {
       it('returns error for invalid IPv6', () => {
         const control = new FormControl('not-an-ip', ExtValidators.ipAddress(6));
         expect(control.errors).toEqual({
-          ipAddress: { requiredType: 'IPv6', actualValue: 'not-an-ip' },
+          ipAddress: { requiredType: 6, actualValue: 'not-an-ip' },
         });
       });
 
