@@ -1,3 +1,15 @@
+## v8.2.1
+
+### Bugfixes
+
+- `persistentSignal` and `queryParamSignal`'s signal property `serialized` was not available when the signal was made read-only with `asReadonly`. `persistentSignal`'s `method` and `key` properties as well as `queryParamSignal`'s `paramName` property are now available in read-only form as well. New versions of the signal interfaces were added to fix this bug.
+
+## v8.2.0
+
+### Changes
+
+`persistentSignal` and `queryParamSignal` now have a `nonNullable: boolean` option that specifies whether the signal should allow `null` as a valid value (allows by default). Both signals also now have a `serialized` signal property that returns the value in a serialized form.
+
 ## v8.1.0
 
 ### Changes
