@@ -1,3 +1,10 @@
+## v8.3.0
+
+### Changes
+
+- `coerceDateProperty` now no longer supports the `alwaysUTC` parameter because it was causing too many problems
+- Created a new function `coerceDateOnlyProperty`, which always returns just the date part with no time component. There is a third parameter `asUTC` which configures if the returned date should be in UTC time or in local time
+
 ## v8.2.1
 
 ### Bugfixes
