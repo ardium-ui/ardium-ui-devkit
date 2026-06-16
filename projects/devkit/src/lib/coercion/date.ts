@@ -64,11 +64,6 @@ export function coerceDateOnlyProperty<T>(
           )
         : now;
     }
-    v = new Date(v);
-    if (isNaN(v.valueOf())) {
-      return fallback;
-    }
-    return v;
   }
   const dateV = new Date(v);
   if (isNaN(dateV.valueOf())) {
@@ -88,25 +83,16 @@ export function coerceDateOnlyProperty<T>(
       0,
     );
   }
-  // hack to detect if the date was created with a time component
-  if (dateV.getMilliseconds() !== 0 || dateV.getSeconds() !== 0 || dateV.getMinutes() % 15 !== 0) {
-    // date has a time component, we treat it as if it was created using Date.now() and thus convert it to a date only value and convert to UTC if needed
-    if (asUTC) {
-      return getUTCDate(
-        dateV.getFullYear(),
-        dateV.getMonth(),
-        dateV.getDate(),
-      );
-    }
-    return new Date(dateV.getFullYear(), dateV.getMonth(), dateV.getDate(), 0, 0, 0, 0);
-  }
-  // we are now quite confident that there is no time component
   if (asUTC) {
-    return getUTCDate(
-      dateV.getFullYear(),
-      dateV.getMonth(),
-      dateV.getDate(),
-    );
+    return getUTCDate(dateV.getFullYear(), dateV.getMonth(), dateV.getDate());
   }
-  return dateV;
+  return new Date(
+    dateV.getFullYear(),
+    dateV.getMonth(),
+    dateV.getDate(),
+    0,
+    0,
+    0,
+    0,
+  );
 }
