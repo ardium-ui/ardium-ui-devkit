@@ -1,3 +1,9 @@
+## v8.3.1
+
+### Bugfixes
+
+- `queryParamSignal` does not update when its query param is externally changed to null (should reset to initial value)
+
 ## v8.3.0
 
 ### Changes
