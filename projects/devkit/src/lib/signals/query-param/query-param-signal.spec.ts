@@ -80,6 +80,32 @@ describe('queryParamSignal', () => {
     expect(signal()).toBe('external');
   }));
 
+  it("should set initial value when a non-nullable signal's query param is set to null externally", fakeAsync(() => {
+    const signal = TestBed.runInInjectionContext(() =>
+      queryParamSignal('initial', { paramName: 'name', nonNullable: true }),
+    );
+
+    tick(0);
+
+    router.navigate([], {
+      queryParams: { name: 'external' },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
+
+    expect(signal()).toBe('external');
+
+    tick(0);
+
+    router.navigate([], {
+      queryParams: { name: null },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
+
+    expect(signal()).toBe('initial');
+  }));
+
   it('should not re-navigate when external update already matches signal state', fakeAsync(() => {
     const navigateSpy = spyOn(router, 'navigate').and.callThrough();
 

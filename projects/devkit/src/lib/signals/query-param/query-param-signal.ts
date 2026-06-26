@@ -115,7 +115,7 @@ export function queryParamSignal<T>(
       serialized: computed(() => serializeValue(nonNullableSignal(), options)),
     });
 
-    _assignQueryParamListeners(nonNullableSignal, options);
+    _assignQueryParamListeners(nonNullableSignal, initialValue, options);
 
     nonNullableSignal.asReadonly = () => {
       const readonlySignal = _asReadonly() as QueryParamSignalNonNullable<T>;
@@ -135,7 +135,7 @@ export function queryParamSignal<T>(
     clear: () => nullableSignal.set(null),
   });
 
-  _assignQueryParamListeners(nullableSignal, options);
+  _assignQueryParamListeners(nullableSignal, initialValue, options);
 
   nullableSignal.asReadonly = () => {
     const readonlySignal = _asReadonly() as QueryParamSignal<T>;
@@ -153,7 +153,11 @@ function _assignQueryParamListeners<
   S extends
     | WritableQueryParamSignal<T>
     | WritableQueryParamSignalNonNullable<T>,
->(signal: S, options: QueryParamSignalOptions<T>): void {
+>(
+  signal: S,
+  initialValue: T | null,
+  options: QueryParamSignalOptions<T>,
+): void {
   const router = inject(Router);
   const storedValue = loadFromQueryParam(router, options);
   const destroyRef = inject(DestroyRef);
@@ -179,6 +183,7 @@ function _assignQueryParamListeners<
       const nextValue = loadFromQueryParam(router, options);
       const writableSignal = signal as WritableSignal<T | null>;
       if (options.nonNullable === true && nextValue === null) {
+        writableSignal.set(initialValue);
         return;
       }
 
