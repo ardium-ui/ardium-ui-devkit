@@ -27,8 +27,12 @@ import {
 import { isFunction } from 'simple-bool';
 
 export interface FormControlTrackerOptions {
+  injector?: Injector;
+}
+export interface BoundControlTrackerOptions extends FormControlTrackerOptions {
   attachValueAccessor?: boolean;
 }
+
 export interface TrackedFormControl<T> {
   readonly instance: AbstractControl<T>;
   readonly value$: Observable<T>;
@@ -68,14 +72,14 @@ export interface TrackedFormControl<T> {
 class FormControlTracker<T> {
   constructor(
     private readonly thisObjOrAbstractControl: any | AbstractControl,
-    private readonly options: FormControlTrackerOptions = {},
+    private readonly options: BoundControlTrackerOptions = {},
   ) {
     if (this._isAbstractControl(this.thisObjOrAbstractControl)) {
       this.init();
     }
   }
 
-  private readonly _injector = inject(Injector);
+  private readonly _injector = this.options.injector ?? inject(Injector);
 
   /** The AbstractControl instance attached to the component instance. */
   public readonly instance!: AbstractControl<T>;
@@ -322,7 +326,8 @@ class FormControlTracker<T> {
  *
  * Call `destroy()` to dispose of form control tracker.
  *
- * @param thisObj the component instance.
+ * @param formControl the form control to be tracked.
+ * @param options optional configuration for the form control tracker.
  * @returns an object containing all standard form control getters as signals.
  * @example
  * ```
@@ -333,8 +338,12 @@ class FormControlTracker<T> {
  */
 export function trackFormControl<T = any>(
   formControl: AbstractControl<T>,
+  options?: FormControlTrackerOptions,
 ): TrackedFormControl<T> {
-  return new FormControlTracker<T>(formControl);
+  return new FormControlTracker<T>(formControl, {
+    ...options,
+    attachValueAccessor: false,
+  });
 }
 
 /**
@@ -343,6 +352,7 @@ export function trackFormControl<T = any>(
  * Call the `init()` method inside `ngOnInit()` to start listening to the Form Control, call `destroy()` to dispose of the listener.
  *
  * @param thisObj the component instance.
+ * @param options optional configuration for the form control tracker.
  * @returns an object containing all standard form control getters as signals.
  * @example
  * ```
@@ -361,7 +371,7 @@ export function trackFormControl<T = any>(
  */
 export function trackBoundControl<T = any>(
   thisObj: any,
-  options?: { attachValueAccessor?: boolean },
+  options?: BoundControlTrackerOptions,
 ): TrackedFormControl<T> {
   return new FormControlTracker<T>(thisObj, options);
 }
